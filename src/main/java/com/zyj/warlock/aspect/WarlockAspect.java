@@ -1,17 +1,13 @@
 package com.zyj.warlock.aspect;
 
-import com.zyj.warlock.annotation.Warlock;
-import com.zyj.warlock.core.LockInfo;
-import com.zyj.warlock.core.WarlockProcessor;
-import com.zyj.warlock.util.SpelExpressionUtil;
+import com.zyj.warlock.annotation.Wlock;
+import com.zyj.warlock.core.Warlock;
+import com.zyj.warlock.core.WarlockFactory;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.reflect.MethodSignature;
-
-import java.lang.reflect.Method;
 
 
 /**
@@ -25,28 +21,25 @@ import java.lang.reflect.Method;
 @AllArgsConstructor
 public class WarlockAspect {
 
-    private final WarlockProcessor warlockProcessor;
+    private final WarlockFactory warlockFactory;
 
-    @Around(value = "@annotation(com.zyj.warlock.annotation.Warlock) && @annotation(warlock)")
-    public Object warlockPointcut(ProceedingJoinPoint pjp, Warlock warlock) throws Throwable {
-
-        // 获取方法参数值
-        Object[] arguments = pjp.getArgs();
-        // 获取method
-        MethodSignature signature = (MethodSignature) pjp.getSignature();
-        Method method = signature.getMethod();
-
-        String lockName = warlock.name();
-        // 获取spel表达式
-        String keySpEL = warlock.key();
-        String key = SpelExpressionUtil.parseSpel(method, arguments, keySpEL, String.class);
-
-        String lockKey = lockName + key;
-
-        LockInfo lockInfo = new LockInfo();
-        lockInfo.setLockKey(lockKey);
-        lockInfo.setLockType(warlock.lockType());
-        return warlockProcessor.invokeWithWarlock(lockInfo, pjp);
+    @Around(value = "@annotation(com.zyj.warlock.annotation.Wlock) && @annotation(wlock)")
+    public Object warlockPointcut(ProceedingJoinPoint pjp, Wlock wlock) throws Throwable {
+        //1. 构建warlock
+        Warlock warlock = warlockFactory.build(pjp, wlock);
+        //2. 执行业务前的加锁操作
+        warlock.beforeBiz();
+        try {
+            //3. 执行业务方法
+            Object result = pjp.proceed();
+            //4. 执行业务之后的解锁操作
+            warlock.afterBiz();
+            return result;
+        } catch (Exception e) {
+            //5. 业务抛出异常之后的一些操作
+            warlock.except(e);
+            throw e;
+        }
     }
 
 }
