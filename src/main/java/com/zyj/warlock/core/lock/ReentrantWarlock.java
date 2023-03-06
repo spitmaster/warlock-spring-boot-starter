@@ -9,6 +9,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * 基于JUC实现的可重入Warlock
+ *
+ * @author zhouyijin
+ */
 public class ReentrantWarlock implements Warlock {
 
     private static final ConcurrentHashMap<String, Pair<ReentrantLock, AtomicInteger>> REENTRANT_LOCK_MAP = new ConcurrentHashMap<>();
