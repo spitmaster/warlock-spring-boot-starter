@@ -25,7 +25,8 @@ public class ReentrantWarlock implements Warlock {
     }
 
     @Override
-    public Object doWithLock(BizFunction bizFunc) {
+    public Object doWithLock(BizFunction bizFunc) throws Throwable {
+        //1. 拿锁
         Pair<ReentrantLock, AtomicInteger> lockPair = REENTRANT_LOCK_MAP.compute(lockInfo.getLockKey(), (s, pair) -> {
             if (pair == null) {
                 //没有就初始化
@@ -34,15 +35,15 @@ public class ReentrantWarlock implements Warlock {
             pair.getRight().incrementAndGet();
             return pair;
         });
-        //加锁
+        //2. 上锁
         lockPair.getLeft().lock();
         try {
+            //3. 执行业务代码
             return bizFunc.doBiz();
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
         } finally {
-            //解锁
+            //4. 解锁
             lockPair.getLeft().unlock();
+            //5. 还锁
             REENTRANT_LOCK_MAP.computeIfPresent(lockInfo.getLockKey(), (s, pair) -> {
                 int holdCount = pair.getRight().decrementAndGet();
                 if (holdCount <= 0) {
