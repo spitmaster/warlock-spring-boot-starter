@@ -7,19 +7,22 @@ package com.zyj.warlock.core;
 public interface Warlock {
 
     /**
-     * 在执行业务函数前所做的一些锁操作
-     */
-    void beforeBiz();
-
-    /**
-     * 在执行业务函数后所做的一些锁操作
-     */
-    void afterBiz();
-
-    /**
-     * 当业务函数报错之后, 所做的一些锁操作
+     * 在锁的环境下执行业务函数
      *
-     * @param e 抛出的异常
+     * @param bizFunc 业务函数
+     * @return 业务函数的返回值
+     * @throws Throwable 业务方法可能抛出的异常
      */
-    void except(Exception e);
+    Object doWithLock(BizFunction bizFunc) throws Throwable;
+
+
+    interface BizFunction {
+        /**
+         * 被锁保卫的业务方法
+         *
+         * @return 业务方法的返回值
+         * @throws Throwable 业务方法可能抛出的异常
+         */
+        Object doBiz() throws Throwable;
+    }
 }

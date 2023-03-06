@@ -24,22 +24,11 @@ public class WarlockAspect {
     private final WarlockFactory warlockFactory;
 
     @Around(value = "@annotation(com.zyj.warlock.annotation.Wlock) && @annotation(wlock)")
-    public Object warlockPointcut(ProceedingJoinPoint pjp, Wlock wlock) throws Throwable {
+    public Object warlockPointcut(final ProceedingJoinPoint pjp, Wlock wlock) throws Throwable {
         //1. 构建warlock
         Warlock warlock = warlockFactory.build(pjp, wlock);
-        //2. 执行业务前的加锁操作
-        warlock.beforeBiz();
-        try {
-            //3. 执行业务方法
-            Object result = pjp.proceed();
-            //4. 执行业务之后的解锁操作
-            warlock.afterBiz();
-            return result;
-        } catch (Exception e) {
-            //5. 业务抛出异常之后的一些操作
-            warlock.except(e);
-            throw e;
-        }
+        //2. 在锁的环境下执行业务代码
+        return warlock.doWithLock(pjp::proceed);
     }
 
 }

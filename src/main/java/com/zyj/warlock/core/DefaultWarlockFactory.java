@@ -67,20 +67,9 @@ public class DefaultWarlockFactory implements WarlockFactory {
      * 空实现
      */
     private static class BlankWarlock implements Warlock {
-
         @Override
-        public void beforeBiz() {
-
-        }
-
-        @Override
-        public void afterBiz() {
-
-        }
-
-        @Override
-        public void except(Exception e) {
-
+        public Object doWithLock(BizFunction bizFunc) throws Throwable {
+            return bizFunc.doBiz();
         }
     }
 }

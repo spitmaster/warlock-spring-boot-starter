@@ -5,25 +5,15 @@ import com.zyj.warlock.core.Warlock;
 
 public class ReadWarlock implements Warlock {
 
-    private LockInfo lockInfo;
+    private final LockInfo lockInfo;
 
     public ReadWarlock(LockInfo lockInfo) {
         this.lockInfo = lockInfo;
     }
 
-    @Override
-    public void beforeBiz() {
-
-    }
 
     @Override
-    public void afterBiz() {
-
+    public Object doWithLock(BizFunction bizFunc) throws Throwable {
+        return null;
     }
-
-    @Override
-    public void except(Exception e) {
-
-    }
-
 }
