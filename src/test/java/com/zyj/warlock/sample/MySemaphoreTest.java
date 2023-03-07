@@ -15,6 +15,7 @@ public class MySemaphoreTest {
                     semaphore.acquire();
                     TimeUnit.MILLISECONDS.sleep(500);
                     System.out.println("print + " + finalI);
+                    System.out.println("availablePermits : " + semaphore.availablePermits());
                     semaphore.release();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
