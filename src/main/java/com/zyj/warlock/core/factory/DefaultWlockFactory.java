@@ -2,7 +2,7 @@ package com.zyj.warlock.core.factory;
 
 import com.zyj.warlock.annotation.Warlock;
 import com.zyj.warlock.core.Wlock;
-import com.zyj.warlock.enums.LockScope;
+import com.zyj.warlock.enums.Scope;
 import com.zyj.warlock.exceptions.WarlockException;
 import com.zyj.warlock.util.JoinPointUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -17,11 +17,6 @@ public class DefaultWlockFactory implements WlockFactory {
     private final StandaloneWlockFactory standaloneWlockFactory;
     private final DistributedWlockFactory distributedWlockFactory;
 
-    public DefaultWlockFactory(StandaloneWlockFactory standaloneWlockFactory) {
-        //没有redisson的情况下使用这个初始化
-        this(standaloneWlockFactory, null);
-    }
-
     public DefaultWlockFactory(StandaloneWlockFactory standaloneWlockFactory, DistributedWlockFactory distributedWlockFactory) {
         this.standaloneWlockFactory = standaloneWlockFactory;
         this.distributedWlockFactory = distributedWlockFactory;
@@ -30,8 +25,8 @@ public class DefaultWlockFactory implements WlockFactory {
     @Override
     public Wlock build(ProceedingJoinPoint pjp, Warlock warlock) {
         //根据锁的范围选择合适的锁factory
-        LockScope lockScope = warlock.lockScope();
-        switch (lockScope) {
+        Scope scope = warlock.lockScope();
+        switch (scope) {
             case STANDALONE:
                 //单机锁
                 return standaloneWlockFactory.build(pjp, warlock);

@@ -1,6 +1,6 @@
 package com.zyj.warlock.annotation;
 
-import com.zyj.warlock.enums.LockScope;
+import com.zyj.warlock.enums.Scope;
 import com.zyj.warlock.enums.LockType;
 
 import java.lang.annotation.ElementType;
@@ -40,7 +40,7 @@ public @interface Warlock {
      *
      * @return LockScope, 目前支持两种JVM单机 和 基于Redis的分布式锁
      */
-    LockScope lockScope() default LockScope.STANDALONE;
+    Scope lockScope() default Scope.STANDALONE;
 
     /**
      * Spring Expression Language (SpEL) expression

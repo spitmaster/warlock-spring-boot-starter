@@ -1,21 +1,21 @@
 package com.zyj.warlock.enums;
 
 /**
- * 锁的范围
+ * 同步工具的范围
  *
  * @author zhouyijin
  */
-public enum LockScope {
+public enum Scope {
 
     /**
-     * 单机锁
+     * 作用范围仅本JVM
      * 作用域仅在单JVM实例上
      */
     STANDALONE,
 
     /**
-     * 分布式锁
-     * 默认是基于Redis的分布式锁, 需要Redisson的依赖支持
+     * 分布式集群
+     * 默认是基于Redis, 需要Redisson的依赖支持
      */
     DISTRIBUTED,
 
