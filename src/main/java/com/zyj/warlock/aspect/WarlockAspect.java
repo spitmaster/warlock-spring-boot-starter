@@ -1,8 +1,8 @@
 package com.zyj.warlock.aspect;
 
 import com.zyj.warlock.annotation.Warlock;
-import com.zyj.warlock.core.Wlock;
-import com.zyj.warlock.core.factory.WlockFactory;
+import com.zyj.warlock.core.lock.Wlock;
+import com.zyj.warlock.core.lock.factory.WlockFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

@@ -1,6 +1,5 @@
 package com.zyj.warlock.core.lock;
 
-import com.zyj.warlock.core.LockInfo;
 import org.springframework.lang.NonNull;
 
 /**

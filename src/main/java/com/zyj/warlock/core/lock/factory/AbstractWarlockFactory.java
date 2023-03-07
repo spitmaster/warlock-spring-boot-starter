@@ -1,20 +1,18 @@
-package com.zyj.warlock.core.factory;
+package com.zyj.warlock.core.lock.factory;
 
 import com.zyj.warlock.annotation.Leasing;
 import com.zyj.warlock.annotation.Waiting;
 import com.zyj.warlock.annotation.Warlock;
-import com.zyj.warlock.core.LockInfo;
+import com.zyj.warlock.core.lock.LockInfo;
 import com.zyj.warlock.handler.LeaseTimeoutHandler;
 import com.zyj.warlock.handler.PlainLeaseTimeoutHandler;
 import com.zyj.warlock.handler.PlainWaitTimeoutHandler;
 import com.zyj.warlock.handler.WaitTimeoutHandler;
 import com.zyj.warlock.util.JoinPointUtil;
-import com.zyj.warlock.util.SpelExpressionUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.ObjectProvider;
 
-import java.lang.reflect.Method;
 import java.time.Duration;
 
 /**
@@ -36,21 +34,13 @@ abstract class AbstractWarlockFactory {
         LockInfo lockInfo = new LockInfo();
         //1. 构造lockKey
         //收集锁的信息
-        // 获取方法参数值
-        Object[] arguments = pjp.getArgs();
-        // 获取method
-        Method method = JoinPointUtil.method(pjp);
-
-        String lockName = warlock.name();
-        // 获取spel表达式
-        String keySpEL = warlock.key();
-        String key = SpelExpressionUtil.parseSpel(method, arguments, keySpEL, String.class);
 
         /*
          * construct a lockkey that indicate a unique lock
          * this lock would be used in Warlock.beforeBiz and Warlock.afterBiz and Warlock.except
          */
-        String lockKey = lockName + key;
+        String lockKey = warlock.name() + JoinPointUtil.parseSpEL(pjp, warlock.key());
+
         lockInfo.setLockKey(lockKey);
         //2. 拿到lockType
         lockInfo.setLockType(warlock.lockType());

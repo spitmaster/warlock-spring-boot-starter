@@ -1,7 +1,7 @@
 package com.zyj.warlock.core.lock.dist;
 
-import com.zyj.warlock.core.LockInfo;
-import com.zyj.warlock.core.Wlock;
+import com.zyj.warlock.core.lock.LockInfo;
+import com.zyj.warlock.core.lock.Wlock;
 import com.zyj.warlock.core.lock.DefaultWlock;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.redisson.api.RLock;

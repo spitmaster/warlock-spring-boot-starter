@@ -1,6 +1,6 @@
 package com.zyj.warlock.core.lock.standalone;
 
-import com.zyj.warlock.core.Wlock;
+import com.zyj.warlock.core.lock.Wlock;
 import com.zyj.warlock.core.lock.DefaultWlock;
 import org.aspectj.lang.ProceedingJoinPoint;
 

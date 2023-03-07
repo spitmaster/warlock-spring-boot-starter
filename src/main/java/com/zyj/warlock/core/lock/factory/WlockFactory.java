@@ -1,7 +1,7 @@
-package com.zyj.warlock.core.factory;
+package com.zyj.warlock.core.lock.factory;
 
 import com.zyj.warlock.annotation.Warlock;
-import com.zyj.warlock.core.Wlock;
+import com.zyj.warlock.core.lock.Wlock;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 /**

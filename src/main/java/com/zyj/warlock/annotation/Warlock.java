@@ -38,7 +38,7 @@ public @interface Warlock {
     /**
      * 锁的作用域范围
      *
-     * @return LockScope, 目前支持两种JVM单机 和 基于Redis的分布式锁
+     * @return Scope, 目前支持两种JVM单机 和 基于Redis的分布式锁
      */
     Scope lockScope() default Scope.STANDALONE;
 

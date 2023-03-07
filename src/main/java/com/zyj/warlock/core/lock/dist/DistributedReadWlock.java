@@ -1,6 +1,6 @@
 package com.zyj.warlock.core.lock.dist;
 
-import com.zyj.warlock.core.LockInfo;
+import com.zyj.warlock.core.lock.LockInfo;
 import org.redisson.Redisson;
 import org.redisson.api.RLock;
 

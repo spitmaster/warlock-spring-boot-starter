@@ -1,6 +1,5 @@
 package com.zyj.warlock.core.lock;
 
-import com.zyj.warlock.core.Wlock;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 /**

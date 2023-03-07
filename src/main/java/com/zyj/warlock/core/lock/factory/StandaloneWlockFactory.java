@@ -1,8 +1,8 @@
-package com.zyj.warlock.core.factory;
+package com.zyj.warlock.core.lock.factory;
 
 import com.zyj.warlock.annotation.Warlock;
-import com.zyj.warlock.core.LockInfo;
-import com.zyj.warlock.core.Wlock;
+import com.zyj.warlock.core.lock.LockInfo;
+import com.zyj.warlock.core.lock.Wlock;
 import com.zyj.warlock.core.lock.PlainWarlock;
 import com.zyj.warlock.core.lock.standalone.ReadWlock;
 import com.zyj.warlock.core.lock.standalone.ReentrantWlock;

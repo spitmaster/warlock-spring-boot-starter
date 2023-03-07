@@ -1,6 +1,6 @@
 package com.zyj.warlock.core.lock.standalone;
 
-import com.zyj.warlock.core.LockInfo;
+import com.zyj.warlock.core.lock.LockInfo;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.concurrent.ConcurrentHashMap;

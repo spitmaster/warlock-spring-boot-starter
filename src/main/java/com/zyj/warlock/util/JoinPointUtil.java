@@ -33,4 +33,12 @@ public class JoinPointUtil {
         return signature.getMethod();
     }
 
+    public static String parseSpEL(ProceedingJoinPoint pjp, String spEL) {
+        Object[] arguments = pjp.getArgs();
+        // 获取method
+        Method method = JoinPointUtil.method(pjp);
+        // 获取spel表达式的执行结果
+        return SpelExpressionUtil.parseSpel(method, arguments, spEL, String.class);
+    }
+
 }

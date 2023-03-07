@@ -1,10 +1,10 @@
 package com.zyj.warlock.config;
 
 import com.zyj.warlock.aspect.WarlockAspect;
-import com.zyj.warlock.core.factory.DefaultWlockFactory;
-import com.zyj.warlock.core.factory.DistributedWlockFactory;
-import com.zyj.warlock.core.factory.StandaloneWlockFactory;
-import com.zyj.warlock.core.factory.WlockFactory;
+import com.zyj.warlock.core.lock.factory.DefaultWlockFactory;
+import com.zyj.warlock.core.lock.factory.DistributedWlockFactory;
+import com.zyj.warlock.core.lock.factory.StandaloneWlockFactory;
+import com.zyj.warlock.core.lock.factory.WlockFactory;
 import org.redisson.Redisson;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.zyj.warlock.core;
+package com.zyj.warlock.core.lock;
 
 import com.zyj.warlock.annotation.Warlock;
 import com.zyj.warlock.enums.LockType;

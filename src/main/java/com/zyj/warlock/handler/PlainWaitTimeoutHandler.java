@@ -1,6 +1,6 @@
 package com.zyj.warlock.handler;
 
-import com.zyj.warlock.core.LockInfo;
+import com.zyj.warlock.core.lock.LockInfo;
 import com.zyj.warlock.exceptions.WarlockException;
 import com.zyj.warlock.util.JoinPointUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
