@@ -1,12 +1,18 @@
 package com.zyj.warlock.core;
 
+import com.zyj.warlock.annotation.Waiting;
 import com.zyj.warlock.annotation.Wlock;
 import com.zyj.warlock.core.lock.ReadWarlock;
 import com.zyj.warlock.core.lock.ReentrantWarlock;
 import com.zyj.warlock.core.lock.WriteWarlock;
+import com.zyj.warlock.exceptions.WarlockException;
+import com.zyj.warlock.handler.WaitTimeoutHandler;
 import com.zyj.warlock.util.SpelExpressionUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
@@ -16,9 +22,17 @@ import java.time.Duration;
  *
  * @author zhouyijin
  */
-public class DefaultWarlockFactory implements WarlockFactory {
+public class DefaultWarlockFactory implements WarlockFactory, ApplicationContextAware {
 
-    private static final Warlock BLANK_WARLOCK = new BlankWarlock();
+    private static final Warlock PLAIN_WARLOCK = new PlainWarlock();
+    private static final PlainWaitTimeoutHandler PLAIN_WAIT_TIMEOUT_HANDLER = new PlainWaitTimeoutHandler();
+
+    private ApplicationContext applicationContext;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 
     @Override
     public Warlock build(ProceedingJoinPoint pjp, Wlock wlock) {
@@ -39,7 +53,7 @@ public class DefaultWarlockFactory implements WarlockFactory {
                 warlock = new WriteWarlock(lockInfo);
                 break;
             default:
-                warlock = BLANK_WARLOCK;
+                warlock = PLAIN_WARLOCK;
                 break;
         }
         return warlock;
@@ -78,14 +92,32 @@ public class DefaultWarlockFactory implements WarlockFactory {
         return lockInfo;
     }
 
+    private WaitTimeoutHandler getWaitTimeoutHandler(Waiting waiting) {
+        Class<? extends WaitTimeoutHandler> waitTimeoutHandlerClass = waiting.waitTimeoutHandler();
+        if (waitTimeoutHandlerClass == null) {
+            return PLAIN_WAIT_TIMEOUT_HANDLER;
+        } else {
+            return applicationContext.getBean(waitTimeoutHandlerClass);
+        }
+    }
+
 
     /**
      * 空实现
      */
-    private static class BlankWarlock implements Warlock {
+    private static class PlainWarlock implements Warlock {
         @Override
         public Object doWithLock(ProceedingJoinPoint pjp) throws Throwable {
             return pjp.proceed();
+        }
+    }
+
+    private static class PlainWaitTimeoutHandler implements WaitTimeoutHandler {
+        @Override
+        public Object handle(ProceedingJoinPoint pjp, LockInfo lockInfo) throws Throwable {
+            MethodSignature signature = (MethodSignature) pjp.getSignature();
+            Method method = signature.getMethod();
+            throw new WarlockException("warlock wait timeout; timeout from " + method.getName());
         }
     }
 }

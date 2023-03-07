@@ -57,7 +57,7 @@ abstract class AbstractStandaloneWarlock implements Warlock {
                 //3. 执行业务代码
                 return pjp.proceed();
             } else {
-                return getLockInfo().getWaitTimeoutHandler().handle(pjp);
+                return getLockInfo().getWaitTimeoutHandler().handle(pjp, this.getLockInfo());
             }
         } finally {
             //4. 解锁

@@ -37,8 +37,9 @@ public @interface Waiting {
 
     /**
      * 当锁等待超时的处理策略
+     * 如果不使用, 则默认抛出异常
      *
      * @return WaitTimeoutHandler接口的实现类
      */
-    Class<? extends WaitTimeoutHandler> waitTimeoutHandler() default WaitTimeoutHandler.class;
+    Class<? extends WaitTimeoutHandler> waitTimeoutHandler();
 }
