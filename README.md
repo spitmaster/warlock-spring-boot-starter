@@ -1,5 +1,4 @@
 # warlock-spring-boot-starter
----
 
 ![Warlock](warlock_icon_2.png)
 
@@ -7,13 +6,12 @@ Lock for spring!
 
 warlock-spring-boot-starter is an annotation-driven concurrency tools library
 
-It is easily use in Spring application
+It is easy to use in Spring application
 
 Just using annotation on your method , the concurrency problem would be solved
 
 
 # Quick Start
----
 
 ## Requirements
 
