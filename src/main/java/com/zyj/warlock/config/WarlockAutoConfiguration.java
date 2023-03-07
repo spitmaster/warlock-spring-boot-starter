@@ -1,8 +1,8 @@
 package com.zyj.warlock.config;
 
 import com.zyj.warlock.aspect.WarlockAspect;
-import com.zyj.warlock.core.DefaultWarlockFactory;
-import com.zyj.warlock.core.WarlockFactory;
+import com.zyj.warlock.core.factory.DefaultWlockFactory;
+import com.zyj.warlock.core.factory.WlockFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -25,8 +25,8 @@ public class WarlockAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public WarlockAspect warlockAspect(WarlockFactory warlockFactory) {
-        return new WarlockAspect(warlockFactory);
+    public WarlockAspect warlockAspect(WlockFactory wlockFactory) {
+        return new WarlockAspect(wlockFactory);
     }
 
     /**
@@ -37,8 +37,8 @@ public class WarlockAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public WarlockFactory warlockFactory() {
-        return new DefaultWarlockFactory();
+    public WlockFactory warlockFactory() {
+        return new DefaultWlockFactory();
     }
 
 }

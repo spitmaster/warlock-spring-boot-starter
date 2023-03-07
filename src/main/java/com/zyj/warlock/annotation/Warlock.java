@@ -1,5 +1,6 @@
 package com.zyj.warlock.annotation;
 
+import com.zyj.warlock.enums.LockScope;
 import com.zyj.warlock.enums.LockType;
 
 import java.lang.annotation.ElementType;
@@ -16,7 +17,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Wlock {
+public @interface Warlock {
 
     /**
      * 锁的名字
@@ -33,6 +34,13 @@ public @interface Wlock {
      * @return 锁类型
      */
     LockType lockType() default LockType.REENTRANT;
+
+    /**
+     * 锁的作用域范围
+     *
+     * @return LockScope, 目前支持两种JVM单机 和 基于Redis的分布式锁
+     */
+    LockScope lockScope() default LockScope.STANDALONE;
 
     /**
      * Spring Expression Language (SpEL) expression

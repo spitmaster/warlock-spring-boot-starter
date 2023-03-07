@@ -1,6 +1,6 @@
 package com.zyj.warlock.aspect;
 
-import com.zyj.warlock.annotation.Wlock;
+import com.zyj.warlock.annotation.Warlock;
 import org.openjdk.jmh.infra.Blackhole;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +9,7 @@ public class AspectTestService {
 
     private int counter = 0;
 
-    @Wlock(name = "test1", key = "#id")
+    @Warlock(name = "test1", key = "#id")
     public void testWarlock(int id) {
         for (int i = 0; i < id; i++) {
             Blackhole.consumeCPU(i);//防止编译优化
@@ -29,7 +29,7 @@ public class AspectTestService {
         }
     }
 
-    @Wlock(name = "test1")
+    @Warlock(name = "test1")
     public void add10() {
         for (int i = 0; i < 100; i++) {
             counter++;

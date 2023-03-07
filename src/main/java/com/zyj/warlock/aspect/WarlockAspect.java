@@ -1,8 +1,8 @@
 package com.zyj.warlock.aspect;
 
-import com.zyj.warlock.annotation.Wlock;
-import com.zyj.warlock.core.Warlock;
-import com.zyj.warlock.core.WarlockFactory;
+import com.zyj.warlock.annotation.Warlock;
+import com.zyj.warlock.core.Wlock;
+import com.zyj.warlock.core.factory.WlockFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -17,18 +17,18 @@ import org.aspectj.lang.annotation.Aspect;
 @Aspect
 public class WarlockAspect {
 
-    private final WarlockFactory warlockFactory;
+    private final WlockFactory wlockFactory;
 
-    public WarlockAspect(WarlockFactory warlockFactory) {
-        this.warlockFactory = warlockFactory;
+    public WarlockAspect(WlockFactory wlockFactory) {
+        this.wlockFactory = wlockFactory;
     }
 
-    @Around(value = "@annotation(com.zyj.warlock.annotation.Wlock) && @annotation(wlock)")
-    public Object warlockPointcut(final ProceedingJoinPoint pjp, Wlock wlock) throws Throwable {
+    @Around(value = "@annotation(com.zyj.warlock.annotation.Warlock) && @annotation(warlock)")
+    public Object warlockPointcut(final ProceedingJoinPoint pjp, Warlock warlock) throws Throwable {
         //1. 构建warlock
-        Warlock warlock = warlockFactory.build(pjp, wlock);
+        Wlock wlock = wlockFactory.build(pjp, warlock);
         //2. 在锁的环境下执行业务代码
-        return warlock.doWithLock(pjp);
+        return wlock.doWithLock(pjp);
     }
 
 }

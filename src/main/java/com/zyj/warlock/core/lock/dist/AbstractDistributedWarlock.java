@@ -1,7 +1,7 @@
 package com.zyj.warlock.core.lock.dist;
 
 import com.zyj.warlock.core.LockInfo;
-import com.zyj.warlock.core.Warlock;
+import com.zyj.warlock.core.Wlock;
 import com.zyj.warlock.core.lock.DefaultWarlock;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.redisson.api.RLock;
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author zhouyijin
  */
-abstract class AbstractDistributedWarlock implements Warlock, DefaultWarlock {
+abstract class AbstractDistributedWarlock implements Wlock, DefaultWarlock {
 
     @Override
     public Object doWithLock(ProceedingJoinPoint pjp) throws Throwable {

@@ -3,12 +3,12 @@ package com.zyj.warlock.core;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 /**
- * 构造一个Warlock
+ * 构造一个Wlock
  * 用于在业务方法上下文中, 根据需求, 进行锁的操作
  *
  * @author zhouyijin
  */
-public interface Warlock {
+public interface Wlock {
 
     /**
      * 在锁的环境下执行业务函数

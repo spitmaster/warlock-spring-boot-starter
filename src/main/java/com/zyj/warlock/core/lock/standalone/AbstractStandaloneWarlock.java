@@ -1,6 +1,6 @@
 package com.zyj.warlock.core.lock.standalone;
 
-import com.zyj.warlock.core.Warlock;
+import com.zyj.warlock.core.Wlock;
 import com.zyj.warlock.core.lock.DefaultWarlock;
 import org.aspectj.lang.ProceedingJoinPoint;
 
@@ -15,7 +15,7 @@ import java.util.concurrent.locks.Lock;
  *
  * @author zhouyijin
  */
-abstract class AbstractStandaloneWarlock implements Warlock, DefaultWarlock {
+abstract class AbstractStandaloneWarlock implements Wlock, DefaultWarlock {
 
     @Override
     public Object doWithLock(ProceedingJoinPoint pjp) throws Throwable {

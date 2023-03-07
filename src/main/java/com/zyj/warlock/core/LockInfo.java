@@ -1,5 +1,6 @@
 package com.zyj.warlock.core;
 
+import com.zyj.warlock.annotation.Warlock;
 import com.zyj.warlock.enums.LockType;
 import com.zyj.warlock.handler.LeaseTimeoutHandler;
 import com.zyj.warlock.handler.WaitTimeoutHandler;
@@ -19,7 +20,7 @@ public class LockInfo {
      * 会在WarlockAspect中被组装
      * 由 com.zyj.warlock.annotation.Wlock#name() + SpEL表达式计算结果得到
      *
-     * @see com.zyj.warlock.annotation.Wlock
+     * @see Warlock
      * @see com.zyj.warlock.util.SpelExpressionUtil
      * @see com.zyj.warlock.aspect.WarlockAspect
      */
@@ -28,7 +29,7 @@ public class LockInfo {
     /**
      * Wlock 中指定的锁类型
      *
-     * @see com.zyj.warlock.annotation.Wlock
+     * @see Warlock
      */
     private LockType lockType;
 
@@ -36,7 +37,7 @@ public class LockInfo {
      * 尝试获取锁的时间
      * 超过该时间还未获得锁, 则调用自定义的接口处理, 如果未指定自定义处理的Handler处理, 如果没有指定handler则直接抛异常
      *
-     * @see com.zyj.warlock.annotation.Wlock
+     * @see Warlock
      * @see com.zyj.warlock.annotation.Waiting
      */
     private Duration waitTime;
@@ -50,7 +51,7 @@ public class LockInfo {
      * 锁超过租期时间的处理方式
      * Standalone的锁, 没有锁过租期的情况
      *
-     * @see com.zyj.warlock.annotation.Wlock
+     * @see Warlock
      * @see com.zyj.warlock.annotation.Leasing
      */
     private Duration leaseTime;

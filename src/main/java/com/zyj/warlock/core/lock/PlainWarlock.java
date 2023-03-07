@@ -1,6 +1,6 @@
 package com.zyj.warlock.core.lock;
 
-import com.zyj.warlock.core.Warlock;
+import com.zyj.warlock.core.Wlock;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 /**
@@ -8,7 +8,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
  *
  * @author zhouyijin
  */
-public enum PlainWarlock implements Warlock {
+public enum PlainWarlock implements Wlock {
     //单例
     INSTANCE;
 
