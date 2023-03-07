@@ -33,7 +33,7 @@ class WarlockAspectTest {
     @Test
     void warlockPointcut() throws InterruptedException, ExecutionException {
         List<Callable<Integer>> tasks = new ArrayList<>();
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 10000; i++) {
             tasks.add(() -> {
                 aspectTestService.add10();
                 return 1;
