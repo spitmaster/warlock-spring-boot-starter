@@ -29,7 +29,7 @@ public class StandaloneWlockFactory extends AbstractWarlockFactory implements Wl
         LockInfo lockInfo = buildLock(pjp, warlock);
 
         //2. 根据锁类型选择合适的锁
-        //According lock type decide what warlock should be used
+        //According lock type decide what wlock should be used
         Wlock wlock;
         switch (lockInfo.getLockType()) {
             case REENTRANT:

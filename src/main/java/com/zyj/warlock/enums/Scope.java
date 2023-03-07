@@ -14,7 +14,7 @@ public enum Scope {
     STANDALONE,
 
     /**
-     * 分布式集群
+     * 作用范围是分布式集群
      * 默认是基于Redis, 需要Redisson的依赖支持
      */
     DISTRIBUTED,
