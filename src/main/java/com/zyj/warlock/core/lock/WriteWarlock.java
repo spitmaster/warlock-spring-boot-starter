@@ -34,7 +34,7 @@ public class WriteWarlock implements Warlock {
         //1. 拿锁
         Pair<ReentrantReadWriteLock, AtomicInteger> lockPair = READ_WRITE_LOCK_MAP.compute(lockInfo.getLockKey(), (s, pair) -> {
             if (pair == null) {
-                //没有就初始化
+                //没有锁就初始化锁
                 pair = new ImmutablePair<>(new ReentrantReadWriteLock(), new AtomicInteger(0));
             }
             pair.getRight().incrementAndGet();
@@ -47,7 +47,7 @@ public class WriteWarlock implements Warlock {
             return bizFunc.doBiz();
         } finally {
             //4. 解锁
-            lockPair.getLeft().writeLock().lock();
+            lockPair.getLeft().writeLock().unlock();
             //5. 还锁
             READ_WRITE_LOCK_MAP.computeIfPresent(lockInfo.getLockKey(), (s, pair) -> {
                 int holdCount = pair.getRight().decrementAndGet();
