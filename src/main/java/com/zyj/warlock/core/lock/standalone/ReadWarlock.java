@@ -21,7 +21,7 @@ public class ReadWarlock extends AbstractStandaloneWarlock {
     }
 
     @Override
-    protected LockInfo getLockInfo() {
+    public LockInfo getLockInfo() {
         return this.lockInfo;
     }
 

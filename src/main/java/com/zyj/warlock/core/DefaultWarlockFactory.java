@@ -1,16 +1,21 @@
 package com.zyj.warlock.core;
 
+import com.zyj.warlock.annotation.Leasing;
 import com.zyj.warlock.annotation.Waiting;
 import com.zyj.warlock.annotation.Wlock;
+import com.zyj.warlock.core.lock.PlainWarlock;
 import com.zyj.warlock.core.lock.standalone.ReadWarlock;
 import com.zyj.warlock.core.lock.standalone.ReentrantWarlock;
 import com.zyj.warlock.core.lock.standalone.WriteWarlock;
-import com.zyj.warlock.exceptions.WarlockException;
+import com.zyj.warlock.handler.LeaseTimeoutHandler;
+import com.zyj.warlock.handler.PlainLeaseTimeoutHandler;
+import com.zyj.warlock.handler.PlainWaitTimeoutHandler;
 import com.zyj.warlock.handler.WaitTimeoutHandler;
 import com.zyj.warlock.util.SpelExpressionUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -23,9 +28,6 @@ import java.time.Duration;
  * @author zhouyijin
  */
 public class DefaultWarlockFactory implements WarlockFactory, ApplicationContextAware {
-
-    private static final Warlock PLAIN_WARLOCK = new PlainWarlock();
-    private static final PlainWaitTimeoutHandler PLAIN_WAIT_TIMEOUT_HANDLER = new PlainWaitTimeoutHandler();
 
     private ApplicationContext applicationContext;
 
@@ -53,7 +55,7 @@ public class DefaultWarlockFactory implements WarlockFactory, ApplicationContext
                 warlock = new WriteWarlock(lockInfo);
                 break;
             default:
-                warlock = PLAIN_WARLOCK;
+                warlock = PlainWarlock.INSTANCE;
                 break;
         }
         return warlock;
@@ -83,41 +85,40 @@ public class DefaultWarlockFactory implements WarlockFactory, ApplicationContext
         //2. 拿到lockType
         lockInfo.setLockType(wlock.lockType());
         //3. 获取等待时间
-        Duration waitTime = Duration.of(wlock.waiting().waitTime(), wlock.waiting().timeUnit().toChronoUnit());
+        Waiting waiting = wlock.waiting();
+        Duration waitTime = Duration.of(waiting.waitTime(), waiting.timeUnit().toChronoUnit());
         lockInfo.setWaitTime(waitTime);
+        lockInfo.setWaitTimeoutHandler(getWaitTimeoutHandler(waiting));
         //4. 获取等待时间
-        Duration leaseTime = Duration.of(wlock.leasing().leaseTime(), wlock.leasing().timeUnit().toChronoUnit());
+        Leasing leasing = wlock.leasing();
+        Duration leaseTime = Duration.of(leasing.leaseTime(), leasing.timeUnit().toChronoUnit());
         lockInfo.setLeaseTime(leaseTime);
+        lockInfo.setLeaseTimeoutHandler(getLeaseTimeoutHandler(leasing));
         //5. 返回锁信息
         return lockInfo;
     }
 
     private WaitTimeoutHandler getWaitTimeoutHandler(Waiting waiting) {
         Class<? extends WaitTimeoutHandler> waitTimeoutHandlerClass = waiting.waitTimeoutHandler();
-        if (waitTimeoutHandlerClass == null) {
-            return PLAIN_WAIT_TIMEOUT_HANDLER;
-        } else {
-            return applicationContext.getBean(waitTimeoutHandlerClass);
+        if (waitTimeoutHandlerClass != null && waitTimeoutHandlerClass != PlainWaitTimeoutHandler.class) {
+            ObjectProvider<? extends WaitTimeoutHandler> beanProvider = applicationContext.getBeanProvider(waitTimeoutHandlerClass);
+            WaitTimeoutHandler handler = beanProvider.getIfAvailable();
+            if (handler != null) {
+                return handler;
+            }
         }
+        return PlainWaitTimeoutHandler.INSTANCE;
     }
 
-
-    /**
-     * 空实现
-     */
-    private static class PlainWarlock implements Warlock {
-        @Override
-        public Object doWithLock(ProceedingJoinPoint pjp) throws Throwable {
-            return pjp.proceed();
+    private LeaseTimeoutHandler getLeaseTimeoutHandler(Leasing leasing) {
+        Class<? extends LeaseTimeoutHandler> leaseTimeoutHandlerClass = leasing.leaseTimeoutHandler();
+        if (leaseTimeoutHandlerClass != null && leaseTimeoutHandlerClass != PlainLeaseTimeoutHandler.class) {
+            ObjectProvider<? extends LeaseTimeoutHandler> beanProvider = applicationContext.getBeanProvider(leaseTimeoutHandlerClass);
+            LeaseTimeoutHandler handler = beanProvider.getIfAvailable();
+            if (handler != null) {
+                return handler;
+            }
         }
-    }
-
-    private static class PlainWaitTimeoutHandler implements WaitTimeoutHandler {
-        @Override
-        public Object handle(ProceedingJoinPoint pjp, LockInfo lockInfo) throws Throwable {
-            MethodSignature signature = (MethodSignature) pjp.getSignature();
-            Method method = signature.getMethod();
-            throw new WarlockException("warlock wait timeout; timeout from " + method.getName());
-        }
+        return PlainLeaseTimeoutHandler.INSTANCE;
     }
 }

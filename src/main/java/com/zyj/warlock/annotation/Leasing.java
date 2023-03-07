@@ -1,6 +1,7 @@
 package com.zyj.warlock.annotation;
 
 import com.zyj.warlock.handler.LeaseTimeoutHandler;
+import com.zyj.warlock.handler.PlainLeaseTimeoutHandler;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -39,5 +40,5 @@ public @interface Leasing {
      *
      * @return LeaseTimeoutHandler接口的实现类
      */
-    Class<? extends LeaseTimeoutHandler> leaseTimeoutHandler();
+    Class<? extends LeaseTimeoutHandler> leaseTimeoutHandler() default PlainLeaseTimeoutHandler.class;
 }

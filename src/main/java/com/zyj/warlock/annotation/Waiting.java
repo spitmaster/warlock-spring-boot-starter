@@ -1,5 +1,6 @@
 package com.zyj.warlock.annotation;
 
+import com.zyj.warlock.handler.PlainWaitTimeoutHandler;
 import com.zyj.warlock.handler.WaitTimeoutHandler;
 
 import java.lang.annotation.ElementType;
@@ -41,5 +42,5 @@ public @interface Waiting {
      *
      * @return WaitTimeoutHandler接口的实现类
      */
-    Class<? extends WaitTimeoutHandler> waitTimeoutHandler();
+    Class<? extends WaitTimeoutHandler> waitTimeoutHandler() default PlainWaitTimeoutHandler.class;
 }

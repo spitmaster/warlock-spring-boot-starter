@@ -29,7 +29,7 @@ public class WriteWarlock extends AbstractStandaloneWarlock {
     }
 
     @Override
-    protected LockInfo getLockInfo() {
+    public LockInfo getLockInfo() {
         return this.lockInfo;
     }
 

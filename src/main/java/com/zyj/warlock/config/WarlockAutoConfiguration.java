@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "warlock.enabled", matchIfMissing = true)
-//@EnableConfigurationProperties(WarlockProperties.class)
 public class WarlockAutoConfiguration {
 
     /**

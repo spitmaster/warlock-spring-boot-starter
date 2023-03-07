@@ -33,7 +33,7 @@ public class ReentrantWarlock extends AbstractStandaloneWarlock {
     }
 
     @Override
-    protected LockInfo getLockInfo() {
+    public LockInfo getLockInfo() {
         return this.lockInfo;
     }
 
