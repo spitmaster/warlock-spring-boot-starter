@@ -2,11 +2,19 @@ package com.zyj.warlock.config;
 
 import com.zyj.warlock.aspect.WarlockAspect;
 import com.zyj.warlock.core.factory.DefaultWlockFactory;
+import com.zyj.warlock.core.factory.DistributedWlockFactory;
+import com.zyj.warlock.core.factory.StandaloneWlockFactory;
 import com.zyj.warlock.core.factory.WlockFactory;
+import org.redisson.Redisson;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 /**
  * warlock的默认配置
@@ -35,10 +43,29 @@ public class WarlockAutoConfiguration {
      *
      * @return 构造warlock的工厂
      */
-    @Bean
+    @Bean("warlockFactory")
+    @Primary
     @ConditionalOnMissingBean
-    public WlockFactory warlockFactory() {
-        return new DefaultWlockFactory();
+    public WlockFactory warlockFactory(
+            @Qualifier("standaloneWlockFactory") @Autowired(required = true) StandaloneWlockFactory standaloneWlockFactory,
+            @Qualifier("distributedWlockFactory") @Autowired(required = false) DistributedWlockFactory distributedWlockFactory
+
+    ) {
+        return new DefaultWlockFactory(standaloneWlockFactory, distributedWlockFactory);
     }
 
+    @Bean("standaloneWlockFactory")
+    @ConditionalOnMissingBean
+    public StandaloneWlockFactory standaloneWlockFactory(BeanFactory beanFactory) {
+        //专门生成单机锁的工厂
+        return new StandaloneWlockFactory(beanFactory);
+    }
+
+    @Bean("distributedWlockFactory")
+    @ConditionalOnBean(Redisson.class)
+    @ConditionalOnMissingBean
+    public DistributedWlockFactory distributedWlockFactory(BeanFactory beanFactory, Redisson redisson) {
+        //专门生成分布式锁的工厂
+        return new DistributedWlockFactory(beanFactory, redisson);
+    }
 }
