@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class AspectTestService {
 
+    private int counter = 0;
+
     @Wlock(name = "test1", key = "#id")
     public void testWarlock(int id) {
         for (int i = 0; i < id; i++) {
@@ -25,6 +27,17 @@ public class AspectTestService {
         for (int i = 0; i < id; i++) {
             Blackhole.consumeCPU(i);//防止编译优化
         }
+    }
+
+    @Wlock(name = "test1")
+    public void add10() {
+        for (int i = 0; i < 100; i++) {
+            counter++;
+        }
+    }
+
+    public int getCounter(){
+        return counter;
     }
 
 }
