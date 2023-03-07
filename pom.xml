@@ -9,7 +9,7 @@
     </parent>
 
     <groupId>com.zyj</groupId>
-    <artifactId>wlock-spring-boot-starter</artifactId>
+    <artifactId>warlock-spring-boot-starter</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
