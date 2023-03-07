@@ -13,7 +13,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>wlock-spring-boot-starter</name>
+    <name>warlock-spring-boot-starter</name>
     <url>https://gitee.com/spitman</url>
 
     <properties>
@@ -49,7 +49,7 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- 自动装配redisson -->
+        <!-- 分布式锁基于Redisson -->
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
