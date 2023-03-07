@@ -2,8 +2,8 @@ package com.zyj.warlock.core.lock;
 
 import com.zyj.warlock.annotation.Warlock;
 import com.zyj.warlock.enums.LockType;
-import com.zyj.warlock.handler.LeaseTimeoutHandler;
-import com.zyj.warlock.handler.WaitTimeoutHandler;
+import com.zyj.warlock.handler.lock.LockLeaseTimeoutHandler;
+import com.zyj.warlock.handler.lock.LockWaitTimeoutHandler;
 import lombok.Data;
 
 import java.time.Duration;
@@ -48,7 +48,7 @@ public class LockInfo {
      * @see Warlock
      * @see com.zyj.warlock.annotation.Waiting
      */
-    private WaitTimeoutHandler waitTimeoutHandler;
+    private LockWaitTimeoutHandler waitTimeoutHandler;
 
     /**
      * 锁超过租期时间的处理方式
@@ -65,5 +65,5 @@ public class LockInfo {
      * @see Warlock
      * @see com.zyj.warlock.annotation.Leasing
      */
-    private LeaseTimeoutHandler leaseTimeoutHandler;
+    private LockLeaseTimeoutHandler lockLeaseTimeoutHandler;
 }

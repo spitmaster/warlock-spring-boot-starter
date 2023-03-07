@@ -1,4 +1,4 @@
-package com.zyj.warlock.handler;
+package com.zyj.warlock.handler.lock;
 
 import com.zyj.warlock.core.lock.LockInfo;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -8,7 +8,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
  *
  * @author zhouyijin
  */
-public interface LeaseTimeoutHandler {
+public interface LockLeaseTimeoutHandler {
 
     /**
      * 在业务代码执行完之后, 检查如果锁租期超时的时候触发的回调方法

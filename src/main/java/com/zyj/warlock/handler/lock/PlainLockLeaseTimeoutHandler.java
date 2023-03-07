@@ -1,4 +1,4 @@
-package com.zyj.warlock.handler;
+package com.zyj.warlock.handler.lock;
 
 import com.zyj.warlock.core.lock.LockInfo;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -8,7 +8,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
  *
  * @author zhouyijin
  */
-public enum PlainLeaseTimeoutHandler implements LeaseTimeoutHandler {
+public enum PlainLockLeaseTimeoutHandler implements LockLeaseTimeoutHandler {
     //单例
     INSTANCE;
 

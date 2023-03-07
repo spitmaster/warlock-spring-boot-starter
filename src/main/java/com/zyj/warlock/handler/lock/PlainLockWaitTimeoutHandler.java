@@ -1,4 +1,4 @@
-package com.zyj.warlock.handler;
+package com.zyj.warlock.handler.lock;
 
 import com.zyj.warlock.core.lock.LockInfo;
 import com.zyj.warlock.exceptions.WarlockException;
@@ -11,7 +11,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
  *
  * @author zhouyijin
  */
-public enum PlainWaitTimeoutHandler implements WaitTimeoutHandler {
+public enum PlainLockWaitTimeoutHandler implements LockWaitTimeoutHandler {
     //单例
     INSTANCE;
 

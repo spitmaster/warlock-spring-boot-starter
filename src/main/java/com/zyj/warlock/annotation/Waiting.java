@@ -1,7 +1,7 @@
 package com.zyj.warlock.annotation;
 
-import com.zyj.warlock.handler.PlainWaitTimeoutHandler;
-import com.zyj.warlock.handler.WaitTimeoutHandler;
+import com.zyj.warlock.handler.lock.PlainLockWaitTimeoutHandler;
+import com.zyj.warlock.handler.lock.LockWaitTimeoutHandler;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -42,5 +42,5 @@ public @interface Waiting {
      *
      * @return WaitTimeoutHandler接口的实现类
      */
-    Class<? extends WaitTimeoutHandler> waitTimeoutHandler() default PlainWaitTimeoutHandler.class;
+    Class<? extends LockWaitTimeoutHandler> waitTimeoutHandler() default PlainLockWaitTimeoutHandler.class;
 }

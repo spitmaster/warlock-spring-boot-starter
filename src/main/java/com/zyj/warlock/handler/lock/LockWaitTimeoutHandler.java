@@ -1,4 +1,4 @@
-package com.zyj.warlock.handler;
+package com.zyj.warlock.handler.lock;
 
 import com.zyj.warlock.core.lock.LockInfo;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -8,7 +8,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
  *
  * @author zhouyijin
  */
-public interface WaitTimeoutHandler {
+public interface LockWaitTimeoutHandler {
 
     /**
      * 当锁等待超时的时候触发的回调方法

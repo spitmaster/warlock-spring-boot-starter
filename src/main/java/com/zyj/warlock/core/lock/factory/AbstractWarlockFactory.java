@@ -4,10 +4,10 @@ import com.zyj.warlock.annotation.Leasing;
 import com.zyj.warlock.annotation.Waiting;
 import com.zyj.warlock.annotation.Warlock;
 import com.zyj.warlock.core.lock.LockInfo;
-import com.zyj.warlock.handler.LeaseTimeoutHandler;
-import com.zyj.warlock.handler.PlainLeaseTimeoutHandler;
-import com.zyj.warlock.handler.PlainWaitTimeoutHandler;
-import com.zyj.warlock.handler.WaitTimeoutHandler;
+import com.zyj.warlock.handler.lock.LockLeaseTimeoutHandler;
+import com.zyj.warlock.handler.lock.PlainLockLeaseTimeoutHandler;
+import com.zyj.warlock.handler.lock.PlainLockWaitTimeoutHandler;
+import com.zyj.warlock.handler.lock.LockWaitTimeoutHandler;
 import com.zyj.warlock.util.JoinPointUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.beans.factory.BeanFactory;
@@ -53,7 +53,7 @@ abstract class AbstractWarlockFactory {
         Leasing leasing = warlock.leasing();
         Duration leaseTime = Duration.of(leasing.leaseTime(), leasing.timeUnit().toChronoUnit());
         lockInfo.setLeaseTime(leaseTime);
-        lockInfo.setLeaseTimeoutHandler(getLeaseTimeoutHandler(leasing));
+        lockInfo.setLockLeaseTimeoutHandler(getLeaseTimeoutHandler(leasing));
         //5. 返回锁信息
         return lockInfo;
     }
@@ -64,16 +64,16 @@ abstract class AbstractWarlockFactory {
      * @param waiting 切面上的注解
      * @return Spring环境中的handler
      */
-    protected WaitTimeoutHandler getWaitTimeoutHandler(Waiting waiting) {
-        Class<? extends WaitTimeoutHandler> waitTimeoutHandlerClass = waiting.waitTimeoutHandler();
-        if (waitTimeoutHandlerClass != null && waitTimeoutHandlerClass != PlainWaitTimeoutHandler.class) {
-            ObjectProvider<? extends WaitTimeoutHandler> beanProvider = getBeanFactory().getBeanProvider(waitTimeoutHandlerClass);
-            WaitTimeoutHandler handler = beanProvider.getIfAvailable();
+    protected LockWaitTimeoutHandler getWaitTimeoutHandler(Waiting waiting) {
+        Class<? extends LockWaitTimeoutHandler> waitTimeoutHandlerClass = waiting.waitTimeoutHandler();
+        if (waitTimeoutHandlerClass != null && waitTimeoutHandlerClass != PlainLockWaitTimeoutHandler.class) {
+            ObjectProvider<? extends LockWaitTimeoutHandler> beanProvider = getBeanFactory().getBeanProvider(waitTimeoutHandlerClass);
+            LockWaitTimeoutHandler handler = beanProvider.getIfAvailable();
             if (handler != null) {
                 return handler;
             }
         }
-        return PlainWaitTimeoutHandler.INSTANCE;
+        return PlainLockWaitTimeoutHandler.INSTANCE;
     }
 
     /**
@@ -82,16 +82,16 @@ abstract class AbstractWarlockFactory {
      * @param leasing 切面上的注解
      * @return Spring环境中的handler
      */
-    protected LeaseTimeoutHandler getLeaseTimeoutHandler(Leasing leasing) {
-        Class<? extends LeaseTimeoutHandler> leaseTimeoutHandlerClass = leasing.leaseTimeoutHandler();
-        if (leaseTimeoutHandlerClass != null && leaseTimeoutHandlerClass != PlainLeaseTimeoutHandler.class) {
-            ObjectProvider<? extends LeaseTimeoutHandler> beanProvider = getBeanFactory().getBeanProvider(leaseTimeoutHandlerClass);
-            LeaseTimeoutHandler handler = beanProvider.getIfAvailable();
+    protected LockLeaseTimeoutHandler getLeaseTimeoutHandler(Leasing leasing) {
+        Class<? extends LockLeaseTimeoutHandler> leaseTimeoutHandlerClass = leasing.leaseTimeoutHandler();
+        if (leaseTimeoutHandlerClass != null && leaseTimeoutHandlerClass != PlainLockLeaseTimeoutHandler.class) {
+            ObjectProvider<? extends LockLeaseTimeoutHandler> beanProvider = getBeanFactory().getBeanProvider(leaseTimeoutHandlerClass);
+            LockLeaseTimeoutHandler handler = beanProvider.getIfAvailable();
             if (handler != null) {
                 return handler;
             }
         }
-        return PlainLeaseTimeoutHandler.INSTANCE;
+        return PlainLockLeaseTimeoutHandler.INSTANCE;
     }
 
 }
