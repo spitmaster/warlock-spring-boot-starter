@@ -14,8 +14,8 @@ import java.lang.annotation.Target;
  *
  * @author zhouyijin
  */
-@Target(value = {ElementType.METHOD})
-@Retention(value = RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface Wlock {
 
     /**
@@ -43,5 +43,18 @@ public @interface Wlock {
      */
     String key() default "";
 
+    /**
+     * 等待加锁的策略
+     *
+     * @return 等待超时策略
+     */
+    Waiting waiting() default @Waiting();
+
+//    /**
+//     * 加锁超时的处理策略
+//     *
+//     * @return 加锁超时策略
+//     */
+//    Leasing leasing() default @Leasing();
 
 }
