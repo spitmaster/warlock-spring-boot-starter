@@ -46,8 +46,8 @@ public class DefaultWarlockFactory implements WarlockFactory {
      */
     private static class BlankWarlock implements Warlock {
         @Override
-        public Object doWithLock(BizFunction bizFunc) throws Throwable {
-            return bizFunc.doBiz();
+        public Object doWithLock(ProceedingJoinPoint pjp) throws Throwable {
+            return pjp.proceed();
         }
     }
 }

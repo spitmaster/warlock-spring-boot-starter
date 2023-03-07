@@ -4,6 +4,7 @@ import com.zyj.warlock.core.LockInfo;
 import com.zyj.warlock.core.Warlock;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.aspectj.lang.ProceedingJoinPoint;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,7 +31,7 @@ public class WriteWarlock implements Warlock {
     }
 
     @Override
-    public Object doWithLock(BizFunction bizFunc) throws Throwable {
+    public Object doWithLock(ProceedingJoinPoint pjp) throws Throwable {
         //1. 拿锁
         Pair<ReentrantReadWriteLock, AtomicInteger> lockPair = READ_WRITE_LOCK_MAP.compute(lockInfo.getLockKey(), (s, pair) -> {
             if (pair == null) {
@@ -44,7 +45,7 @@ public class WriteWarlock implements Warlock {
         lockPair.getLeft().writeLock().lock();
         try {
             //3. 执行业务代码
-            return bizFunc.doBiz();
+            return pjp.proceed();
         } finally {
             //4. 解锁
             lockPair.getLeft().writeLock().unlock();

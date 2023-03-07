@@ -2,6 +2,7 @@ package com.zyj.warlock.core;
 
 import com.zyj.warlock.annotation.Wlock;
 import com.zyj.warlock.enums.LockType;
+import com.zyj.warlock.handler.WaitTimeoutHandler;
 import com.zyj.warlock.util.SpelExpressionUtil;
 import lombok.Data;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -43,6 +44,11 @@ public class LockInfo {
      * @see com.zyj.warlock.annotation.Waiting
      */
     private Duration waitTime;
+
+    /**
+     * 等待超时之后的处理策略
+     */
+    private WaitTimeoutHandler waitTimeoutHandler;
 
     /**
      * 锁超过租期时间的处理方式

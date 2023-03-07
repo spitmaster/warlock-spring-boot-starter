@@ -28,7 +28,7 @@ public class WarlockAspect {
         //1. 构建warlock
         Warlock warlock = warlockFactory.build(pjp, wlock);
         //2. 在锁的环境下执行业务代码
-        return warlock.doWithLock(pjp::proceed);
+        return warlock.doWithLock(pjp);
     }
 
 }

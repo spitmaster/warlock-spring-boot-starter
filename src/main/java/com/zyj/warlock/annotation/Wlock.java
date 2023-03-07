@@ -50,11 +50,11 @@ public @interface Wlock {
      */
     Waiting waiting() default @Waiting();
 
-//    /**
-//     * 加锁超时的处理策略
-//     *
-//     * @return 加锁超时策略
-//     */
-//    Leasing leasing() default @Leasing();
+    /**
+     * 加锁超时的处理策略
+     *
+     * @return 加锁超时策略
+     */
+    Leasing leasing() default @Leasing();
 
 }
