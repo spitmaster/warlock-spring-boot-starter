@@ -11,4 +11,4 @@
 
 lock for spring!
 
-![Warlock](warlock_icon.webp)
+![Warlock](warlock_icon_2.png)
