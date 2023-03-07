@@ -1,5 +1,7 @@
 package com.zyj.warlock.annotation;
 
+import com.zyj.warlock.handler.LeaseTimeoutHandler;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -31,4 +33,11 @@ public @interface Leasing {
      */
     TimeUnit timeUnit() default TimeUnit.SECONDS;
 
+    /**
+     * 当你的业务代码耗时太长, 以至于最后释放锁的时候, 发现锁已经过期了, 这时候的处理handler
+     * 如果不指定, 则不会做任务操作
+     *
+     * @return LeaseTimeoutHandler接口的实现类
+     */
+    Class<? extends LeaseTimeoutHandler> leaseTimeoutHandler();
 }

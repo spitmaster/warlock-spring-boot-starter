@@ -1,4 +1,4 @@
-package com.zyj.warlock.core.lock;
+package com.zyj.warlock.core.lock.standalone;
 
 import com.zyj.warlock.core.LockInfo;
 import org.apache.commons.lang3.tuple.Pair;

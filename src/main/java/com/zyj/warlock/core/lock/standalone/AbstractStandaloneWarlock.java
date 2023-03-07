@@ -1,9 +1,8 @@
-package com.zyj.warlock.core.lock;
+package com.zyj.warlock.core.lock.standalone;
 
-import com.zyj.warlock.core.LockInfo;
 import com.zyj.warlock.core.Warlock;
+import com.zyj.warlock.core.lock.DefaultWarlock;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.springframework.lang.NonNull;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +15,7 @@ import java.util.concurrent.locks.Lock;
  *
  * @author zhouyijin
  */
-abstract class AbstractStandaloneWarlock implements Warlock {
+abstract class AbstractStandaloneWarlock implements Warlock, DefaultWarlock {
 
     @Override
     public Object doWithLock(ProceedingJoinPoint pjp) throws Throwable {
@@ -68,16 +67,6 @@ abstract class AbstractStandaloneWarlock implements Warlock {
             returnLock();
         }
     }
-
-
-    /**
-     * 锁的信息
-     *
-     * @return Duration对象, 不能为空
-     */
-    @NonNull
-    protected abstract LockInfo getLockInfo();
-
 
     /**
      * 子类实现获取锁的规则

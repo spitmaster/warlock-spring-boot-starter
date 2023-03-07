@@ -2,9 +2,9 @@ package com.zyj.warlock.core;
 
 import com.zyj.warlock.annotation.Waiting;
 import com.zyj.warlock.annotation.Wlock;
-import com.zyj.warlock.core.lock.ReadWarlock;
-import com.zyj.warlock.core.lock.ReentrantWarlock;
-import com.zyj.warlock.core.lock.WriteWarlock;
+import com.zyj.warlock.core.lock.standalone.ReadWarlock;
+import com.zyj.warlock.core.lock.standalone.ReentrantWarlock;
+import com.zyj.warlock.core.lock.standalone.WriteWarlock;
 import com.zyj.warlock.exceptions.WarlockException;
 import com.zyj.warlock.handler.WaitTimeoutHandler;
 import com.zyj.warlock.util.SpelExpressionUtil;
