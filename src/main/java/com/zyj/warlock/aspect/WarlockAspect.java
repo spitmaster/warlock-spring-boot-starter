@@ -3,8 +3,6 @@ package com.zyj.warlock.aspect;
 import com.zyj.warlock.annotation.Wlock;
 import com.zyj.warlock.core.Warlock;
 import com.zyj.warlock.core.WarlockFactory;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -16,12 +14,14 @@ import org.aspectj.lang.annotation.Aspect;
  *
  * @author zhouyijin
  */
-@Slf4j
 @Aspect
-@AllArgsConstructor
 public class WarlockAspect {
 
     private final WarlockFactory warlockFactory;
+
+    public WarlockAspect(WarlockFactory warlockFactory) {
+        this.warlockFactory = warlockFactory;
+    }
 
     @Around(value = "@annotation(com.zyj.warlock.annotation.Wlock) && @annotation(wlock)")
     public Object warlockPointcut(final ProceedingJoinPoint pjp, Wlock wlock) throws Throwable {
