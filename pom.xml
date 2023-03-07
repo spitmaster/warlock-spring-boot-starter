@@ -94,4 +94,15 @@
         </dependency>
 
     </dependencies>
+
+
+    <build>
+        <testResources>
+            <!--单元测试时引用src/test/resources下的资源文件-->
+            <testResource>
+                <!--单元测特有的配置, 就放在这里-->
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
+    </build>
 </project>

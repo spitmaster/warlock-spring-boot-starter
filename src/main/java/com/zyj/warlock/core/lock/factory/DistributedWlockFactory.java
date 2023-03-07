@@ -2,13 +2,13 @@ package com.zyj.warlock.core.lock.factory;
 
 import com.zyj.warlock.annotation.Warlock;
 import com.zyj.warlock.core.lock.LockInfo;
-import com.zyj.warlock.core.lock.Wlock;
 import com.zyj.warlock.core.lock.PlainWarlock;
+import com.zyj.warlock.core.lock.Wlock;
 import com.zyj.warlock.core.lock.dist.DistributedReadWlock;
 import com.zyj.warlock.core.lock.dist.DistributedReentrantWlock;
 import com.zyj.warlock.core.lock.dist.DistributedWriteWlock;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.BeanFactory;
 
 /**
@@ -20,11 +20,11 @@ import org.springframework.beans.factory.BeanFactory;
 public class DistributedWlockFactory extends AbstractWarlockFactory implements WlockFactory {
 
     private final BeanFactory beanFactory;
-    private final Redisson redisson;
+    private final RedissonClient redissonClient;
 
-    public DistributedWlockFactory(BeanFactory beanFactory, Redisson redisson) {
+    public DistributedWlockFactory(BeanFactory beanFactory, RedissonClient redissonClient) {
         this.beanFactory = beanFactory;
-        this.redisson = redisson;
+        this.redissonClient = redissonClient;
     }
 
     @Override
@@ -36,13 +36,13 @@ public class DistributedWlockFactory extends AbstractWarlockFactory implements W
         Wlock wlock;
         switch (lockInfo.getLockType()) {
             case REENTRANT:
-                wlock = new DistributedReentrantWlock(redisson, lockInfo);
+                wlock = new DistributedReentrantWlock(redissonClient, lockInfo);
                 break;
             case READ:
-                wlock = new DistributedReadWlock(redisson, lockInfo);
+                wlock = new DistributedReadWlock(redissonClient, lockInfo);
                 break;
             case WRITE:
-                wlock = new DistributedWriteWlock(redisson, lockInfo);
+                wlock = new DistributedWriteWlock(redissonClient, lockInfo);
                 break;
             default:
                 wlock = PlainWarlock.INSTANCE;

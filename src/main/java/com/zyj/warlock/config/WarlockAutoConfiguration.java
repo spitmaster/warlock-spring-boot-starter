@@ -6,6 +6,7 @@ import com.zyj.warlock.core.lock.factory.DistributedWlockFactory;
 import com.zyj.warlock.core.lock.factory.StandaloneWlockFactory;
 import com.zyj.warlock.core.lock.factory.WlockFactory;
 import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -62,10 +63,10 @@ public class WarlockAutoConfiguration {
     }
 
     @Bean("distributedWlockFactory")
-    @ConditionalOnBean(Redisson.class)
+    @ConditionalOnBean(RedissonClient.class)
     @ConditionalOnMissingBean
-    public DistributedWlockFactory distributedWlockFactory(BeanFactory beanFactory, Redisson redisson) {
+    public DistributedWlockFactory distributedWlockFactory(BeanFactory beanFactory, RedissonClient redissonClient) {
         //专门生成分布式锁的工厂
-        return new DistributedWlockFactory(beanFactory, redisson);
+        return new DistributedWlockFactory(beanFactory, redissonClient);
     }
 }

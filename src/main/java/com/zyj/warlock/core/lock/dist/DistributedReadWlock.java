@@ -1,8 +1,8 @@
 package com.zyj.warlock.core.lock.dist;
 
 import com.zyj.warlock.core.lock.LockInfo;
-import org.redisson.Redisson;
 import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 
 
 /**
@@ -12,11 +12,11 @@ import org.redisson.api.RLock;
  */
 public class DistributedReadWlock extends AbstractDistributedWlock {
 
-    private Redisson redisson;
+    private RedissonClient redissonClient;
     private LockInfo lockInfo;
 
-    public DistributedReadWlock(Redisson redisson, LockInfo lockInfo) {
-        this.redisson = redisson;
+    public DistributedReadWlock(RedissonClient redissonClient, LockInfo lockInfo) {
+        this.redissonClient = redissonClient;
         this.lockInfo = lockInfo;
     }
 
@@ -27,6 +27,6 @@ public class DistributedReadWlock extends AbstractDistributedWlock {
 
     @Override
     protected RLock getRLock() {
-        return redisson.getReadWriteLock(lockInfo.getLockKey()).readLock();
+        return redissonClient.getReadWriteLock(lockInfo.getLockKey()).readLock();
     }
 }
