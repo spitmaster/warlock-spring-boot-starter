@@ -44,6 +44,9 @@ public class LockInfo {
 
     /**
      * 等待超时之后的处理策略
+     *
+     * @see Warlock
+     * @see com.zyj.warlock.annotation.Waiting
      */
     private WaitTimeoutHandler waitTimeoutHandler;
 
@@ -58,6 +61,9 @@ public class LockInfo {
 
     /**
      * 执行完业务代码之后, 检查发现锁的租期已经过了, 就会回调这个handler
+     *
+     * @see Warlock
+     * @see com.zyj.warlock.annotation.Leasing
      */
     private LeaseTimeoutHandler leaseTimeoutHandler;
 }
