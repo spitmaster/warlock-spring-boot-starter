@@ -1,13 +1,11 @@
 package com.zyj.warlock.core.lock;
 
 import com.zyj.warlock.core.LockInfo;
-import com.zyj.warlock.core.Warlock;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.aspectj.lang.ProceedingJoinPoint;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -15,7 +13,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  * @author zhouyijin
  */
-public class WriteWarlock implements Warlock {
+public class WriteWarlock extends AbstractStandaloneWarlock {
 
     /**
      * ReadWarlock 与 WriteWarlock 共用同一个Map进行锁的管理
@@ -31,33 +29,32 @@ public class WriteWarlock implements Warlock {
     }
 
     @Override
-    public Object doWithLock(ProceedingJoinPoint pjp) throws Throwable {
-        //1. 拿锁
+    protected LockInfo getLockInfo() {
+        return this.lockInfo;
+    }
+
+    @Override
+    protected Lock getLock() {
         Pair<ReentrantReadWriteLock, AtomicInteger> lockPair = READ_WRITE_LOCK_MAP.compute(lockInfo.getLockKey(), (s, pair) -> {
             if (pair == null) {
                 //没有锁就初始化锁
-                pair = new ImmutablePair<>(new ReentrantReadWriteLock(), new AtomicInteger(0));
+                pair = Pair.of(new ReentrantReadWriteLock(), new AtomicInteger(0));
             }
             pair.getRight().incrementAndGet();
             return pair;
         });
-        //2. 上锁
-        lockPair.getLeft().writeLock().lock();
-        try {
-            //3. 执行业务代码
-            return pjp.proceed();
-        } finally {
-            //4. 解锁
-            lockPair.getLeft().writeLock().unlock();
-            //5. 还锁
-            READ_WRITE_LOCK_MAP.computeIfPresent(lockInfo.getLockKey(), (s, pair) -> {
-                int holdCount = pair.getRight().decrementAndGet();
-                if (holdCount <= 0) {
-                    //返回null,相当于把这个value给移除了
-                    return null;
-                }
-                return pair;
-            });
-        }
+        return lockPair.getLeft().writeLock();
+    }
+
+    @Override
+    protected void returnLock() {
+        READ_WRITE_LOCK_MAP.computeIfPresent(lockInfo.getLockKey(), (s, pair) -> {
+            int holdCount = pair.getRight().decrementAndGet();
+            if (holdCount <= 0) {
+                //返回null,相当于把这个value给移除了
+                return null;
+            }
+            return pair;
+        });
     }
 }
