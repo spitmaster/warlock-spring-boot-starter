@@ -6,16 +6,16 @@ import org.redisson.api.RLock;
 
 
 /**
- * 基于redisson实现的写锁
+ * 基于redisson实现的读锁
  *
  * @author zhouyijin
  */
-public class DistributedWriteWarlock extends AbstractDistributedWarlock {
+public class DistributedReadWlock extends AbstractDistributedWlock {
 
     private Redisson redisson;
     private LockInfo lockInfo;
 
-    public DistributedWriteWarlock(Redisson redisson, LockInfo lockInfo) {
+    public DistributedReadWlock(Redisson redisson, LockInfo lockInfo) {
         this.redisson = redisson;
         this.lockInfo = lockInfo;
     }
@@ -27,6 +27,6 @@ public class DistributedWriteWarlock extends AbstractDistributedWarlock {
 
     @Override
     protected RLock getRLock() {
-        return redisson.getReadWriteLock(lockInfo.getLockKey()).writeLock();
+        return redisson.getReadWriteLock(lockInfo.getLockKey()).readLock();
     }
 }

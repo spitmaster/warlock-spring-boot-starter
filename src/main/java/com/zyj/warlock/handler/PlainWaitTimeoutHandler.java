@@ -2,10 +2,8 @@ package com.zyj.warlock.handler;
 
 import com.zyj.warlock.core.LockInfo;
 import com.zyj.warlock.exceptions.WarlockException;
+import com.zyj.warlock.util.JoinPointUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.reflect.MethodSignature;
-
-import java.lang.reflect.Method;
 
 
 /**
@@ -19,8 +17,6 @@ public enum PlainWaitTimeoutHandler implements WaitTimeoutHandler {
 
     @Override
     public Object handle(ProceedingJoinPoint pjp, LockInfo lockInfo) throws Throwable {
-        MethodSignature signature = (MethodSignature) pjp.getSignature();
-        Method method = signature.getMethod();
-        throw new WarlockException("warlock wait timeout; timeout from " + method.getName());
+        throw new WarlockException("warlock wait timeout; timeout from " + JoinPointUtil.methodName(pjp));
     }
 }

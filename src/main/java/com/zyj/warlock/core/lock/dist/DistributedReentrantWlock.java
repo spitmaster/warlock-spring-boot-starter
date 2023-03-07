@@ -10,12 +10,12 @@ import org.redisson.api.RLock;
  *
  * @author zhouyijin
  */
-public class DistributedReentrantWarlock extends AbstractDistributedWarlock {
+public class DistributedReentrantWlock extends AbstractDistributedWlock {
 
     private Redisson redisson;
     private LockInfo lockInfo;
 
-    public DistributedReentrantWarlock(Redisson redisson, LockInfo lockInfo) {
+    public DistributedReentrantWlock(Redisson redisson, LockInfo lockInfo) {
         this.redisson = redisson;
         this.lockInfo = lockInfo;
     }

@@ -8,11 +8,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 基于JUC实现的可重入Warlock
+ * 基于JUC实现的可重入Wlock
  *
  * @author zhouyijin
  */
-public class ReentrantWarlock extends AbstractStandaloneWarlock {
+public class ReentrantWlock extends AbstractStandaloneWlock {
 
     /**
      * 一个锁的池子
@@ -28,7 +28,7 @@ public class ReentrantWarlock extends AbstractStandaloneWarlock {
      */
     private final LockInfo lockInfo;
 
-    public ReentrantWarlock(LockInfo lockInfo) {
+    public ReentrantWlock(LockInfo lockInfo) {
         this.lockInfo = lockInfo;
     }
 

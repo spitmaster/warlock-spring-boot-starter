@@ -8,9 +8,9 @@ import com.zyj.warlock.handler.LeaseTimeoutHandler;
 import com.zyj.warlock.handler.PlainLeaseTimeoutHandler;
 import com.zyj.warlock.handler.PlainWaitTimeoutHandler;
 import com.zyj.warlock.handler.WaitTimeoutHandler;
+import com.zyj.warlock.util.JoinPointUtil;
 import com.zyj.warlock.util.SpelExpressionUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.ObjectProvider;
 
@@ -39,8 +39,7 @@ abstract class AbstractWarlockFactory {
         // 获取方法参数值
         Object[] arguments = pjp.getArgs();
         // 获取method
-        MethodSignature signature = (MethodSignature) pjp.getSignature();
-        Method method = signature.getMethod();
+        Method method = JoinPointUtil.method(pjp);
 
         String lockName = warlock.name();
         // 获取spel表达式

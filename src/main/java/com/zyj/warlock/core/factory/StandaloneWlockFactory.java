@@ -1,21 +1,14 @@
 package com.zyj.warlock.core.factory;
 
-import com.zyj.warlock.annotation.Leasing;
-import com.zyj.warlock.annotation.Waiting;
 import com.zyj.warlock.annotation.Warlock;
 import com.zyj.warlock.core.LockInfo;
 import com.zyj.warlock.core.Wlock;
 import com.zyj.warlock.core.lock.PlainWarlock;
-import com.zyj.warlock.core.lock.standalone.ReadWarlock;
-import com.zyj.warlock.core.lock.standalone.ReentrantWarlock;
-import com.zyj.warlock.core.lock.standalone.WriteWarlock;
-import com.zyj.warlock.util.SpelExpressionUtil;
+import com.zyj.warlock.core.lock.standalone.ReadWlock;
+import com.zyj.warlock.core.lock.standalone.ReentrantWlock;
+import com.zyj.warlock.core.lock.standalone.WriteWlock;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.BeanFactory;
-
-import java.lang.reflect.Method;
-import java.time.Duration;
 
 /**
  * 生产单机使用的Warlock的Factory实现
@@ -24,7 +17,7 @@ import java.time.Duration;
  */
 public class StandaloneWlockFactory extends AbstractWarlockFactory implements WlockFactory {
 
-    private BeanFactory beanFactory;
+    private final BeanFactory beanFactory;
 
     public StandaloneWlockFactory(BeanFactory beanFactory) {
         this.beanFactory = beanFactory;
@@ -40,13 +33,13 @@ public class StandaloneWlockFactory extends AbstractWarlockFactory implements Wl
         Wlock wlock;
         switch (lockInfo.getLockType()) {
             case REENTRANT:
-                wlock = new ReentrantWarlock(lockInfo);
+                wlock = new ReentrantWlock(lockInfo);
                 break;
             case READ:
-                wlock = new ReadWarlock(lockInfo);
+                wlock = new ReadWlock(lockInfo);
                 break;
             case WRITE:
-                wlock = new WriteWarlock(lockInfo);
+                wlock = new WriteWlock(lockInfo);
                 break;
             default:
                 wlock = PlainWarlock.INSTANCE;
