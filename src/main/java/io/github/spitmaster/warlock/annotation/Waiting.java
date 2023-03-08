@@ -21,9 +21,9 @@ public @interface Waiting {
     /**
      * 尝试获取锁的时间
      * 超过该时间还未获得锁, 则调用自定义的接口处理, 如果未指定自定义处理的Handler处理, 如果没有指定handler则直接抛异常
-     * waitTime < 0 表示一直等待
-     * waitTime = 0 表示获取不到锁, 直接失败
-     * waitTime > 0 表示尝试等待一段时间, 获取不到锁再失败
+     * waitTime less than 0 表示一直等待
+     * waitTime equal 0 表示获取不到锁, 直接失败
+     * waitTime big than 0 表示尝试等待一段时间, 获取不到锁再失败
      *
      * @return waitTime
      */
