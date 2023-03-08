@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.zyj.warlock.config.WarlockAutoConfiguration
+  config.io.github.spitmaster.warlock.WarlockAutoConfiguration
