@@ -5,7 +5,7 @@ import io.github.spitmaster.warlock.enums.Scope;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import io.github.spitmaster.warlock.util.JoinPointUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
 
 /**
  * 默认的Wmutex工厂实现类
@@ -14,18 +14,17 @@ import org.redisson.Redisson;
  */
 public class DefaultWmutexFactory implements WmutexFactory {
 
-    private final Redisson redisson;
+    private final RedissonClient redissonClient;
 
-    public DefaultWmutexFactory(Redisson redisson) {
-        this.redisson = redisson;
+    public DefaultWmutexFactory(RedissonClient redissonClient) {
+        this.redissonClient = redissonClient;
     }
 
     @Override
     public Wmutex build(ProceedingJoinPoint pjp, Wsemaphore wsemaphore) {
         int permits = wsemaphore.permits();
         if (permits < 1) {
-            //并发数小于1就没有意义了, 直接不对其进行处理
-            return PlainWmutex.INSTANCE;
+            throw new WarlockException("Wsemaphore permits cannot below than 1; method =" + JoinPointUtil.methodName(pjp));
         }
         Scope scope = wsemaphore.scope();
         String semaphoreKey = wsemaphore.name() + JoinPointUtil.parseSpEL(pjp, wsemaphore.key());
@@ -35,28 +34,12 @@ public class DefaultWmutexFactory implements WmutexFactory {
                 return new StandaloneWmutex(semaphoreKey, wsemaphore);
             case DISTRIBUTED:
                 //分布式信号量
-                if (redisson == null) {
+                if (redissonClient == null) {
                     //如果项目没有使用Redisson,则不支持使用分布式锁
                     throw new WarlockException("Not supported lock scope: DISTRIBUTED ; please use redisson client to active this function; method: " + JoinPointUtil.methodName(pjp));
                 }
-                return new DistributedWmutex(semaphoreKey, wsemaphore, redisson);
-            default:
-                break;
+                return new DistributedWmutex(semaphoreKey, wsemaphore, redissonClient);
         }
-        throw new WarlockException("Wrong semaphore scope; scope=" + wsemaphore.scope());
-    }
-
-    /**
-     * 不需要信号量处理的话, 使用这个单例
-     */
-    private enum PlainWmutex implements Wmutex {
-        //单例
-        INSTANCE;
-
-        @Override
-        public Object doBizWithSemaphore(ProceedingJoinPoint pjp, Wsemaphore wsemaphore) throws Throwable {
-            //什么都不做的信号量处理
-            return pjp.proceed();
-        }
+        throw new WarlockException("Wrong semaphore scope; scope =" + wsemaphore.scope());
     }
 }

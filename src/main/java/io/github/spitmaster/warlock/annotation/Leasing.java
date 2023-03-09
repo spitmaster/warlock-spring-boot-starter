@@ -1,6 +1,6 @@
 package io.github.spitmaster.warlock.annotation;
 
-import io.github.spitmaster.warlock.handler.lock.LockLeaseTimeoutHandler;
+import io.github.spitmaster.warlock.handler.lock.LeaseTimeoutHandler;
 import io.github.spitmaster.warlock.handler.lock.PlainLockLeaseTimeoutHandler;
 
 import java.lang.annotation.ElementType;
@@ -40,5 +40,5 @@ public @interface Leasing {
      *
      * @return LeaseTimeoutHandler接口的实现类
      */
-    Class<? extends LockLeaseTimeoutHandler> leaseTimeoutHandler() default PlainLockLeaseTimeoutHandler.class;
+    Class<? extends LeaseTimeoutHandler> leaseTimeoutHandler() default PlainLockLeaseTimeoutHandler.class;
 }

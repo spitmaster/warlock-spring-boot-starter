@@ -7,7 +7,7 @@ import org.springframework.lang.NonNull;
  *
  * @author zhouyijin
  */
-public interface DefaultWlock {
+public interface IWlock {
 
     /**
      * 锁的信息

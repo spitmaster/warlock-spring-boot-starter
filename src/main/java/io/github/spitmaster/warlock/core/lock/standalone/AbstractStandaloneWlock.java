@@ -1,7 +1,7 @@
 package io.github.spitmaster.warlock.core.lock.standalone;
 
+import io.github.spitmaster.warlock.core.lock.IWlock;
 import io.github.spitmaster.warlock.core.lock.Wlock;
-import io.github.spitmaster.warlock.core.lock.DefaultWlock;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 import java.time.Duration;
@@ -15,7 +15,7 @@ import java.util.concurrent.locks.Lock;
  *
  * @author zhouyijin
  */
-abstract class AbstractStandaloneWlock implements Wlock, DefaultWlock {
+abstract class AbstractStandaloneWlock implements Wlock, IWlock {
 
     @Override
     public Object doWithLock(ProceedingJoinPoint pjp) throws Throwable {
@@ -56,7 +56,7 @@ abstract class AbstractStandaloneWlock implements Wlock, DefaultWlock {
                 //3. 执行业务代码
                 return pjp.proceed();
             } else {
-                return getLockInfo().getWaitTimeoutHandler().handle(pjp, this.getLockInfo());
+                return getLockInfo().getWaitTimeoutHandler().handle(pjp);
             }
         } finally {
             //4. 解锁

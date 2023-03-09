@@ -4,10 +4,10 @@ import io.github.spitmaster.warlock.annotation.Leasing;
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.Warlock;
 import io.github.spitmaster.warlock.core.lock.LockInfo;
-import io.github.spitmaster.warlock.handler.lock.LockLeaseTimeoutHandler;
+import io.github.spitmaster.warlock.handler.lock.LeaseTimeoutHandler;
 import io.github.spitmaster.warlock.handler.lock.PlainLockLeaseTimeoutHandler;
 import io.github.spitmaster.warlock.handler.lock.PlainLockWaitTimeoutHandler;
-import io.github.spitmaster.warlock.handler.lock.LockWaitTimeoutHandler;
+import io.github.spitmaster.warlock.handler.lock.WaitTimeoutHandler;
 import io.github.spitmaster.warlock.util.JoinPointUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.beans.factory.BeanFactory;
@@ -64,11 +64,11 @@ abstract class AbstractWarlockFactory {
      * @param waiting 切面上的注解
      * @return Spring环境中的handler
      */
-    protected LockWaitTimeoutHandler getWaitTimeoutHandler(Waiting waiting) {
-        Class<? extends LockWaitTimeoutHandler> waitTimeoutHandlerClass = waiting.waitTimeoutHandler();
+    protected WaitTimeoutHandler getWaitTimeoutHandler(Waiting waiting) {
+        Class<? extends WaitTimeoutHandler> waitTimeoutHandlerClass = waiting.waitTimeoutHandler();
         if (waitTimeoutHandlerClass != null && waitTimeoutHandlerClass != PlainLockWaitTimeoutHandler.class) {
-            ObjectProvider<? extends LockWaitTimeoutHandler> beanProvider = getBeanFactory().getBeanProvider(waitTimeoutHandlerClass);
-            LockWaitTimeoutHandler handler = beanProvider.getIfAvailable();
+            ObjectProvider<? extends WaitTimeoutHandler> beanProvider = getBeanFactory().getBeanProvider(waitTimeoutHandlerClass);
+            WaitTimeoutHandler handler = beanProvider.getIfAvailable();
             if (handler != null) {
                 return handler;
             }
@@ -82,11 +82,11 @@ abstract class AbstractWarlockFactory {
      * @param leasing 切面上的注解
      * @return Spring环境中的handler
      */
-    protected LockLeaseTimeoutHandler getLeaseTimeoutHandler(Leasing leasing) {
-        Class<? extends LockLeaseTimeoutHandler> leaseTimeoutHandlerClass = leasing.leaseTimeoutHandler();
+    protected LeaseTimeoutHandler getLeaseTimeoutHandler(Leasing leasing) {
+        Class<? extends LeaseTimeoutHandler> leaseTimeoutHandlerClass = leasing.leaseTimeoutHandler();
         if (leaseTimeoutHandlerClass != null && leaseTimeoutHandlerClass != PlainLockLeaseTimeoutHandler.class) {
-            ObjectProvider<? extends LockLeaseTimeoutHandler> beanProvider = getBeanFactory().getBeanProvider(leaseTimeoutHandlerClass);
-            LockLeaseTimeoutHandler handler = beanProvider.getIfAvailable();
+            ObjectProvider<? extends LeaseTimeoutHandler> beanProvider = getBeanFactory().getBeanProvider(leaseTimeoutHandlerClass);
+            LeaseTimeoutHandler handler = beanProvider.getIfAvailable();
             if (handler != null) {
                 return handler;
             }

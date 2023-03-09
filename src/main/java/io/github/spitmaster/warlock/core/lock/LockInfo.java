@@ -1,12 +1,12 @@
 package io.github.spitmaster.warlock.core.lock;
 
-import io.github.spitmaster.warlock.annotation.Warlock;
-import io.github.spitmaster.warlock.enums.LockType;
-import io.github.spitmaster.warlock.handler.lock.LockLeaseTimeoutHandler;
-import io.github.spitmaster.warlock.handler.lock.LockWaitTimeoutHandler;
 import io.github.spitmaster.warlock.annotation.Leasing;
 import io.github.spitmaster.warlock.annotation.Waiting;
+import io.github.spitmaster.warlock.annotation.Warlock;
 import io.github.spitmaster.warlock.aspect.WarlockAspect;
+import io.github.spitmaster.warlock.enums.LockType;
+import io.github.spitmaster.warlock.handler.lock.LeaseTimeoutHandler;
+import io.github.spitmaster.warlock.handler.lock.WaitTimeoutHandler;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
 import lombok.Data;
 
@@ -52,7 +52,7 @@ public class LockInfo {
      * @see Warlock
      * @see Waiting
      */
-    private LockWaitTimeoutHandler waitTimeoutHandler;
+    private WaitTimeoutHandler waitTimeoutHandler;
 
     /**
      * 锁超过租期时间的处理方式
@@ -69,5 +69,5 @@ public class LockInfo {
      * @see Warlock
      * @see Leasing
      */
-    private LockLeaseTimeoutHandler lockLeaseTimeoutHandler;
+    private LeaseTimeoutHandler lockLeaseTimeoutHandler;
 }

@@ -1,6 +1,5 @@
 package io.github.spitmaster.warlock.handler.lock;
 
-import io.github.spitmaster.warlock.core.lock.LockInfo;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 /**
@@ -8,12 +7,12 @@ import org.aspectj.lang.ProceedingJoinPoint;
  *
  * @author zhouyijin
  */
-public enum PlainLockLeaseTimeoutHandler implements LockLeaseTimeoutHandler {
+public enum PlainLockLeaseTimeoutHandler implements LeaseTimeoutHandler {
     //单例
     INSTANCE;
 
     @Override
-    public Object handle(ProceedingJoinPoint pjp, LockInfo lockInfo) throws Throwable {
+    public Object handle(ProceedingJoinPoint pjp) throws Throwable {
         //空实现
         return null;
     }
