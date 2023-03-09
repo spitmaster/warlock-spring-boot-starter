@@ -23,8 +23,6 @@
         </license>
     </licenses>
 
-
-    <!--开发者信息-->
     <developers>
         <developer>
             <id>zhouyijin</id>
@@ -38,10 +36,10 @@
         </developer>
     </developers>
 
-    <!--项目在github或其它托管平台的地址-->
     <scm>
         <connection>https://github.com/spitmaster/warlock-spring-boot-starter.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:spitmaster/warlock-spring-boot-starter.git</developerConnection>
+        <developerConnection>scm:git:ssh://git@github.com:spitmaster/warlock-spring-boot-starter.git
+        </developerConnection>
         <url>https://github.com/spitmaster/warlock-spring-boot-starter</url>
     </scm>
 
@@ -53,37 +51,28 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.20</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
-
-        <!-- autoconfigure模块必须的依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
-        <!-- 专门给@ConfigurationProperties 生成 META-INF/spring-autoconfigure-metadata.properties文件 -->
-        <!-- 方便调用方填配置项的时候, IDE会自动提示 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
-
-        <!-- 分布式锁基于Redisson -->
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
             <version>3.11.6</version>
-            <!--<version>3.20.0</version>-->
             <optional>true</optional>
         </dependency>
 
@@ -121,22 +110,21 @@
             <version>1.33</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>3.11.6</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-
 
     <build>
         <testResources>
-            <!--单元测试时引用src/test/resources下的资源文件-->
             <testResource>
-                <!--单元测特有的配置, 就放在这里-->
                 <directory>src/test/resources</directory>
             </testResource>
         </testResources>
     </build>
-
-
-
 
     <profiles>
         <profile>
@@ -145,12 +133,11 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <build>
-                <!--发布到中央SNAPSHOT仓库插件-->
                 <plugins>
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.7</version>
+                        <version>1.6.13</version>
                         <extensions>true</extensions>
                         <configuration>
                             <serverId>ossrh</serverId>
@@ -159,7 +146,6 @@
                         </configuration>
                     </plugin>
 
-                    <!--生成源码插件-->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
@@ -174,16 +160,15 @@
                         </executions>
                     </plugin>
 
-                    <!--生成API文档插件-->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>2.9.1</version>
                         <configuration>
                             <aggregate>true</aggregate>
-                            <charset>UTF-8</charset><!-- utf-8读取文件 -->
-                            <encoding>UTF-8</encoding><!-- utf-8进行编码代码 -->
-                            <docencoding>UTF-8</docencoding><!-- utf-8进行编码文档 -->
+                            <charset>UTF-8</charset>
+                            <encoding>UTF-8</encoding>
+                            <docencoding>UTF-8</docencoding>
                         </configuration>
                         <executions>
                             <execution>
@@ -195,7 +180,6 @@
                         </executions>
                     </plugin>
 
-                    <!--gpg插件-->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
@@ -213,7 +197,6 @@
 
                 </plugins>
             </build>
-
             <distributionManagement>
                 <snapshotRepository>
                     <id>ossrh</id>
@@ -225,6 +208,6 @@
                 </repository>
             </distributionManagement>
         </profile>
-
     </profiles>
+
 </project>
