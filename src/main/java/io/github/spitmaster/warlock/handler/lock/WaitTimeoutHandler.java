@@ -16,6 +16,6 @@ public interface WaitTimeoutHandler {
      * @return 替代原来的业务方法的返回值
      * @throws Throwable pjp操作可能会抛出的异常
      */
-    Object handle(ProceedingJoinPoint pjp) throws Throwable;
+    Object handleWaitTimeout(ProceedingJoinPoint pjp) throws Throwable;
 
 }

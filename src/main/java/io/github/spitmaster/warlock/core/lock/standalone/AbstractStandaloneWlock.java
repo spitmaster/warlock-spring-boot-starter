@@ -28,7 +28,7 @@ abstract class AbstractStandaloneWlock implements Wlock {
                 //3. 执行业务代码
                 return pjp.proceed();
             } else {
-                return getLockInfo().getWaitTimeoutHandler().handle(pjp);
+                return getLockInfo().getWaitTimeoutHandler().handleWaitTimeout(pjp);
             }
         } finally {
             //4. 解锁

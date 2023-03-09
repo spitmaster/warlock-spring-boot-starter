@@ -40,7 +40,7 @@ public class StandaloneWmutex implements Wmutex {
                 //3. 执行业务代码
                 return pjp.proceed();
             } else {
-                return semaphoreInfo.getWaitTimeoutHandler().handle(pjp);
+                return semaphoreInfo.getWaitTimeoutHandler().handleWaitTimeout(pjp);
             }
         } finally {
             //4. 归还permit

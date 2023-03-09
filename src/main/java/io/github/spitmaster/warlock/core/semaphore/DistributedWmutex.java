@@ -38,7 +38,7 @@ public class DistributedWmutex implements Wmutex {
                 result = pjp.proceed();
             } else {
                 //没获取到permit, 那么说明超时了, 调用回调
-                result = semaphoreInfo.getWaitTimeoutHandler().handle(pjp);
+                result = semaphoreInfo.getWaitTimeoutHandler().handleWaitTimeout(pjp);
             }
         } finally {
             //4. 归还permit
@@ -46,7 +46,7 @@ public class DistributedWmutex implements Wmutex {
                 boolean released = semaphore.tryRelease(permitId);
                 if (!released) {
                     //5. 如果没有释放成功, 说明业务执行超时了, 因为这个permitId已经自动过期了, 执行超时处理
-                    Object handleResult = semaphoreInfo.getLeaseTimeoutHandler().handle(pjp);
+                    Object handleResult = semaphoreInfo.getLeaseTimeoutHandler().handleLeaseTimeout(pjp);
                     if (handleResult != null) {
                         //超时处理有结果则替换原来的result
                         result = handleResult;

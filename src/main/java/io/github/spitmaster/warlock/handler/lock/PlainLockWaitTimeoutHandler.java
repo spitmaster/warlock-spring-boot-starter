@@ -15,7 +15,7 @@ public enum PlainLockWaitTimeoutHandler implements WaitTimeoutHandler {
     INSTANCE;
 
     @Override
-    public Object handle(ProceedingJoinPoint pjp) throws Throwable {
+    public Object handleWaitTimeout(ProceedingJoinPoint pjp) throws Throwable {
         throw new WarlockException("warlock wait timeout; timeout from " + JoinPointUtil.methodName(pjp));
     }
 }

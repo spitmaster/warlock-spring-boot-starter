@@ -16,5 +16,5 @@ public interface LeaseTimeoutHandler {
      * @return 如果返回null, 则继续使用业务代码的返回值, 如果返回值不为空, 则替代原来的业务方法的返回值
      * @throws Throwable pjp操作可能会抛出的异常
      */
-    Object handle(ProceedingJoinPoint pjp) throws Throwable;
+    Object handleLeaseTimeout(ProceedingJoinPoint pjp) throws Throwable;
 }

@@ -32,7 +32,7 @@ abstract class AbstractDistributedWlock implements Wlock {
                 //3. 执行业务代码
                 result = pjp.proceed();
             } else {
-                result = getLockInfo().getWaitTimeoutHandler().handle(pjp);
+                result = getLockInfo().getWaitTimeoutHandler().handleWaitTimeout(pjp);
             }
         } finally {
             //4. 解锁
@@ -44,7 +44,7 @@ abstract class AbstractDistributedWlock implements Wlock {
                     //获取锁成功, 但是现在已经不持有锁了, 说明锁超时了, 或者超时之后被其他线程获取到
                     //此时不需要解锁
                     //但是需要回调超时的handler
-                    Object leaseTimeoutHandleResult = getLockInfo().getLockLeaseTimeoutHandler().handle(pjp);
+                    Object leaseTimeoutHandleResult = getLockInfo().getLockLeaseTimeoutHandler().handleLeaseTimeout(pjp);
                     if (leaseTimeoutHandleResult != null) {
                         result = leaseTimeoutHandleResult;
                     }
