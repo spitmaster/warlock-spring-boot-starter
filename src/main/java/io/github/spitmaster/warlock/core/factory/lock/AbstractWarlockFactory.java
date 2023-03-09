@@ -46,7 +46,7 @@ abstract class AbstractWarlockFactory extends AbstractFactory {
                 .skipNulls()
                 .join(
                         List.of(
-                                "warlock:",
+                                "warlock",
                                 warlock.name(),
                                 JoinPointUtil.parseSpEL(pjp, warlock.key())
                         )

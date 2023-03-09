@@ -59,7 +59,7 @@ public class DefaultWmutexFactory extends AbstractFactory implements WmutexFacto
                 .skipNulls()
                 .join(
                         List.of(
-                                "warlock:",
+                                "wsemaphore",
                                 wsemaphore.name(),
                                 JoinPointUtil.parseSpEL(pjp, wsemaphore.key())
                         )
