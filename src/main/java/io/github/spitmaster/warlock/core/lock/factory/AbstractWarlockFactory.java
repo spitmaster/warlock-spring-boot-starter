@@ -40,7 +40,7 @@ abstract class AbstractWarlockFactory {
          * construct a lockkey that indicate a unique lock
          * this lock would be used in Warlock.beforeBiz and Warlock.afterBiz and Warlock.except
          */
-        String lockKey = warlock.name() + JoinPointUtil.parseSpEL(pjp, warlock.key());
+        String lockKey = "warlock:" + warlock.name() + JoinPointUtil.parseSpEL(pjp, warlock.key());
 
         lockInfo.setLockKey(lockKey);
         //2. 拿到lockType

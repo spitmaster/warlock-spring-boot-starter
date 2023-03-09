@@ -21,7 +21,7 @@ import java.time.Duration;
 public class LockInfo {
     /**
      * 锁的唯一标识
-     * 会在WarlockAspect中被组装
+     * 会在 io.github.spitmaster.warlock.core.lock.factory.AbstractWarlockFactory#buildLock(org.aspectj.lang.ProceedingJoinPoint, io.github.spitmaster.warlock.annotation.Warlock)中被组装
      * 由 io.github.spitmaster.warlock.annotation.Warlock#name() + SpEL表达式计算结果得到
      *
      * @see Warlock

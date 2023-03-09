@@ -1,6 +1,5 @@
 package io.github.spitmaster.warlock.core.lock.dist;
 
-import io.github.spitmaster.warlock.core.lock.IWlock;
 import io.github.spitmaster.warlock.core.lock.LockInfo;
 import io.github.spitmaster.warlock.core.lock.Wlock;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author zhouyijin
  */
-abstract class AbstractDistributedWlock implements Wlock, IWlock {
+abstract class AbstractDistributedWlock implements Wlock {
 
     @Override
     public Object doWithLock(ProceedingJoinPoint pjp) throws Throwable {

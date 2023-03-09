@@ -1,6 +1,7 @@
 package io.github.spitmaster.warlock.core.lock;
 
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.springframework.lang.NonNull;
 
 /**
  * 构造一个Wlock
@@ -18,4 +19,12 @@ public interface Wlock {
      * @throws Throwable 业务方法可能抛出的异常
      */
     Object doWithLock(ProceedingJoinPoint pjp) throws Throwable;
+
+    /**
+     * 锁的信息
+     *
+     * @return LockInfo对象, 不能为空
+     */
+    @NonNull
+    LockInfo getLockInfo();
 }
