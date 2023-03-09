@@ -49,7 +49,7 @@ public @interface Wsemaphore {
      *
      * @return 允许并发数
      */
-    int permits() default 0;
+    int permits();
 
     /**
      * 等待信号量的策略
