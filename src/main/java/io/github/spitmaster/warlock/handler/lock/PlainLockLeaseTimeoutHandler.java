@@ -12,8 +12,8 @@ public enum PlainLockLeaseTimeoutHandler implements LeaseTimeoutHandler {
     INSTANCE;
 
     @Override
-    public Object handleLeaseTimeout(ProceedingJoinPoint pjp) throws Throwable {
-        //空实现
-        return null;
+    public Object handleLeaseTimeout(ProceedingJoinPoint pjp, Object result) throws Throwable {
+        //空实现, 原样返回函数执行结果
+        return result;
     }
 }

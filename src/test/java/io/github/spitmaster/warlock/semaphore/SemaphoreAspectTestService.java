@@ -43,9 +43,9 @@ public class SemaphoreAspectTestService implements WaitTimeoutHandler, LeaseTime
     }
 
     @Override
-    public Object handleLeaseTimeout(ProceedingJoinPoint pjp) throws Throwable {
+    public Object handleLeaseTimeout(ProceedingJoinPoint pjp, Object result) throws Throwable {
         System.out.println("aaaaaaaaaa lease timeout");
-        return null;
+        return result;
     }
 
     @Override

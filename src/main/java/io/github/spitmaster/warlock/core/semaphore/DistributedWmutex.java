@@ -26,7 +26,7 @@ public class DistributedWmutex implements Wmutex {
         //1. 获取信号量
         RPermitExpirableSemaphore semaphore = getSemaphore();
         String permitId = null;
-        Object result;
+        Object result = null;
         try {
             //2. 获取permit
             permitId = semaphore.tryAcquire(
@@ -46,11 +46,8 @@ public class DistributedWmutex implements Wmutex {
                 boolean released = semaphore.tryRelease(permitId);
                 if (!released) {
                     //5. 如果没有释放成功, 说明业务执行超时了, 因为这个permitId已经自动过期了, 执行超时处理
-                    Object handleResult = semaphoreInfo.getLeaseTimeoutHandler().handleLeaseTimeout(pjp);
-                    if (handleResult != null) {
-                        //超时处理有结果则替换原来的result
-                        result = handleResult;
-                    }
+                    //替换掉原来的返回值
+                    result = semaphoreInfo.getLeaseTimeoutHandler().handleLeaseTimeout(pjp, result);
                 }
             }
         }

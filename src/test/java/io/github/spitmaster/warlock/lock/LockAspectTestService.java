@@ -64,9 +64,9 @@ public class LockAspectTestService implements WaitTimeoutHandler, LeaseTimeoutHa
     }
 
     @Override
-    public Object handleLeaseTimeout(ProceedingJoinPoint pjp) throws Throwable {
+    public Object handleLeaseTimeout(ProceedingJoinPoint pjp, Object result) throws Throwable {
         System.out.println("aaaaaaaa lease timeout");
-        return null;
+        return result;
     }
 
     @Override
