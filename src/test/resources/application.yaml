@@ -1,18 +1,25 @@
-redis:
-  #?????
-  database: 0
-  host: 127.0.0.1
-  port: 6379
-  password:
-  jedis:
-    pool:
-      #?????
-      max-active: 8
-      #????????(???????)
-      max-wait: -1
-      #????
-      max-idle: 8
-      #????
-      min-idle: 0
-      #??????
-  timeout: 10000
+spring:
+  redis:
+    # 连接超时时间
+    timeout: 10000
+
+    # 单机
+    host: 127.0.0.1
+    port: 6379
+
+    # 集群
+    # cluster:
+    #   nodes: 10.210.13.203:6381,10.210.13.203:6382,10.210.13.203:6383,10.210.13.203:6384,10.210.13.203:6385,10.210.13.203:6386
+    #   maxRedirects: 3
+
+    # 连接池
+    lettuce:
+      pool:
+        # 最大连接数
+        max-active: 8
+        # 最大阻塞等待时间(负数表示没限制)
+        max-wait: -1
+        # 最小空闲
+        min-idle: 0
+        # 最大空闲
+        max-idle: 8

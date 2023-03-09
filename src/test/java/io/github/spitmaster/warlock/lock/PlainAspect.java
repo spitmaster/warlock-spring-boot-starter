@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 @Component
 public class PlainAspect {
 
-    @Around(value = "@annotation(io.github.spitmaster.warlock.aspect.PlainAspect.WBenchmark) && @annotation(w)")
+    @Around(value = "@annotation(io.github.spitmaster.warlock.lock.PlainAspect.WBenchmark) && @annotation(w)")
     public Object warlockPointcut(final ProceedingJoinPoint pjp, WBenchmark w) throws Throwable {
         //什么额外的操作都不做
         return pjp.proceed();
