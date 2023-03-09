@@ -2,7 +2,7 @@ package io.github.spitmaster.warlock.aspect;
 
 import io.github.spitmaster.warlock.annotation.Warlock;
 import io.github.spitmaster.warlock.core.lock.Wlock;
-import io.github.spitmaster.warlock.core.lock.factory.WlockFactory;
+import io.github.spitmaster.warlock.core.factory.lock.WlockFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

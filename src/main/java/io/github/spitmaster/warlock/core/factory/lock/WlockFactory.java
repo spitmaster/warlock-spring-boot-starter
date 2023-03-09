@@ -1,4 +1,4 @@
-package io.github.spitmaster.warlock.core.lock.factory;
+package io.github.spitmaster.warlock.core.factory.lock;
 
 import io.github.spitmaster.warlock.annotation.Warlock;
 import io.github.spitmaster.warlock.core.lock.Wlock;

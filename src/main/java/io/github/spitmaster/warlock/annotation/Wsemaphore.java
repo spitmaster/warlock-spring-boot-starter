@@ -46,7 +46,7 @@ public @interface Wsemaphore {
 
     /**
      * 允许同时并发的线程数量,
-     * 若小于1, 则不起作用
+     * 不允许小于1
      *
      * @return 允许并发数
      */

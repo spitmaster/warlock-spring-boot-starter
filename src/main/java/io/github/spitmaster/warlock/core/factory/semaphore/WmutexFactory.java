@@ -1,6 +1,7 @@
-package io.github.spitmaster.warlock.core.semaphore;
+package io.github.spitmaster.warlock.core.factory.semaphore;
 
 import io.github.spitmaster.warlock.annotation.Wsemaphore;
+import io.github.spitmaster.warlock.core.semaphore.Wmutex;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 /**

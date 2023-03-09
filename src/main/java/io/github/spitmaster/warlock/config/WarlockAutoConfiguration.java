@@ -1,10 +1,10 @@
 package io.github.spitmaster.warlock.config;
 
 import io.github.spitmaster.warlock.aspect.WarlockAspect;
-import io.github.spitmaster.warlock.core.lock.factory.DefaultWlockFactory;
-import io.github.spitmaster.warlock.core.lock.factory.DistributedWlockFactory;
-import io.github.spitmaster.warlock.core.lock.factory.StandaloneWlockFactory;
-import io.github.spitmaster.warlock.core.lock.factory.WlockFactory;
+import io.github.spitmaster.warlock.core.factory.lock.DefaultWlockFactory;
+import io.github.spitmaster.warlock.core.factory.lock.DistributedWlockFactory;
+import io.github.spitmaster.warlock.core.factory.lock.StandaloneWlockFactory;
+import io.github.spitmaster.warlock.core.factory.lock.WlockFactory;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;

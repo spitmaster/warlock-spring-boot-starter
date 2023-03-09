@@ -1,4 +1,4 @@
-package io.github.spitmaster.warlock.core.lock.factory;
+package io.github.spitmaster.warlock.core.factory.lock;
 
 import io.github.spitmaster.warlock.annotation.Warlock;
 import io.github.spitmaster.warlock.core.lock.LockInfo;
@@ -30,10 +30,9 @@ public class DistributedWlockFactory extends AbstractWarlockFactory implements W
     @Override
     public Wlock build(ProceedingJoinPoint pjp, Warlock warlock) {
         //1. 构造锁信息
-        LockInfo lockInfo = buildLock(pjp, warlock);
+        LockInfo lockInfo = buildLockInfo(pjp, warlock);
         //2. 根据锁类型选择合适的锁
         //According lock type decide what wlock should be used
-        Wlock wlock;
         switch (lockInfo.getLockType()) {
             case REENTRANT:
                 return new DistributedReentrantWlock(redissonClient, lockInfo);

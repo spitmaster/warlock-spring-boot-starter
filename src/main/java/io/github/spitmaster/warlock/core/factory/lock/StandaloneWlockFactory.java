@@ -1,4 +1,4 @@
-package io.github.spitmaster.warlock.core.lock.factory;
+package io.github.spitmaster.warlock.core.factory.lock;
 
 import io.github.spitmaster.warlock.annotation.Warlock;
 import io.github.spitmaster.warlock.core.lock.LockInfo;
@@ -26,7 +26,7 @@ public class StandaloneWlockFactory extends AbstractWarlockFactory implements Wl
     @Override
     public Wlock build(ProceedingJoinPoint pjp, Warlock warlock) {
         //1. 构造锁
-        LockInfo lockInfo = buildLock(pjp, warlock);
+        LockInfo lockInfo = buildLockInfo(pjp, warlock);
 
         //2. 根据锁类型选择合适的锁
         //According lock type decide what wlock should be used

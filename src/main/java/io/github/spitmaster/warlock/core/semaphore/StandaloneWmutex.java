@@ -1,11 +1,11 @@
 package io.github.spitmaster.warlock.core.semaphore;
 
-import io.github.spitmaster.warlock.annotation.Wsemaphore;
 import org.apache.commons.lang3.tuple.Pair;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -22,36 +22,41 @@ public class StandaloneWmutex implements Wmutex {
      */
     private static final ConcurrentHashMap<String, Pair<Semaphore, AtomicInteger>> SEMAPHORE_MAP = new ConcurrentHashMap<>();
 
-    private final String semaphoreKey;
-    private final Wsemaphore wsemaphore;
+    private final SemaphoreInfo semaphoreInfo;
 
-    public StandaloneWmutex(String semaphoreKey, Wsemaphore wsemaphore) {
-        this.semaphoreKey = semaphoreKey;
-        this.wsemaphore = wsemaphore;
+    public StandaloneWmutex(SemaphoreInfo semaphoreInfo) {
+        this.semaphoreInfo = semaphoreInfo;
     }
 
     @Override
-    public Object doBizWithSemaphore(ProceedingJoinPoint pjp, Wsemaphore wsemaphore) throws Throwable {
+    public Object doBizWithSemaphore(ProceedingJoinPoint pjp) throws Throwable {
         //1. 懒加载信号量对象
         Semaphore semaphore = getSemaphore();
-        //2. 尝试获取1个permit
-        semaphore.acquire();
+        boolean acquired = false;
         try {
-            //3. 执行业务代码
-            return pjp.proceed();
+            //2. 尝试获取permit
+            acquired = semaphore.tryAcquire(semaphoreInfo.getWaitTime().toMillis(), TimeUnit.MILLISECONDS);
+            if (acquired) {
+                //3. 执行业务代码
+                return pjp.proceed();
+            } else {
+                return semaphoreInfo.getWaitTimeoutHandler().handle(pjp);
+            }
         } finally {
-            //4. 释放信号量
-            semaphore.release();
-            //5. holdCount-1, 如果没人用这个信号量就会被释放
+            //4. 归还permit
+            if (acquired) {
+                semaphore.release();
+            }
+            //5. 归还信号量
             returnSemaphore();
         }
     }
 
     protected Semaphore getSemaphore() {
-        Pair<Semaphore, AtomicInteger> lockPair = SEMAPHORE_MAP.compute(semaphoreKey, (s, pair) -> {
+        Pair<Semaphore, AtomicInteger> lockPair = SEMAPHORE_MAP.compute(semaphoreInfo.getSemaphoreKey(), (s, pair) -> {
             if (pair == null) {
                 //没有就初始化
-                pair = Pair.of(new Semaphore(wsemaphore.permits()), new AtomicInteger(0));
+                pair = Pair.of(new Semaphore(semaphoreInfo.getPermits()), new AtomicInteger(0));
             }
             pair.getRight().incrementAndGet();
             return pair;
@@ -60,7 +65,7 @@ public class StandaloneWmutex implements Wmutex {
     }
 
     protected void returnSemaphore() {
-        SEMAPHORE_MAP.computeIfPresent(semaphoreKey, (s, pair) -> {
+        SEMAPHORE_MAP.computeIfPresent(semaphoreInfo.getSemaphoreKey(), (s, pair) -> {
             int holdCount = pair.getRight().decrementAndGet();
             if (holdCount <= 0) {
                 //返回null,相当于把这个信号量删除了
@@ -68,5 +73,11 @@ public class StandaloneWmutex implements Wmutex {
             }
             return pair;
         });
+    }
+
+
+    @Override
+    public SemaphoreInfo getSemaphoreInfo() {
+        return this.semaphoreInfo;
     }
 }

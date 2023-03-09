@@ -2,7 +2,7 @@ package io.github.spitmaster.warlock.aspect;
 
 import io.github.spitmaster.warlock.annotation.Wsemaphore;
 import io.github.spitmaster.warlock.core.semaphore.Wmutex;
-import io.github.spitmaster.warlock.core.semaphore.WmutexFactory;
+import io.github.spitmaster.warlock.core.factory.semaphore.WmutexFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -32,7 +32,7 @@ public class WsemaphoreAspect {
     @Around(value = "@annotation(io.github.spitmaster.warlock.annotation.Warlock) && @annotation(wsemaphore)")
     public Object wsemaphorePointcut(final ProceedingJoinPoint pjp, Wsemaphore wsemaphore) throws Throwable {
         Wmutex wmutex = wmutexFactory.build(pjp, wsemaphore);
-        return wmutex.doBizWithSemaphore(pjp, wsemaphore);
+        return wmutex.doBizWithSemaphore(pjp);
     }
 
 }

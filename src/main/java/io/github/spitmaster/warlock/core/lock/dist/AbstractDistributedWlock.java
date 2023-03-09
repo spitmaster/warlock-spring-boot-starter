@@ -25,7 +25,7 @@ abstract class AbstractDistributedWlock implements Wlock {
         RLock lock = getRLock();
         //是否成功获取到锁
         boolean acquired = false;
-        Object result = null;
+        Object result;
         try {
             LockInfo lockInfo = getLockInfo();
             Duration waitTime = lockInfo.getWaitTime();
