@@ -17,7 +17,8 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.BeanFactory;
 
 import java.time.Duration;
-import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 默认的Wmutex工厂实现类
@@ -58,11 +59,11 @@ public class DefaultWmutexFactory extends AbstractFactory implements WmutexFacto
                 .on(':')
                 .skipNulls()
                 .join(
-                        List.of(
+                        Stream.of(
                                 "wsemaphore",
                                 wsemaphore.name(),
                                 JoinPointUtil.parseSpEL(pjp, wsemaphore.key())
-                        )
+                        ).collect(Collectors.toList())
                 );
 
         semaphoreInfo.setSemaphoreKey(semaphoreKey);
