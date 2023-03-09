@@ -67,7 +67,6 @@ public class WarlockAutoConfiguration {
     public DistributedWlockFactory distributedWlockFactory(
             BeanFactory beanFactory,
             @Qualifier("distributedWlockFactory") @Autowired(required = false) RedissonClient redissonClient) {
-        System.out.println(redissonClient);
         //专门生成分布式锁的工厂
         return new DistributedWlockFactory(beanFactory, redissonClient);
     }

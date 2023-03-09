@@ -41,7 +41,7 @@ class WarlockAspectTest {
         }
         List<Future<Integer>> futures = executorService.invokeAll(tasks);
         for (Future<Integer> future : futures) {
-            Blackhole.consumeCPU(future.get());
+            Blackhole.consumeCPU(future.get().longValue());
         }
         System.out.println(aspectTestService.getCounter());
     }
