@@ -18,29 +18,8 @@ abstract class AbstractDistributedWlock implements Wlock, IWlock {
 
     @Override
     public Object doWithLock(ProceedingJoinPoint pjp) throws Throwable {
-        Duration waitTime = getLockInfo().getWaitTime();
-        Duration leaseTime = getLockInfo().getLeaseTime();
-        if (waitTime.isNegative() && leaseTime.isNegative()) {
-            return doWithLock0(pjp);
-        } else {
-            return doWithTryLock(pjp);
-        }
+        return doWithTryLock(pjp);
     }
-
-    private Object doWithLock0(ProceedingJoinPoint pjp) throws Throwable {
-        //1. 拿锁
-        RLock lock = getRLock();
-        //2. 上锁
-        lock.lock();
-        try {
-            //3. 执行业务代码
-            return pjp.proceed();
-        } finally {
-            //4. 解锁
-            lock.unlock();
-        }
-    }
-
 
     private Object doWithTryLock(ProceedingJoinPoint pjp) throws Throwable {
         //1. 拿锁

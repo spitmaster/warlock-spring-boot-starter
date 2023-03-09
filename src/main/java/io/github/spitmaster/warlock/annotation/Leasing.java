@@ -10,7 +10,6 @@ import java.lang.annotation.Target;
 import java.util.concurrent.TimeUnit;
 
 /**
- * //暂不支持
  * 锁的租期 信息
  * 也就是获取锁之后的自动释放时间
  *
@@ -22,10 +21,11 @@ public @interface Leasing {
 
     /**
      * 获得锁后，自动释放锁的时间
+     * 分布式锁一定要指定租期, 如果租期<=0则会抛异常
      *
      * @return leaseTime
      */
-    long leaseTime() default Long.MIN_VALUE;
+    long leaseTime() default 60;
 
     /**
      * 时间配置相关的单位

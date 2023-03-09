@@ -51,4 +51,18 @@ public @interface Wsemaphore {
      * @return 允许并发数
      */
     int permits() default 0;
+
+    /**
+     * 等待信号量的策略
+     *
+     * @return 等待超时策略
+     */
+    Waiting waiting() default @Waiting();
+
+    /**
+     * 信号量permit归还的时候超时的处理策略
+     *
+     * @return 加锁超时策略
+     */
+    Leasing leasing() default @Leasing();
 }

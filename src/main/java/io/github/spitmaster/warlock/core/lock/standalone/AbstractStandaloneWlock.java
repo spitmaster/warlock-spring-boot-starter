@@ -2,6 +2,8 @@ package io.github.spitmaster.warlock.core.lock.standalone;
 
 import io.github.spitmaster.warlock.core.lock.IWlock;
 import io.github.spitmaster.warlock.core.lock.Wlock;
+import io.github.spitmaster.warlock.exceptions.WarlockException;
+import io.github.spitmaster.warlock.util.JoinPointUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 import java.time.Duration;
@@ -19,39 +21,17 @@ abstract class AbstractStandaloneWlock implements Wlock, IWlock {
 
     @Override
     public Object doWithLock(ProceedingJoinPoint pjp) throws Throwable {
-        Duration waitTime = getLockInfo().getWaitTime();
-        if (waitTime.isNegative()) {
-            return doWithLock0(pjp);
-        } else {
-            return doWithTryLock(pjp, waitTime);
-        }
+        return doWithTryLock(pjp);
     }
 
-
-    private Object doWithLock0(ProceedingJoinPoint pjp) throws Throwable {
-        //1. 拿锁
-        Lock lock = getLock();
-        //2. 上锁
-        lock.lock();
-        try {
-            //3. 执行业务代码
-            return pjp.proceed();
-        } finally {
-            //4. 解锁
-            lock.unlock();
-            //5. 还锁
-            returnLock();
-        }
-    }
-
-    private Object doWithTryLock(ProceedingJoinPoint pjp, Duration waitTime) throws Throwable {
+    private Object doWithTryLock(ProceedingJoinPoint pjp) throws Throwable {
         //1. 拿锁
         Lock lock = getLock();
         //是否成功获取到锁
         boolean acquired = false;
         try {
             //2. 上锁
-            acquired = lock.tryLock(waitTime.toMillis(), TimeUnit.MILLISECONDS);
+            acquired = lock.tryLock(getLockInfo().getWaitTime().toMillis(), TimeUnit.MILLISECONDS);
             if (acquired) {
                 //3. 执行业务代码
                 return pjp.proceed();

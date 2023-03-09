@@ -4,6 +4,7 @@ import io.github.spitmaster.warlock.annotation.Leasing;
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.Warlock;
 import io.github.spitmaster.warlock.core.lock.LockInfo;
+import io.github.spitmaster.warlock.exceptions.WarlockException;
 import io.github.spitmaster.warlock.handler.lock.LeaseTimeoutHandler;
 import io.github.spitmaster.warlock.handler.lock.PlainLockLeaseTimeoutHandler;
 import io.github.spitmaster.warlock.handler.lock.PlainLockWaitTimeoutHandler;
@@ -47,11 +48,17 @@ abstract class AbstractWarlockFactory {
         //3. 获取等待时间
         Waiting waiting = warlock.waiting();
         Duration waitTime = Duration.of(waiting.waitTime(), waiting.timeUnit().toChronoUnit());
+        if (waitTime.isNegative() || waitTime.isZero()) {
+            throw new WarlockException("WaitTime cannot Less than or equal to 0; method = " + JoinPointUtil.methodName(pjp));
+        }
         lockInfo.setWaitTime(waitTime);
         lockInfo.setWaitTimeoutHandler(getWaitTimeoutHandler(waiting));
         //4. 获取等待时间
         Leasing leasing = warlock.leasing();
         Duration leaseTime = Duration.of(leasing.leaseTime(), leasing.timeUnit().toChronoUnit());
+        if (leaseTime.isNegative() || leaseTime.isZero()) {
+            throw new WarlockException("LeaseTime cannot Less than or equal to 0; method = " + JoinPointUtil.methodName(pjp));
+        }
         lockInfo.setLeaseTime(leaseTime);
         lockInfo.setLockLeaseTimeoutHandler(getLeaseTimeoutHandler(leasing));
         //5. 返回锁信息
