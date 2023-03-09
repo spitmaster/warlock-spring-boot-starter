@@ -1,5 +1,6 @@
 package io.github.spitmaster.warlock.core.factory.lock;
 
+import com.google.common.base.Joiner;
 import io.github.spitmaster.warlock.annotation.Leasing;
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.Warlock;
@@ -11,6 +12,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.beans.factory.BeanFactory;
 
 import java.time.Duration;
+import java.util.List;
 
 /**
  * 一些公用方法的抽象类
@@ -39,7 +41,16 @@ abstract class AbstractWarlockFactory extends AbstractFactory {
          * construct a lockkey that indicate a unique lock
          * this lock would be used in Warlock.beforeBiz and Warlock.afterBiz and Warlock.except
          */
-        String lockKey = "warlock:" + warlock.name() + JoinPointUtil.parseSpEL(pjp, warlock.key());
+        String lockKey = Joiner
+                .on(':')
+                .skipNulls()
+                .join(
+                        List.of(
+                                "warlock:",
+                                warlock.name(),
+                                JoinPointUtil.parseSpEL(pjp, warlock.key())
+                        )
+                );
 
         lockInfo.setLockKey(lockKey);
         //2. 拿到lockType

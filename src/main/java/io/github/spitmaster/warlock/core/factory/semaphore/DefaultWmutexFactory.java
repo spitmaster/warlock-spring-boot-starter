@@ -1,5 +1,6 @@
 package io.github.spitmaster.warlock.core.factory.semaphore;
 
+import com.google.common.base.Joiner;
 import io.github.spitmaster.warlock.annotation.Leasing;
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.Wsemaphore;
@@ -16,6 +17,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.BeanFactory;
 
 import java.time.Duration;
+import java.util.List;
 
 /**
  * 默认的Wmutex工厂实现类
@@ -52,7 +54,17 @@ public class DefaultWmutexFactory extends AbstractFactory implements WmutexFacto
     private SemaphoreInfo buildLockInfo(ProceedingJoinPoint pjp, Wsemaphore wsemaphore) {
         SemaphoreInfo semaphoreInfo = new SemaphoreInfo();
         //1. 信号量的key
-        String semaphoreKey = "wsemaphore:" + wsemaphore.name() + JoinPointUtil.parseSpEL(pjp, wsemaphore.key());
+        String semaphoreKey = Joiner
+                .on(':')
+                .skipNulls()
+                .join(
+                        List.of(
+                                "warlock:",
+                                wsemaphore.name(),
+                                JoinPointUtil.parseSpEL(pjp, wsemaphore.key())
+                        )
+                );
+
         semaphoreInfo.setSemaphoreKey(semaphoreKey);
         //2. 信号量的permits
         int permits = wsemaphore.permits();
