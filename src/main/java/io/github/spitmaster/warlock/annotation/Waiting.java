@@ -23,11 +23,11 @@ public @interface Waiting {
      * 超过该时间还未获得锁, 则调用自定义的接口处理, 如果未指定自定义处理的Handler处理, 如果没有指定handler则直接抛异常
      * 不能为负
      * --
-     * 默认值为 Long.MAX_VALUE , 相当于永远等待
+     * 默认值为 1年 , 相当于一直等待
      *
      * @return waitTime
      */
-    long waitTime() default Long.MAX_VALUE;
+    long waitTime() default 1* 365 * 24 * 60 * 60;
 
     /**
      * 时间配置相关的单位
