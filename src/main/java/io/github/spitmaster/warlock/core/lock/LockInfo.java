@@ -8,7 +8,6 @@ import io.github.spitmaster.warlock.enums.LockType;
 import io.github.spitmaster.warlock.handler.lock.LeaseTimeoutHandler;
 import io.github.spitmaster.warlock.handler.lock.WaitTimeoutHandler;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
-import lombok.Data;
 
 import java.time.Duration;
 
@@ -17,7 +16,6 @@ import java.time.Duration;
  *
  * @author zhouyijin
  */
-@Data
 public class LockInfo {
     /**
      * 锁的唯一标识
@@ -70,4 +68,52 @@ public class LockInfo {
      * @see Leasing
      */
     private LeaseTimeoutHandler lockLeaseTimeoutHandler;
+
+    public String getLockKey() {
+        return lockKey;
+    }
+
+    public void setLockKey(String lockKey) {
+        this.lockKey = lockKey;
+    }
+
+    public LockType getLockType() {
+        return lockType;
+    }
+
+    public void setLockType(LockType lockType) {
+        this.lockType = lockType;
+    }
+
+    public Duration getWaitTime() {
+        return waitTime;
+    }
+
+    public void setWaitTime(Duration waitTime) {
+        this.waitTime = waitTime;
+    }
+
+    public WaitTimeoutHandler getWaitTimeoutHandler() {
+        return waitTimeoutHandler;
+    }
+
+    public void setWaitTimeoutHandler(WaitTimeoutHandler waitTimeoutHandler) {
+        this.waitTimeoutHandler = waitTimeoutHandler;
+    }
+
+    public Duration getLeaseTime() {
+        return leaseTime;
+    }
+
+    public void setLeaseTime(Duration leaseTime) {
+        this.leaseTime = leaseTime;
+    }
+
+    public LeaseTimeoutHandler getLockLeaseTimeoutHandler() {
+        return lockLeaseTimeoutHandler;
+    }
+
+    public void setLockLeaseTimeoutHandler(LeaseTimeoutHandler lockLeaseTimeoutHandler) {
+        this.lockLeaseTimeoutHandler = lockLeaseTimeoutHandler;
+    }
 }

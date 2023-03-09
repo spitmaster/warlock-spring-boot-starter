@@ -6,7 +6,6 @@ import io.github.spitmaster.warlock.annotation.Wsemaphore;
 import io.github.spitmaster.warlock.core.factory.semaphore.DefaultWmutexFactory;
 import io.github.spitmaster.warlock.handler.lock.LeaseTimeoutHandler;
 import io.github.spitmaster.warlock.handler.lock.WaitTimeoutHandler;
-import lombok.Data;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 import java.time.Duration;
@@ -16,7 +15,6 @@ import java.time.Duration;
  *
  * @author zhouyijin
  */
-@Data
 public class SemaphoreInfo {
 
     /**
@@ -68,4 +66,52 @@ public class SemaphoreInfo {
      * @see Leasing
      */
     private LeaseTimeoutHandler leaseTimeoutHandler;
+
+    public String getSemaphoreKey() {
+        return semaphoreKey;
+    }
+
+    public void setSemaphoreKey(String semaphoreKey) {
+        this.semaphoreKey = semaphoreKey;
+    }
+
+    public int getPermits() {
+        return permits;
+    }
+
+    public void setPermits(int permits) {
+        this.permits = permits;
+    }
+
+    public Duration getWaitTime() {
+        return waitTime;
+    }
+
+    public void setWaitTime(Duration waitTime) {
+        this.waitTime = waitTime;
+    }
+
+    public WaitTimeoutHandler getWaitTimeoutHandler() {
+        return waitTimeoutHandler;
+    }
+
+    public void setWaitTimeoutHandler(WaitTimeoutHandler waitTimeoutHandler) {
+        this.waitTimeoutHandler = waitTimeoutHandler;
+    }
+
+    public Duration getLeaseTime() {
+        return leaseTime;
+    }
+
+    public void setLeaseTime(Duration leaseTime) {
+        this.leaseTime = leaseTime;
+    }
+
+    public LeaseTimeoutHandler getLeaseTimeoutHandler() {
+        return leaseTimeoutHandler;
+    }
+
+    public void setLeaseTimeoutHandler(LeaseTimeoutHandler leaseTimeoutHandler) {
+        this.leaseTimeoutHandler = leaseTimeoutHandler;
+    }
 }
