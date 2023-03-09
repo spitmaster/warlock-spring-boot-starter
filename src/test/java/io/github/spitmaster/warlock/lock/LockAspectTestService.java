@@ -1,11 +1,19 @@
 package io.github.spitmaster.warlock.lock;
 
+import io.github.spitmaster.warlock.annotation.Leasing;
+import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.Warlock;
+import io.github.spitmaster.warlock.enums.Scope;
+import io.github.spitmaster.warlock.handler.lock.LeaseTimeoutHandler;
+import io.github.spitmaster.warlock.handler.lock.WaitTimeoutHandler;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.openjdk.jmh.infra.Blackhole;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.TimeUnit;
+
 @Service
-public class LockAspectTestService {
+public class LockAspectTestService implements WaitTimeoutHandler, LeaseTimeoutHandler {
 
     private int counter = 0;
 
@@ -40,4 +48,30 @@ public class LockAspectTestService {
         return counter;
     }
 
+
+
+    @Warlock(name = "test1-dist",
+//            key = "#id",
+            lockScope = Scope.DISTRIBUTED,
+            waiting = @Waiting(waitTime = 1, timeUnit = TimeUnit.SECONDS, waitTimeoutHandler = LockAspectTestService.class),
+            leasing = @Leasing(leaseTime = 1, timeUnit = TimeUnit.SECONDS, leaseTimeoutHandler = LockAspectTestService.class)
+    )
+    public void testWarlockDistributed(int id) throws InterruptedException {
+        TimeUnit.SECONDS.sleep(1);
+        for (int i = 0; i < id; i++) {
+            counter++;
+        }
+    }
+
+    @Override
+    public Object handleLeaseTimeout(ProceedingJoinPoint pjp) throws Throwable {
+        System.out.println("aaaaaaaa lease timeout");
+        return null;
+    }
+
+    @Override
+    public Object handleWaitTimeout(ProceedingJoinPoint pjp) throws Throwable {
+        System.out.println("wait timeout");
+        return null;
+    }
 }

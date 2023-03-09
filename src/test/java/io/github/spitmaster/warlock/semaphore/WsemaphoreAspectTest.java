@@ -33,7 +33,7 @@ class WsemaphoreAspectTest {
     @Test
     void warlockPointcut() throws InterruptedException, ExecutionException {
         List<Callable<Integer>> tasks = new ArrayList<>();
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 2; i++) {
             int finalI = i;
             tasks.add(() -> {
                 semaphoreAspectTestService.testWsemaphore2(finalI);

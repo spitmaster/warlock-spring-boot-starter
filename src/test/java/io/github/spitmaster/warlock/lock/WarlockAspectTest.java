@@ -45,4 +45,22 @@ class WarlockAspectTest {
         }
         System.out.println(lockAspectTestService.getCounter());
     }
+
+
+    @Test
+    void warlockPointcutDistributed() throws InterruptedException, ExecutionException {
+        List<Callable<Integer>> tasks = new ArrayList<>();
+        for (int i = 0; i < 1000; i++) {
+            int finalI = i;
+            tasks.add(() -> {
+                lockAspectTestService.testWarlockDistributed(finalI);
+                return 1;
+            });
+        }
+        List<Future<Integer>> futures = executorService.invokeAll(tasks);
+        for (Future<Integer> future : futures) {
+            future.get();
+        }
+        System.out.println(lockAspectTestService.getCounter());
+    }
 }
