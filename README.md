@@ -19,6 +19,15 @@ Just using annotation on your method , the concurrency problem would be solved
 * Spring ....
 * Redisson (Optional, if you want to use distributed lock etc.)
 
+### Dependency
+```xml
+<dependency>
+    <groupId>io.github.spitmaster</groupId>
+    <artifactId>warlock-spring-boot-starter</artifactId>
+    <version>0.0.1</version>
+</dependency>
+```
+
 ### 1. Lock
 
 How to use ...
