@@ -36,7 +36,7 @@ class WsemaphoreAspectTest {
         for (int i = 0; i < 10000; i++) {
             int finalI = i;
             tasks.add(() -> {
-                semaphoreAspectTestService.testWsemaphore(finalI);
+                semaphoreAspectTestService.testWsemaphore2(finalI);
                 return 1;
             });
         }

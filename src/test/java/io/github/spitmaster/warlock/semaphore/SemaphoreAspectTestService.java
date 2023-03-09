@@ -24,10 +24,15 @@ public class SemaphoreAspectTestService implements WaitTimeoutHandler, LeaseTime
     }
 
     @Wsemaphore(name = "mys2", permits = 1, scope = Scope.DISTRIBUTED,
-            waiting = @Waiting(waitTime = 1, timeUnit = TimeUnit.MILLISECONDS, waitTimeoutHandler = SemaphoreAspectTestService.class),
+            waiting = @Waiting(waitTime = 10, timeUnit = TimeUnit.MINUTES, waitTimeoutHandler = SemaphoreAspectTestService.class),
             leasing = @Leasing(leaseTime = 1, timeUnit = TimeUnit.SECONDS, leaseTimeoutHandler = SemaphoreAspectTestService.class)
     )
     public void testWsemaphore2(int id) {
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         for (int i = 0; i < id * 1000; i++) {
             counter++;
         }
