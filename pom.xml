@@ -10,6 +10,12 @@
     <name>warlock-spring-boot-starter</name>
     <url>https://github.com/spitmaster/warlock-spring-boot-starter</url>
 
+    <description>
+        warlock-spring-boot-starter is an annotation-driven concurrency tools library for java with Spring.
+        It is easy to use in Spring application
+        Just using annotation on your method , the concurrency lock problem would be solved
+    </description>
+
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -157,6 +163,27 @@
                                 <id>attach-sources</id>
                                 <goals>
                                     <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9.1</version>
+                        <configuration>
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                            <aggregate>true</aggregate>
+                            <charset>UTF-8</charset>
+                            <encoding>UTF-8</encoding>
+                            <docencoding>UTF-8</docencoding>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
                                 </goals>
                             </execution>
                         </executions>
