@@ -1,4 +1,4 @@
-package io.github.spitmaster.warlock.aspect;
+package io.github.spitmaster.warlock.lock;
 
 import io.github.spitmaster.warlock.Application;
 import io.github.spitmaster.warlock.util.BeanHolder;
@@ -18,21 +18,21 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
-public class WarlockAspectJMHTest {
+public class WarlockAspectBenchmark {
 
     @Autowired
-    public void catchBean(AspectTestService aspectTestService) {
+    public void catchBean(LockAspectTestService lockAspectTestService) {
         //启动Spring环境的时候, 捕获待测试的Bean
-        BeanHolder.setBean(aspectTestService);
+        BeanHolder.setBean(lockAspectTestService);
     }
 
     //JMH的成员变量
-    private AspectTestService aspectTestService;
+    private LockAspectTestService lockAspectTestService;
     private Integer param;
 
     @Setup(Level.Trial)
     public void init1() {
-        this.aspectTestService = BeanHolder.getBean();
+        this.lockAspectTestService = BeanHolder.getBean();
     }
 
     @Setup(Level.Invocation)
@@ -44,27 +44,27 @@ public class WarlockAspectJMHTest {
     @Warmup(iterations = 2, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 2, time = 2, timeUnit = TimeUnit.SECONDS)
     public void callWithWarlock() {
-        aspectTestService.testWarlock(param);
+        lockAspectTestService.testWarlock(param);
     }
 
     @Benchmark
     @Warmup(iterations = 2, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 2, time = 2, timeUnit = TimeUnit.SECONDS)
     public void callWithPlainAspect() {
-        aspectTestService.testPlainAspect(param);
+        lockAspectTestService.testPlainAspect(param);
     }
 
     @Benchmark
     @Warmup(iterations = 2, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 2, time = 2, timeUnit = TimeUnit.SECONDS)
     public void callWithPlain() {
-        aspectTestService.testPlain(param);
+        lockAspectTestService.testPlain(param);
     }
 
     @Test
     void runWithJMHTest() throws RunnerException {
         Options jmhRunnerOptions = new OptionsBuilder()
-                .include(WarlockAspectJMHTest.class.getName())
+                .include(WarlockAspectBenchmark.class.getName())
                 .forks(0)//要使用JMH必须与Spring环境再一个JVM中
                 .build();
         new Runner(jmhRunnerOptions).run();

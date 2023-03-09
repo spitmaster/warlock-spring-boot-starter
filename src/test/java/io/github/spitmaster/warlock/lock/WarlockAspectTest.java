@@ -1,4 +1,4 @@
-package io.github.spitmaster.warlock.aspect;
+package io.github.spitmaster.warlock.lock;
 
 import io.github.spitmaster.warlock.Application;
 import org.junit.jupiter.api.AfterEach;
@@ -16,7 +16,7 @@ import java.util.concurrent.*;
 class WarlockAspectTest {
 
     @Autowired
-    private AspectTestService aspectTestService;
+    private LockAspectTestService lockAspectTestService;
 
     private ExecutorService executorService;
 
@@ -35,7 +35,7 @@ class WarlockAspectTest {
         List<Callable<Integer>> tasks = new ArrayList<>();
         for (int i = 0; i < 10000; i++) {
             tasks.add(() -> {
-                aspectTestService.add10();
+                lockAspectTestService.add10();
                 return 1;
             });
         }
@@ -43,6 +43,6 @@ class WarlockAspectTest {
         for (Future<Integer> future : futures) {
             Blackhole.consumeCPU(future.get().longValue());
         }
-        System.out.println(aspectTestService.getCounter());
+        System.out.println(lockAspectTestService.getCounter());
     }
 }

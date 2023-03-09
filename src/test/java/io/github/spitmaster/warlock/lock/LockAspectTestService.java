@@ -1,11 +1,11 @@
-package io.github.spitmaster.warlock.aspect;
+package io.github.spitmaster.warlock.lock;
 
 import io.github.spitmaster.warlock.annotation.Warlock;
 import org.openjdk.jmh.infra.Blackhole;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AspectTestService {
+public class LockAspectTestService {
 
     private int counter = 0;
 
