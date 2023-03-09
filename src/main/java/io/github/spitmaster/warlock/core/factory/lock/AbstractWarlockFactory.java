@@ -8,6 +8,7 @@ import io.github.spitmaster.warlock.core.lock.LockInfo;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import io.github.spitmaster.warlock.util.JoinPointUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.springframework.beans.factory.BeanFactory;
 
 import java.time.Duration;
 
@@ -17,6 +18,10 @@ import java.time.Duration;
  * @author zhouyijin
  */
 abstract class AbstractWarlockFactory extends AbstractFactory {
+
+    public AbstractWarlockFactory(BeanFactory beanFactory) {
+        super(beanFactory);
+    }
 
     /**
      * 构建锁的信息

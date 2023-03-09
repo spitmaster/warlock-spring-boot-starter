@@ -17,10 +17,6 @@ abstract class AbstractDistributedWlock implements Wlock {
 
     @Override
     public Object doWithLock(ProceedingJoinPoint pjp) throws Throwable {
-        return doWithTryLock(pjp);
-    }
-
-    private Object doWithTryLock(ProceedingJoinPoint pjp) throws Throwable {
         //1. 拿锁
         RLock lock = getRLock();
         //是否成功获取到锁

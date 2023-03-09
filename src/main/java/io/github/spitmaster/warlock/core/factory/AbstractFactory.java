@@ -16,12 +16,16 @@ import org.springframework.beans.factory.ObjectProvider;
  */
 public abstract class AbstractFactory {
 
+    private final BeanFactory beanFactory;
+
     /**
-     * 子类实现获取BeanFactory
+     * 必须搭配BeanFactory才能使用
      *
-     * @return spring的BeanFactory
+     * @param beanFactory Spring的Bean工厂对象, 一般来说是applicationContext
      */
-    protected abstract BeanFactory getBeanFactory();
+    public AbstractFactory(BeanFactory beanFactory) {
+        this.beanFactory = beanFactory;
+    }
 
     /**
      * 根据注解获取处理等待超时的handler
@@ -32,7 +36,7 @@ public abstract class AbstractFactory {
     protected WaitTimeoutHandler getWaitTimeoutHandler(Waiting waiting) {
         Class<? extends WaitTimeoutHandler> waitTimeoutHandlerClass = waiting.waitTimeoutHandler();
         if (waitTimeoutHandlerClass != null && waitTimeoutHandlerClass != PlainLockWaitTimeoutHandler.class) {
-            ObjectProvider<? extends WaitTimeoutHandler> beanProvider = getBeanFactory().getBeanProvider(waitTimeoutHandlerClass);
+            ObjectProvider<? extends WaitTimeoutHandler> beanProvider = beanFactory.getBeanProvider(waitTimeoutHandlerClass);
             WaitTimeoutHandler handler = beanProvider.getIfAvailable();
             if (handler != null) {
                 return handler;
@@ -50,7 +54,7 @@ public abstract class AbstractFactory {
     protected LeaseTimeoutHandler getLeaseTimeoutHandler(Leasing leasing) {
         Class<? extends LeaseTimeoutHandler> leaseTimeoutHandlerClass = leasing.leaseTimeoutHandler();
         if (leaseTimeoutHandlerClass != null && leaseTimeoutHandlerClass != PlainLockLeaseTimeoutHandler.class) {
-            ObjectProvider<? extends LeaseTimeoutHandler> beanProvider = getBeanFactory().getBeanProvider(leaseTimeoutHandlerClass);
+            ObjectProvider<? extends LeaseTimeoutHandler> beanProvider = beanFactory.getBeanProvider(leaseTimeoutHandlerClass);
             LeaseTimeoutHandler handler = beanProvider.getIfAvailable();
             if (handler != null) {
                 return handler;

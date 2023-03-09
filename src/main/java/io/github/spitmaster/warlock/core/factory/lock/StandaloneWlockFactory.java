@@ -17,10 +17,8 @@ import org.springframework.beans.factory.BeanFactory;
  */
 public class StandaloneWlockFactory extends AbstractWarlockFactory implements WlockFactory {
 
-    private final BeanFactory beanFactory;
-
     public StandaloneWlockFactory(BeanFactory beanFactory) {
-        this.beanFactory = beanFactory;
+        super(beanFactory);
     }
 
     @Override
@@ -40,11 +38,6 @@ public class StandaloneWlockFactory extends AbstractWarlockFactory implements Wl
             default:
         }
         throw new WarlockException("Unsupported lock type; type = " + lockInfo.getLockType());
-    }
-
-    @Override
-    protected BeanFactory getBeanFactory() {
-        return beanFactory;
     }
 
 }

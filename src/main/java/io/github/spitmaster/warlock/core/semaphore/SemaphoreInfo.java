@@ -2,7 +2,6 @@ package io.github.spitmaster.warlock.core.semaphore;
 
 import io.github.spitmaster.warlock.annotation.Leasing;
 import io.github.spitmaster.warlock.annotation.Waiting;
-import io.github.spitmaster.warlock.annotation.Warlock;
 import io.github.spitmaster.warlock.annotation.Wsemaphore;
 import io.github.spitmaster.warlock.core.factory.semaphore.DefaultWmutexFactory;
 import io.github.spitmaster.warlock.handler.lock.LeaseTimeoutHandler;
@@ -14,6 +13,8 @@ import java.time.Duration;
 
 /**
  * 信号量的基本信息
+ *
+ * @author zhouyijin
  */
 @Data
 public class SemaphoreInfo {

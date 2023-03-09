@@ -26,8 +26,27 @@ public class DefaultWmutexFactory extends AbstractFactory implements WmutexFacto
 
     private final RedissonClient redissonClient;
 
-    public DefaultWmutexFactory(RedissonClient redissonClient) {
+    public DefaultWmutexFactory(BeanFactory beanFactory, RedissonClient redissonClient) {
+        super(beanFactory);
         this.redissonClient = redissonClient;
+    }
+
+    @Override
+    public Wmutex build(ProceedingJoinPoint pjp, Wsemaphore wsemaphore) {
+        Scope scope = wsemaphore.scope();
+        switch (scope) {
+            case STANDALONE:
+                //JVM单例使用的信号量
+                return new StandaloneWmutex(this.buildLockInfo(pjp, wsemaphore));
+            case DISTRIBUTED:
+                //分布式信号量
+                if (redissonClient == null) {
+                    //如果项目没有使用Redisson,则不支持使用分布式锁
+                    throw new WarlockException("Not supported lock scope: DISTRIBUTED ; please use redisson client to active this function; method: " + JoinPointUtil.methodName(pjp));
+                }
+                return new DistributedWmutex(this.buildLockInfo(pjp, wsemaphore), redissonClient);
+        }
+        throw new WarlockException("Wrong semaphore scope; scope =" + wsemaphore.scope());
     }
 
     private SemaphoreInfo buildLockInfo(ProceedingJoinPoint pjp, Wsemaphore wsemaphore) {
@@ -60,26 +79,4 @@ public class DefaultWmutexFactory extends AbstractFactory implements WmutexFacto
         return semaphoreInfo;
     }
 
-    @Override
-    public Wmutex build(ProceedingJoinPoint pjp, Wsemaphore wsemaphore) {
-        Scope scope = wsemaphore.scope();
-        switch (scope) {
-            case STANDALONE:
-                //JVM单例使用的信号量
-                return new StandaloneWmutex(this.buildLockInfo(pjp, wsemaphore));
-            case DISTRIBUTED:
-                //分布式信号量
-                if (redissonClient == null) {
-                    //如果项目没有使用Redisson,则不支持使用分布式锁
-                    throw new WarlockException("Not supported lock scope: DISTRIBUTED ; please use redisson client to active this function; method: " + JoinPointUtil.methodName(pjp));
-                }
-                return new DistributedWmutex(this.buildLockInfo(pjp, wsemaphore), redissonClient);
-        }
-        throw new WarlockException("Wrong semaphore scope; scope =" + wsemaphore.scope());
-    }
-
-    @Override
-    protected BeanFactory getBeanFactory() {
-        return null;
-    }
 }

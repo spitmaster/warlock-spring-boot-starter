@@ -19,11 +19,10 @@ import org.springframework.beans.factory.BeanFactory;
  */
 public class DistributedWlockFactory extends AbstractWarlockFactory implements WlockFactory {
 
-    private final BeanFactory beanFactory;
     private final RedissonClient redissonClient;
 
     public DistributedWlockFactory(BeanFactory beanFactory, RedissonClient redissonClient) {
-        this.beanFactory = beanFactory;
+        super(beanFactory);
         this.redissonClient = redissonClient;
     }
 
@@ -43,11 +42,5 @@ public class DistributedWlockFactory extends AbstractWarlockFactory implements W
             default:
                 throw new WarlockException("Unsupported lock type; type = " + lockInfo.getLockType());
         }
-    }
-
-
-    @Override
-    protected BeanFactory getBeanFactory() {
-        return this.beanFactory;
     }
 }

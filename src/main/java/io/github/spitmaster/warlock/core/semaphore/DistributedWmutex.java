@@ -6,6 +6,11 @@ import org.redisson.api.RedissonClient;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 分布式信号量的实现
+ *
+ * @author zhouyijin
+ */
 public class DistributedWmutex implements Wmutex {
 
     private final SemaphoreInfo semaphoreInfo;
