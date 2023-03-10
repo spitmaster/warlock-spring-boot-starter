@@ -1,12 +1,11 @@
 package io.github.spitmaster.warlock.core.factory.barrier;
 
 import com.google.common.base.Joiner;
-import io.github.spitmaster.warlock.annotation.Leasing;
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.WcyclicBarrier;
 import io.github.spitmaster.warlock.core.barrier.BarrierInfo;
-import io.github.spitmaster.warlock.core.barrier.StandaloneWBarrier;
-import io.github.spitmaster.warlock.core.barrier.WBarrier;
+import io.github.spitmaster.warlock.core.barrier.StandaloneWbarrier;
+import io.github.spitmaster.warlock.core.barrier.Wbarrier;
 import io.github.spitmaster.warlock.core.factory.AbstractFactory;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import io.github.spitmaster.warlock.util.JoinPointUtil;
@@ -22,15 +21,15 @@ import java.util.Arrays;
  *
  * @author zhouyijin
  */
-public class DefaultWBarrierFactory extends AbstractFactory implements WBarrierFactory {
+public class DefaultWbarrierFactory extends AbstractFactory implements WbarrierFactory {
 
-    public DefaultWBarrierFactory(BeanFactory beanFactory) {
+    public DefaultWbarrierFactory(BeanFactory beanFactory) {
         super(beanFactory);
     }
 
     @Override
-    public WBarrier build(ProceedingJoinPoint pjp, WcyclicBarrier wcyclicBarrier) {
-        return new StandaloneWBarrier(this.buildBarrierInfo(pjp, wcyclicBarrier));
+    public Wbarrier build(ProceedingJoinPoint pjp, WcyclicBarrier wcyclicBarrier) {
+        return new StandaloneWbarrier(this.buildBarrierInfo(pjp, wcyclicBarrier));
     }
 
     private BarrierInfo buildBarrierInfo(ProceedingJoinPoint pjp, WcyclicBarrier wcyclicBarrier) {

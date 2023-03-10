@@ -8,7 +8,7 @@ import org.springframework.lang.NonNull;
  *
  * @author zhouyijin
  */
-public interface WBarrier {
+public interface Wbarrier {
 
     /**
      * 在WCyclicBarrier的环境下执行业务函数

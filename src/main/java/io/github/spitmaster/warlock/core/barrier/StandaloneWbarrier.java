@@ -14,15 +14,15 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author zhouyijin
  */
-public class StandaloneWBarrier implements WBarrier {
+public class StandaloneWbarrier implements Wbarrier {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneWBarrier.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneWbarrier.class);
 
     private static final ConcurrentHashMap<String, Pair<CyclicBarrier, AtomicInteger>> CYCLIC_BARRIER_MAP = new ConcurrentHashMap<>();
 
     private final BarrierInfo barrierInfo;
 
-    public StandaloneWBarrier(BarrierInfo barrierInfo) {
+    public StandaloneWbarrier(BarrierInfo barrierInfo) {
         this.barrierInfo = barrierInfo;
     }
 

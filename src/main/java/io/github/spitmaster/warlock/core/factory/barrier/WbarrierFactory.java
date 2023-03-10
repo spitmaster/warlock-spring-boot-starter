@@ -1,7 +1,7 @@
 package io.github.spitmaster.warlock.core.factory.barrier;
 
 import io.github.spitmaster.warlock.annotation.WcyclicBarrier;
-import io.github.spitmaster.warlock.core.barrier.WBarrier;
+import io.github.spitmaster.warlock.core.barrier.Wbarrier;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 /**
@@ -9,7 +9,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
  *
  * @author zhouyijin
  */
-public interface WBarrierFactory {
+public interface WbarrierFactory {
 
     /**
      * 构造一个 WBarrier 对象
@@ -18,5 +18,5 @@ public interface WBarrierFactory {
      * @param wcyclicBarrier 注解
      * @return 构造好的 WBarrier
      */
-    WBarrier build(ProceedingJoinPoint pjp, WcyclicBarrier wcyclicBarrier);
+    Wbarrier build(ProceedingJoinPoint pjp, WcyclicBarrier wcyclicBarrier);
 }
