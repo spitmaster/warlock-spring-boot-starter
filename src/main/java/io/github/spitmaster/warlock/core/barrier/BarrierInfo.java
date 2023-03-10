@@ -3,8 +3,8 @@ package io.github.spitmaster.warlock.core.barrier;
 import io.github.spitmaster.warlock.annotation.Leasing;
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.Wsemaphore;
-import io.github.spitmaster.warlock.handler.lock.LeaseTimeoutHandler;
-import io.github.spitmaster.warlock.handler.lock.WaitTimeoutHandler;
+import io.github.spitmaster.warlock.handler.LeaseTimeoutHandler;
+import io.github.spitmaster.warlock.handler.WaitTimeoutHandler;
 
 import java.time.Duration;
 

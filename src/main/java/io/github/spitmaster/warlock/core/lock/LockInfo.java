@@ -5,8 +5,8 @@ import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.Warlock;
 import io.github.spitmaster.warlock.aspect.WarlockAspect;
 import io.github.spitmaster.warlock.enums.LockType;
-import io.github.spitmaster.warlock.handler.lock.LeaseTimeoutHandler;
-import io.github.spitmaster.warlock.handler.lock.WaitTimeoutHandler;
+import io.github.spitmaster.warlock.handler.LeaseTimeoutHandler;
+import io.github.spitmaster.warlock.handler.WaitTimeoutHandler;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
 
 import java.time.Duration;

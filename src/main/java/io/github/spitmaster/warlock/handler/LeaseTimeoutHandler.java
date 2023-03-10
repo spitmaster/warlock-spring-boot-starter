@@ -1,4 +1,4 @@
-package io.github.spitmaster.warlock.handler.lock;
+package io.github.spitmaster.warlock.handler;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 

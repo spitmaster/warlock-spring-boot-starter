@@ -1,7 +1,7 @@
 package io.github.spitmaster.warlock.annotation;
 
-import io.github.spitmaster.warlock.handler.lock.LeaseTimeoutHandler;
-import io.github.spitmaster.warlock.handler.lock.PlainLockLeaseTimeoutHandler;
+import io.github.spitmaster.warlock.handler.LeaseTimeoutHandler;
+import io.github.spitmaster.warlock.handler.PlainLockLeaseTimeoutHandler;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

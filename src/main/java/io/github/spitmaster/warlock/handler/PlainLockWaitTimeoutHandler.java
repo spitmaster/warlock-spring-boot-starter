@@ -1,4 +1,4 @@
-package io.github.spitmaster.warlock.handler.lock;
+package io.github.spitmaster.warlock.handler;
 
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import io.github.spitmaster.warlock.util.JoinPointUtil;

@@ -2,10 +2,10 @@ package io.github.spitmaster.warlock.core.factory;
 
 import io.github.spitmaster.warlock.annotation.Leasing;
 import io.github.spitmaster.warlock.annotation.Waiting;
-import io.github.spitmaster.warlock.handler.lock.LeaseTimeoutHandler;
-import io.github.spitmaster.warlock.handler.lock.PlainLockLeaseTimeoutHandler;
-import io.github.spitmaster.warlock.handler.lock.PlainLockWaitTimeoutHandler;
-import io.github.spitmaster.warlock.handler.lock.WaitTimeoutHandler;
+import io.github.spitmaster.warlock.handler.LeaseTimeoutHandler;
+import io.github.spitmaster.warlock.handler.PlainLockLeaseTimeoutHandler;
+import io.github.spitmaster.warlock.handler.PlainLockWaitTimeoutHandler;
+import io.github.spitmaster.warlock.handler.WaitTimeoutHandler;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.ObjectProvider;
 

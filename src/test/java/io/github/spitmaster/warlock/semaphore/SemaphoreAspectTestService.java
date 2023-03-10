@@ -4,8 +4,8 @@ import io.github.spitmaster.warlock.annotation.Leasing;
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.Wsemaphore;
 import io.github.spitmaster.warlock.enums.Scope;
-import io.github.spitmaster.warlock.handler.lock.LeaseTimeoutHandler;
-import io.github.spitmaster.warlock.handler.lock.WaitTimeoutHandler;
+import io.github.spitmaster.warlock.handler.LeaseTimeoutHandler;
+import io.github.spitmaster.warlock.handler.WaitTimeoutHandler;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.stereotype.Service;
 
