@@ -30,9 +30,10 @@ public @interface Wsemaphore {
     /**
      * Spring Expression Language (SpEL) expression
      * 可以通过el表达式从参数中获取内容
-     * 信号量的唯一key
+     * 信号量的唯一key的一部分
+     * 完整的key是 name + spel的计算结果
      *
-     * @return keys
+     * @return key
      */
     String key() default "";
 
@@ -60,6 +61,7 @@ public @interface Wsemaphore {
 
     /**
      * 信号量permit归还的时候超时的处理策略
+     * 如果使用 Scope.STANDALONE 的作用域, 则leasing不可用
      *
      * @return 加锁超时策略
      */

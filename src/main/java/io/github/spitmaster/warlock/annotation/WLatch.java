@@ -27,9 +27,10 @@ public @interface WLatch {
     /**
      * Spring Expression Language (SpEL) expression
      * 可以通过el表达式从参数中获取内容
-     * 锁的唯一key
+     * 锁的唯一key一部分
+     * 完整的key是 name + spel的计算结果
      *
-     * @return keys
+     * @return key
      */
     String key() default "";
 

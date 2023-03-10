@@ -29,9 +29,10 @@ public @interface WCountDown {
     /**
      * Spring Expression Language (SpEL) expression
      * 可以通过el表达式从参数中获取内容
-     * 锁的唯一key
+     * 锁的唯一key一部分
+     * 完整的key是 name + spel的计算结果
      *
-     * @return keys
+     * @return key
      */
     String key() default "";
 
@@ -51,6 +52,7 @@ public @interface WCountDown {
 
     /**
      * 加锁超时的处理策略
+     * 如果使用 Scope.STANDALONE 的作用域, 则leasing不可用
      *
      * @return 加锁超时策略
      */

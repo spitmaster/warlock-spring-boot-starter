@@ -1,56 +1,51 @@
 package io.github.spitmaster.warlock.annotation;
 
 import io.github.spitmaster.warlock.enums.Scope;
-import io.github.spitmaster.warlock.enums.LockType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 /**
- * 依赖于Spring框架
- * 加锁注解
+ * 一个围栏, 凑齐了数量一起放行
  *
  * @author zhouyijin
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Warlock {
+public @interface WCyclicBarrier {
 
     /**
-     * 锁的名字
-     * 相同的名字共享同一个锁
+     * the number of threads that must invoke await before the barrier is tripped
+     *
+     * @return the number of threads that must invoke await before the barrier is tripped
+     */
+    int parties();
+
+    /**
+     * 围栏的名字
      *
      * @return 锁的名字
      */
     String name();
 
     /**
-     * 锁类型
-     * 默认可重入锁
+     * Spring Expression Language (SpEL) expression
+     * 可以通过el表达式从参数中获取内容
+     * 围栏的唯一key的一部分
+     * 完整的key是 name + spel的计算结果
      *
-     * @return 锁类型
+     * @return key
      */
-    LockType lockType() default LockType.REENTRANT;
+    String key() default "";
 
     /**
      * 锁的作用域范围
      *
      * @return Scope, 目前支持两种JVM单机 和 基于Redis的分布式锁
      */
-    Scope lockScope() default Scope.STANDALONE;
-
-    /**
-     * Spring Expression Language (SpEL) expression
-     * 可以通过el表达式从参数中获取内容
-     * 锁的唯一key的一部分
-     * 完整的key是 name + spel的计算结果
-     *
-     * @return key
-     */
-    String key() default "";
+    Scope scope() default Scope.STANDALONE;
 
     /**
      * 等待加锁的策略
