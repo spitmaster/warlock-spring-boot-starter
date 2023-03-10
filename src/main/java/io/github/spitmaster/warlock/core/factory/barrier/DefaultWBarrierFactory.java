@@ -5,15 +5,12 @@ import io.github.spitmaster.warlock.annotation.Leasing;
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.WcyclicBarrier;
 import io.github.spitmaster.warlock.core.barrier.BarrierInfo;
-import io.github.spitmaster.warlock.core.barrier.DistributedWBarrier;
 import io.github.spitmaster.warlock.core.barrier.StandaloneWBarrier;
 import io.github.spitmaster.warlock.core.barrier.WBarrier;
 import io.github.spitmaster.warlock.core.factory.AbstractFactory;
-import io.github.spitmaster.warlock.enums.Scope;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import io.github.spitmaster.warlock.util.JoinPointUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.BeanFactory;
 
 import java.time.Duration;
@@ -27,29 +24,13 @@ import java.util.Arrays;
  */
 public class DefaultWBarrierFactory extends AbstractFactory implements WBarrierFactory {
 
-    private final RedissonClient redissonClient;
-
-    public DefaultWBarrierFactory(BeanFactory beanFactory, RedissonClient redissonClient) {
+    public DefaultWBarrierFactory(BeanFactory beanFactory) {
         super(beanFactory);
-        this.redissonClient = redissonClient;
     }
 
     @Override
     public WBarrier build(ProceedingJoinPoint pjp, WcyclicBarrier wcyclicBarrier) {
-        Scope scope = wcyclicBarrier.scope();
-        switch (scope) {
-            case STANDALONE:
-                //JVM单例使用的信号量
-                return new StandaloneWBarrier(this.buildBarrierInfo(pjp, wcyclicBarrier));
-            case DISTRIBUTED:
-                //分布式信号量
-                if (redissonClient == null) {
-                    //如果项目没有使用Redisson,则不支持使用分布式锁
-                    throw new WarlockException("Not supported lock scope: DISTRIBUTED ; please use redisson client to active this function; method: " + JoinPointUtil.methodName(pjp));
-                }
-                return new DistributedWBarrier(this.buildBarrierInfo(pjp, wcyclicBarrier), redissonClient);
-        }
-        throw new WarlockException("Wrong WcyclicBarrier scope; scope =" + scope);
+        return new StandaloneWBarrier(this.buildBarrierInfo(pjp, wcyclicBarrier));
     }
 
     private BarrierInfo buildBarrierInfo(ProceedingJoinPoint pjp, WcyclicBarrier wcyclicBarrier) {
@@ -78,14 +59,6 @@ public class DefaultWBarrierFactory extends AbstractFactory implements WBarrierF
         }
         barrierInfo.setWaitTime(waitTime);
         barrierInfo.setWaitTimeoutHandler(this.getWaitTimeoutHandler(waiting));
-        //4. 租赁策略信息(单机版的不起作用)
-        Leasing leasing = wcyclicBarrier.leasing();
-        Duration leaseTime = Duration.of(leasing.leaseTime(), leasing.timeUnit().toChronoUnit());
-        if (leaseTime.isNegative() || leaseTime.isZero()) {
-            throw new WarlockException("LeaseTime cannot Less than or equal to 0; method = " + JoinPointUtil.methodName(pjp));
-        }
-        barrierInfo.setLeaseTime(leaseTime);
-        barrierInfo.setLeaseTimeoutHandler(this.getLeaseTimeoutHandler(leasing));
         return barrierInfo;
     }
 }
