@@ -12,8 +12,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.beans.factory.BeanFactory;
 
 import java.time.Duration;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Arrays;
 
 /**
  * 一些公用方法的抽象类
@@ -45,13 +44,11 @@ abstract class AbstractWarlockFactory extends AbstractFactory {
         String lockKey = Joiner
                 .on(':')
                 .skipNulls()
-                .join(
-                        Stream.of(
-                                "warlock",
-                                warlock.name(),
-                                JoinPointUtil.parseSpEL(pjp, warlock.key())
-                        ).collect(Collectors.toList())
-                );
+                .join(Arrays.asList(
+                        "warlock",
+                        warlock.name(),
+                        JoinPointUtil.parseSpEL(pjp, warlock.key())
+                ));
 
         lockInfo.setLockKey(lockKey);
         //2. 拿到lockType

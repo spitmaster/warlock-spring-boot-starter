@@ -17,8 +17,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.BeanFactory;
 
 import java.time.Duration;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Arrays;
 
 /**
  * 默认的Wmutex工厂实现类
@@ -58,13 +57,11 @@ public class DefaultWmutexFactory extends AbstractFactory implements WmutexFacto
         String semaphoreKey = Joiner
                 .on(':')
                 .skipNulls()
-                .join(
-                        Stream.of(
-                                "wsemaphore",
-                                wsemaphore.name(),
-                                JoinPointUtil.parseSpEL(pjp, wsemaphore.key())
-                        ).collect(Collectors.toList())
-                );
+                .join(Arrays.asList(
+                        "wsemaphore",
+                        wsemaphore.name(),
+                        JoinPointUtil.parseSpEL(pjp, wsemaphore.key())
+                ));
 
         semaphoreInfo.setSemaphoreKey(semaphoreKey);
         //2. 信号量的permits

@@ -8,19 +8,25 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * (暂未实现)
- * 配合 WLatch 一起使用
+ * 一个围栏, 凑齐了数量一起放行
  *
  * @author zhouyijin
- * @see WLatch
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface WCountDown {
+public @interface WcyclicBarrier {
 
     /**
-     * CountDownLatch 的名字
-     * 相同的名字共享同一个锁
+     * the number of threads that must invoke await before the barrier is tripped
+     * 不允许小于1
+     * cannot below 1
+     *
+     * @return the number of threads that must invoke await before the barrier is tripped
+     */
+    int parties();
+
+    /**
+     * 围栏的名字
      *
      * @return 锁的名字
      */
@@ -29,7 +35,7 @@ public @interface WCountDown {
     /**
      * Spring Expression Language (SpEL) expression
      * 可以通过el表达式从参数中获取内容
-     * 锁的唯一key一部分
+     * 围栏的唯一key的一部分
      * 完整的key是 name + spel的计算结果
      *
      * @return key
@@ -57,4 +63,5 @@ public @interface WCountDown {
      * @return 加锁超时策略
      */
     Leasing leasing() default @Leasing();
+
 }
