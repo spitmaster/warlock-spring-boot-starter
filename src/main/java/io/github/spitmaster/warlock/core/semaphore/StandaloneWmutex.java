@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class StandaloneWmutex implements Wmutex {
 
     /**
-     * 多个方法可以使用同一个key
+     * 多个切点可以使用同一个key
      * 如果使用同一个key, 那么它们使用的就是同一个信号量
      * 在使用信号量的时候会被添加到这个MAP中, 全局使用同一个MAP
      */

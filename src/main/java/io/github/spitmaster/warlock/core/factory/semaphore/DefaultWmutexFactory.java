@@ -16,6 +16,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.BeanFactory;
 
+import javax.annotation.Nullable;
 import java.time.Duration;
 import java.util.Arrays;
 
@@ -28,7 +29,7 @@ public class DefaultWmutexFactory extends AbstractFactory implements WmutexFacto
 
     private final RedissonClient redissonClient;
 
-    public DefaultWmutexFactory(BeanFactory beanFactory, RedissonClient redissonClient) {
+    public DefaultWmutexFactory(BeanFactory beanFactory, @Nullable RedissonClient redissonClient) {
         super(beanFactory);
         this.redissonClient = redissonClient;
     }
@@ -48,7 +49,7 @@ public class DefaultWmutexFactory extends AbstractFactory implements WmutexFacto
                 }
                 return new DistributedWmutex(this.buildLockInfo(pjp, wsemaphore), redissonClient);
         }
-        throw new WarlockException("Wrong semaphore scope; scope =" + wsemaphore.scope());
+        throw new WarlockException("Wrong semaphore scope; scope = " + scope);
     }
 
     private SemaphoreInfo buildLockInfo(ProceedingJoinPoint pjp, Wsemaphore wsemaphore) {

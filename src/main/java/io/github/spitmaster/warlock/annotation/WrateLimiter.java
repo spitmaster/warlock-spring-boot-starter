@@ -1,10 +1,11 @@
 package io.github.spitmaster.warlock.annotation;
 
+import io.github.spitmaster.warlock.enums.Scope;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 方法级的限流器
@@ -16,25 +17,16 @@ import java.util.concurrent.TimeUnit;
 public @interface WrateLimiter {
 
     /**
-     * 每单位时间能通过的请求数
+     * 每秒能通过的请求数
      *
      * @return 不得小于1
      */
-    int permitsPerUnit();
-
-    /**
-     * 时间单位
-     * 与permitsPerUnit搭配使用
-     * 用于permitsPerUnit的单位时间
-     *
-     * @return 时间单位
-     */
-    TimeUnit timeUnit();
+    long permitsPerSecond();
 
     /**
      * 围栏的名字
      *
-     * @return 锁的名字
+     * @return key的前缀
      */
     String name();
 
@@ -47,6 +39,13 @@ public @interface WrateLimiter {
      * @return key
      */
     String key() default "";
+
+    /**
+     * 作用域范围
+     *
+     * @return Scope, 目前支持两种JVM单机 和 基于Redis的分布式
+     */
+    Scope scope() default Scope.STANDALONE;
 
     /**
      * 等待空位的策略

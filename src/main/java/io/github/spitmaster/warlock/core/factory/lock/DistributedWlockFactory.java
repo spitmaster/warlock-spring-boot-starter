@@ -11,6 +11,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.BeanFactory;
 
+import javax.annotation.Nullable;
+
 /**
  * 生成分布式Warlock
  * 依赖于Redisson
@@ -21,7 +23,7 @@ public class DistributedWlockFactory extends AbstractWarlockFactory implements W
 
     private final RedissonClient redissonClient;
 
-    public DistributedWlockFactory(BeanFactory beanFactory, RedissonClient redissonClient) {
+    public DistributedWlockFactory(BeanFactory beanFactory,@Nullable RedissonClient redissonClient) {
         super(beanFactory);
         this.redissonClient = redissonClient;
     }
