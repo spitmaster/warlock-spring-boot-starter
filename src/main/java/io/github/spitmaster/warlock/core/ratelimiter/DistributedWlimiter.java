@@ -1,6 +1,6 @@
 package io.github.spitmaster.warlock.core.ratelimiter;
 
-import org.aspectj.lang.ProceedingJoinPoint;
+import org.aopalliance.intercept.MethodInvocation;
 import org.redisson.api.RRateLimiter;
 import org.redisson.api.RateIntervalUnit;
 import org.redisson.api.RateType;
@@ -25,15 +25,14 @@ public class DistributedWlimiter implements Wlimiter {
         this.redissonClient = redissonClient;
     }
 
-
     @Override
-    public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
+    public Object doAround(MethodInvocation methodInvocation) throws Throwable {
         if (this.getRateLimiter().tryAcquire(this.rateLimiterInfo.getWaitTime().toMillis(), TimeUnit.MILLISECONDS)) {
             //通过限流器, 正常执行业务代码
-            return pjp.proceed();
+            return methodInvocation.proceed();
         } else {
             //超时的处理
-            return rateLimiterInfo.getWaitTimeoutHandler().handleWaitTimeout(pjp);
+            return rateLimiterInfo.getWaitTimeoutHandler().handleWaitTimeout(methodInvocation);
         }
     }
 

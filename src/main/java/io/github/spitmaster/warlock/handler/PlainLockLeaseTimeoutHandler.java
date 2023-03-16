@@ -1,5 +1,6 @@
 package io.github.spitmaster.warlock.handler;
 
+import org.aopalliance.intercept.MethodInvocation;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 /**
@@ -12,7 +13,7 @@ public enum PlainLockLeaseTimeoutHandler implements LeaseTimeoutHandler {
     INSTANCE;
 
     @Override
-    public Object handleLeaseTimeout(ProceedingJoinPoint pjp, Object result) throws Throwable {
+    public Object handleLeaseTimeout(MethodInvocation methodInvocation, Object result) throws Throwable {
         //空实现, 原样返回函数执行结果
         return result;
     }

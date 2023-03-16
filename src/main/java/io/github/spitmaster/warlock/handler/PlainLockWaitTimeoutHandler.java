@@ -1,8 +1,7 @@
 package io.github.spitmaster.warlock.handler;
 
 import io.github.spitmaster.warlock.exceptions.WarlockException;
-import io.github.spitmaster.warlock.util.JoinPointUtil;
-import org.aspectj.lang.ProceedingJoinPoint;
+import org.aopalliance.intercept.MethodInvocation;
 
 
 /**
@@ -15,7 +14,7 @@ public enum PlainLockWaitTimeoutHandler implements WaitTimeoutHandler {
     INSTANCE;
 
     @Override
-    public Object handleWaitTimeout(ProceedingJoinPoint pjp) throws Throwable {
-        throw new WarlockException("warlock wait timeout; timeout from " + JoinPointUtil.methodName(pjp));
+    public Object handleWaitTimeout(MethodInvocation methodInvocation) throws Throwable {
+        throw new WarlockException("warlock wait timeout; timeout from " + methodInvocation.getMethod().getName());
     }
 }

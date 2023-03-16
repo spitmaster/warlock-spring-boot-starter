@@ -1,8 +1,8 @@
 package io.github.spitmaster.warlock.core.ratelimiter;
 
 import com.google.common.util.concurrent.RateLimiter;
+import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang3.tuple.Pair;
-import org.aspectj.lang.ProceedingJoinPoint;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,16 +31,15 @@ public class StandaloneWlimiter implements Wlimiter {
 
 
     @Override
-    public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
+    public Object doAround(MethodInvocation methodInvocation) throws Throwable {
         if (this.getRateLimiter().tryAcquire(this.rateLimiterInfo.getWaitTime())) {
             //通过限流器, 正常执行业务代码
-            return pjp.proceed();
+            return methodInvocation.proceed();
         } else {
             //超时的处理
-            return rateLimiterInfo.getWaitTimeoutHandler().handleWaitTimeout(pjp);
+            return rateLimiterInfo.getWaitTimeoutHandler().handleWaitTimeout(methodInvocation);
         }
     }
-
 
     protected RateLimiter getRateLimiter() {
         Pair<RateLimiter, AtomicInteger> lockPair = RATE_LIMITER_MAP.compute(rateLimiterInfo.getRateLimiterKey(), (s, pair) -> {

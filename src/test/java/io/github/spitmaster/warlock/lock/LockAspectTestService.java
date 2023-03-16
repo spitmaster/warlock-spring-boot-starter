@@ -6,7 +6,7 @@ import io.github.spitmaster.warlock.annotation.Warlock;
 import io.github.spitmaster.warlock.enums.Scope;
 import io.github.spitmaster.warlock.handler.LeaseTimeoutHandler;
 import io.github.spitmaster.warlock.handler.WaitTimeoutHandler;
-import org.aspectj.lang.ProceedingJoinPoint;
+import org.aopalliance.intercept.MethodInvocation;
 import org.openjdk.jmh.infra.Blackhole;
 import org.springframework.stereotype.Service;
 
@@ -64,13 +64,13 @@ public class LockAspectTestService implements WaitTimeoutHandler, LeaseTimeoutHa
     }
 
     @Override
-    public Object handleLeaseTimeout(ProceedingJoinPoint pjp, Object result) throws Throwable {
+    public Object handleLeaseTimeout(MethodInvocation pjp, Object result) throws Throwable {
         System.out.println("aaaaaaaa lease timeout");
         return result;
     }
 
     @Override
-    public Object handleWaitTimeout(ProceedingJoinPoint pjp) throws Throwable {
+    public Object handleWaitTimeout(MethodInvocation pjp) throws Throwable {
         System.out.println("wait timeout");
         return null;
     }

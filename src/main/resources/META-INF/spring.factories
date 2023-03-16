@@ -1,3 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  io.github.spitmaster.warlock.config.WarlockAutoConfiguration,\
-  io.github.spitmaster.warlock.config.WrateLimiterAutoConfiguration
+  io.github.spitmaster.warlock.config.WarlockAutoConfiguration

@@ -2,6 +2,7 @@ package io.github.spitmaster.warlock.config;
 
 import io.github.spitmaster.warlock.aspect.barrier.WcyclicBarrierAnnotationAdvisor;
 import io.github.spitmaster.warlock.aspect.barrier.WcyclicBarrierMethodInterceptor;
+import io.github.spitmaster.warlock.aspect.ratelimiter.WrateLimiterAnnotationAdvisor;
 import io.github.spitmaster.warlock.aspect.semaphore.WsemaphoreAnnotationAdvisor;
 import io.github.spitmaster.warlock.aspect.warlock.WarlockAnnotationAdvisor;
 import io.github.spitmaster.warlock.core.factory.barrier.DefaultWbarrierFactory;
@@ -10,6 +11,8 @@ import io.github.spitmaster.warlock.core.factory.lock.DefaultWlockFactory;
 import io.github.spitmaster.warlock.core.factory.lock.DistributedWlockFactory;
 import io.github.spitmaster.warlock.core.factory.lock.StandaloneWlockFactory;
 import io.github.spitmaster.warlock.core.factory.lock.WlockFactory;
+import io.github.spitmaster.warlock.core.factory.ratelimiter.DefaultWlimiterFactory;
+import io.github.spitmaster.warlock.core.factory.ratelimiter.WlimiterFactory;
 import io.github.spitmaster.warlock.core.factory.semaphore.DefaultWmutexFactory;
 import io.github.spitmaster.warlock.core.factory.semaphore.WmutexFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -72,13 +75,13 @@ public class WarlockAutoConfiguration {
      */
 
 
-    @Bean
+    @Bean("wcyclicBarrierAnnotationAdvisor")
     @ConditionalOnMissingBean
     public WcyclicBarrierAnnotationAdvisor wcyclicBarrierAnnotationAdvisor(){
         return new WcyclicBarrierAnnotationAdvisor();
     }
 
-    @Bean
+    @Bean("wbarrierFactory")
     @ConditionalOnMissingBean
     public WbarrierFactory wbarrierFactory(){
         return new DefaultWbarrierFactory();
@@ -89,16 +92,32 @@ public class WarlockAutoConfiguration {
     -------------------------------------------------------------------------------------
      */
 
-    @Bean
+    @Bean("wsemaphoreAnnotationAdvisor")
     @ConditionalOnMissingBean
     public WsemaphoreAnnotationAdvisor wsemaphoreAnnotationAdvisor(){
         return new WsemaphoreAnnotationAdvisor();
     }
 
-    @Bean
+    @Bean("wmutexFactory")
     @ConditionalOnMissingBean
     public WmutexFactory wmutexFactory(){
         return new DefaultWmutexFactory();
+    }
+
+    /*
+    -------------------------------------------------------------------------------------
+     */
+
+    @Bean("wlimiterFactory")
+    @ConditionalOnMissingBean
+    public WlimiterFactory wlimiterFactory(){
+        return new DefaultWlimiterFactory();
+    }
+
+    @Bean("wrateLimiterAnnotationAdvisor")
+    @ConditionalOnMissingBean
+    public WrateLimiterAnnotationAdvisor wrateLimiterAnnotationAdvisor(){
+        return new WrateLimiterAnnotationAdvisor();
     }
 
 }

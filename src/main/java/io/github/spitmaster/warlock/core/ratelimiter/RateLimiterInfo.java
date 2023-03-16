@@ -2,6 +2,7 @@ package io.github.spitmaster.warlock.core.ratelimiter;
 
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.Wsemaphore;
+import io.github.spitmaster.warlock.enums.Scope;
 import io.github.spitmaster.warlock.handler.WaitTimeoutHandler;
 
 import java.time.Duration;
@@ -21,6 +22,11 @@ public class RateLimiterInfo {
      * 此限流器的唯一标识
      */
     private String rateLimiterKey;
+
+    /**
+     * 作用域范围
+     */
+    private Scope scope;
 
     /**
      * 等待执行的时间
@@ -53,6 +59,14 @@ public class RateLimiterInfo {
 
     public void setRateLimiterKey(String rateLimiterKey) {
         this.rateLimiterKey = rateLimiterKey;
+    }
+
+    public Scope getScope() {
+        return scope;
+    }
+
+    public void setScope(Scope scope) {
+        this.scope = scope;
     }
 
     public Duration getWaitTime() {

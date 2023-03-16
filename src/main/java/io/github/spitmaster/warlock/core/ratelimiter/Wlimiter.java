@@ -1,6 +1,6 @@
 package io.github.spitmaster.warlock.core.ratelimiter;
 
-import org.aspectj.lang.ProceedingJoinPoint;
+import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.lang.NonNull;
 
 /**
@@ -13,11 +13,11 @@ public interface Wlimiter {
     /**
      * 限流RateLimiter控制的方法
      *
-     * @param pjp 切点
+     * @param methodInvocation 切点
      * @return 业务代码返回值
      * @throws Throwable 透传异常
      */
-    Object doAround(final ProceedingJoinPoint pjp) throws Throwable;
+    Object doAround(MethodInvocation methodInvocation) throws Throwable;
 
     /**
      * 获取限流器的信息
