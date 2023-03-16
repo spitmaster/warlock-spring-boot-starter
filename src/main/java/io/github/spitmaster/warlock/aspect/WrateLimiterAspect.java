@@ -27,7 +27,7 @@ public class WrateLimiterAspect {
         //1. 构建 Wlimiter
         Wlimiter wlimiter = wlimiterFactory.build(pjp, wrateLimiter);
         //2. 在Wlimiter的环境下执行业务代码
-        return wlimiter.doBizWithRateLimiter(pjp);
+        return wlimiter.doAround(pjp);
     }
 
 }

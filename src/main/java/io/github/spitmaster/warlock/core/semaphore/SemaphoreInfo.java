@@ -4,9 +4,9 @@ import io.github.spitmaster.warlock.annotation.Leasing;
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.Wsemaphore;
 import io.github.spitmaster.warlock.core.factory.semaphore.DefaultWmutexFactory;
+import io.github.spitmaster.warlock.enums.Scope;
 import io.github.spitmaster.warlock.handler.LeaseTimeoutHandler;
 import io.github.spitmaster.warlock.handler.WaitTimeoutHandler;
-import org.aspectj.lang.ProceedingJoinPoint;
 
 import java.time.Duration;
 
@@ -23,7 +23,7 @@ public class SemaphoreInfo {
      * @see io.github.spitmaster.warlock.annotation.Wsemaphore
      * @see io.github.spitmaster.warlock.util.SpelExpressionUtil
      * @see io.github.spitmaster.warlock.aspect.WsemaphoreAspect
-     * @see DefaultWmutexFactory#buildLockInfo(ProceedingJoinPoint, Wsemaphore)
+     * @see DefaultWmutexFactory#buildLockInfo()
      */
     private String semaphoreKey;
 
@@ -32,6 +32,11 @@ public class SemaphoreInfo {
      * 若小于1, 则不起作用
      */
     private int permits;
+
+    /**
+     * 信号量的作用域
+     */
+    private Scope scope;
 
     /**
      * 尝试获取锁的时间
@@ -81,6 +86,14 @@ public class SemaphoreInfo {
 
     public void setPermits(int permits) {
         this.permits = permits;
+    }
+
+    public Scope getScope() {
+        return scope;
+    }
+
+    public void setScope(Scope scope) {
+        this.scope = scope;
     }
 
     public Duration getWaitTime() {

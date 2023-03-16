@@ -1,5 +1,6 @@
 package io.github.spitmaster.warlock.core.semaphore;
 
+import org.aopalliance.intercept.MethodInvocation;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.redisson.api.RPermitExpirableSemaphore;
 import org.redisson.api.RedissonClient;
@@ -22,7 +23,7 @@ public class DistributedWmutex implements Wmutex {
     }
 
     @Override
-    public Object doBizWithSemaphore(ProceedingJoinPoint pjp) throws Throwable {
+    public Object doAround(MethodInvocation methodInvocation) throws Throwable {
         //1. 获取信号量
         RPermitExpirableSemaphore semaphore = getSemaphore();
         String permitId = null;
@@ -35,10 +36,10 @@ public class DistributedWmutex implements Wmutex {
                     TimeUnit.MILLISECONDS);
             if (permitId != null) {
                 //3. 如果有permitId返回则说明成功获取到permit, 则执行业务代码
-                result = pjp.proceed();
+                result = methodInvocation.proceed();
             } else {
                 //没获取到permit, 那么说明超时了, 调用回调
-                result = semaphoreInfo.getWaitTimeoutHandler().handleWaitTimeout(pjp);
+                result = semaphoreInfo.getWaitTimeoutHandler().handleWaitTimeout(methodInvocation);
             }
         } finally {
             //4. 归还permit
@@ -47,7 +48,7 @@ public class DistributedWmutex implements Wmutex {
                 if (!released) {
                     //5. 如果没有释放成功, 说明业务执行超时了, 因为这个permitId已经自动过期了, 执行超时处理
                     //替换掉原来的返回值
-                    result = semaphoreInfo.getLeaseTimeoutHandler().handleLeaseTimeout(pjp, result);
+                    result = semaphoreInfo.getLeaseTimeoutHandler().handleLeaseTimeout(methodInvocation, result);
                 }
             }
         }

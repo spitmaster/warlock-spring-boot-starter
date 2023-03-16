@@ -1,5 +1,6 @@
 package io.github.spitmaster.warlock.core.semaphore;
 
+import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.aspectj.lang.ProceedingJoinPoint;
 
@@ -29,7 +30,7 @@ public class StandaloneWmutex implements Wmutex {
     }
 
     @Override
-    public Object doBizWithSemaphore(ProceedingJoinPoint pjp) throws Throwable {
+    public Object doAround(MethodInvocation methodInvocation) throws Throwable {
         //1. 懒加载信号量对象
         Semaphore semaphore = getSemaphore();
         boolean acquired = false;
@@ -38,9 +39,9 @@ public class StandaloneWmutex implements Wmutex {
             acquired = semaphore.tryAcquire(semaphoreInfo.getWaitTime().toMillis(), TimeUnit.MILLISECONDS);
             if (acquired) {
                 //3. 执行业务代码
-                return pjp.proceed();
+                return methodInvocation.proceed();
             } else {
-                return semaphoreInfo.getWaitTimeoutHandler().handleWaitTimeout(pjp);
+                return semaphoreInfo.getWaitTimeoutHandler().handleWaitTimeout(methodInvocation);
             }
         } finally {
             //4. 归还permit

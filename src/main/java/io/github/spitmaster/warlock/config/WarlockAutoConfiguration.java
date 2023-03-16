@@ -2,6 +2,7 @@ package io.github.spitmaster.warlock.config;
 
 import io.github.spitmaster.warlock.aspect.barrier.WcyclicBarrierAnnotationAdvisor;
 import io.github.spitmaster.warlock.aspect.barrier.WcyclicBarrierMethodInterceptor;
+import io.github.spitmaster.warlock.aspect.semaphore.WsemaphoreAnnotationAdvisor;
 import io.github.spitmaster.warlock.aspect.warlock.WarlockAnnotationAdvisor;
 import io.github.spitmaster.warlock.core.factory.barrier.DefaultWbarrierFactory;
 import io.github.spitmaster.warlock.core.factory.barrier.WbarrierFactory;
@@ -9,6 +10,8 @@ import io.github.spitmaster.warlock.core.factory.lock.DefaultWlockFactory;
 import io.github.spitmaster.warlock.core.factory.lock.DistributedWlockFactory;
 import io.github.spitmaster.warlock.core.factory.lock.StandaloneWlockFactory;
 import io.github.spitmaster.warlock.core.factory.lock.WlockFactory;
+import io.github.spitmaster.warlock.core.factory.semaphore.DefaultWmutexFactory;
+import io.github.spitmaster.warlock.core.factory.semaphore.WmutexFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -76,7 +79,26 @@ public class WarlockAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public WbarrierFactory wbarrierFactory(){
         return new DefaultWbarrierFactory();
     }
+
+
+    /*
+    -------------------------------------------------------------------------------------
+     */
+
+    @Bean
+    @ConditionalOnMissingBean
+    public WsemaphoreAnnotationAdvisor wsemaphoreAnnotationAdvisor(){
+        return new WsemaphoreAnnotationAdvisor();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public WmutexFactory wmutexFactory(){
+        return new DefaultWmutexFactory();
+    }
+
 }

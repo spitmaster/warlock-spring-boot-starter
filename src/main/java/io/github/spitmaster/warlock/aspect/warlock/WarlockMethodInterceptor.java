@@ -1,7 +1,6 @@
 package io.github.spitmaster.warlock.aspect.warlock;
 
 import io.github.spitmaster.warlock.core.factory.lock.WlockFactory;
-import io.github.spitmaster.warlock.core.lock.Wlock;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
@@ -27,8 +26,8 @@ public class WarlockMethodInterceptor implements MethodInterceptor {
     @Override
     public Object invoke(@Nonnull MethodInvocation methodInvocation) throws Throwable {
         //1. 构建warlock
-        Wlock wlock = wlockFactory.build(methodInvocation);
-        //2. 在锁的环境下执行业务代码
-        return wlock.doWithLock(methodInvocation);
+        return wlockFactory.build(methodInvocation)
+                //2. 在锁的环境下执行业务代码
+                .doAround(methodInvocation);
     }
 }

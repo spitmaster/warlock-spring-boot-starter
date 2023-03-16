@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 abstract class AbstractDistributedWlock implements Wlock {
 
     @Override
-    public Object doWithLock(MethodInvocation methodInvocation) throws Throwable {
+    public Object doAround(MethodInvocation methodInvocation) throws Throwable {
         //1. 拿锁
         RLock lock = getRLock();
         //是否成功获取到锁

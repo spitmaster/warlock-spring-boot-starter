@@ -8,6 +8,7 @@ import io.github.spitmaster.warlock.core.lock.dist.DistributedWriteWlock;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import org.aopalliance.intercept.MethodInvocation;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.InitializingBean;
 
 import java.lang.reflect.Method;
 
@@ -17,12 +18,13 @@ import java.lang.reflect.Method;
  *
  * @author zhouyijin
  */
-public class DistributedWlockFactory extends AbstractWarlockFactory implements WlockFactory {
+public class DistributedWlockFactory extends AbstractWarlockFactory implements WlockFactory, InitializingBean {
 
-    private final RedissonClient redissonClient;
+    private RedissonClient redissonClient;
 
-    public DistributedWlockFactory() {
-        this.redissonClient = beanFactory.getBean(RedissonClient.class);
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        this.redissonClient = beanFactory.getBeanProvider(RedissonClient.class).getIfAvailable();
     }
 
     @Override
@@ -47,4 +49,5 @@ public class DistributedWlockFactory extends AbstractWarlockFactory implements W
                 throw new WarlockException("Unsupported lock type; type = " + lockInfo.getLockType());
         }
     }
+
 }

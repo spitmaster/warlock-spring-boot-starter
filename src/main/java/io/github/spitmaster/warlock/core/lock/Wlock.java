@@ -18,7 +18,7 @@ public interface Wlock {
      * @return 业务函数的返回值
      * @throws Throwable 业务方法可能抛出的异常
      */
-    Object doWithLock(MethodInvocation methodInvocation) throws Throwable;
+    Object doAround(MethodInvocation methodInvocation) throws Throwable;
 
     /**
      * 锁的信息

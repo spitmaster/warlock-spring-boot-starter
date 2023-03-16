@@ -1,6 +1,6 @@
 package io.github.spitmaster.warlock.core.semaphore;
 
-import org.aspectj.lang.ProceedingJoinPoint;
+import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.lang.NonNull;
 
 /**
@@ -13,11 +13,11 @@ public interface Wmutex {
     /**
      * 使用信号量执行业务代码
      *
-     * @param pjp 切点
+     * @param methodInvocation 切点
      * @return 业务代码返回值
      * @throws Throwable 透传异常
      */
-    Object doBizWithSemaphore(final ProceedingJoinPoint pjp) throws Throwable;
+    Object doAround(MethodInvocation methodInvocation) throws Throwable;
 
     /**
      * 锁的信息

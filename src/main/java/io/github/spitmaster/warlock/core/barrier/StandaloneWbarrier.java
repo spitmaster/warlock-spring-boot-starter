@@ -27,7 +27,7 @@ public class StandaloneWbarrier implements Wbarrier {
     }
 
     @Override
-    public Object doWithBarrier(MethodInvocation methodInvocation) throws Throwable {
+    public Object doAround(MethodInvocation methodInvocation) throws Throwable {
         //1. 获取这个key对应的 cyclicBarrier
         CyclicBarrier cyclicBarrier = this.getCyclicBarrier();
         try {

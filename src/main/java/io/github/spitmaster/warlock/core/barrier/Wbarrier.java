@@ -17,7 +17,7 @@ public interface Wbarrier {
      * @return 业务函数的返回值
      * @throws Throwable 业务方法可能抛出的异常
      */
-    Object doWithBarrier(MethodInvocation methodInvocation) throws Throwable;
+    Object doAround(MethodInvocation methodInvocation) throws Throwable;
 
     /**
      * WCyclicBarrier的信息

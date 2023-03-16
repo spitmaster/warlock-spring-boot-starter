@@ -1,5 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   io.github.spitmaster.warlock.config.WarlockAutoConfiguration,\
-  io.github.spitmaster.warlock.config.WsemaphoreAutoConfiguration,\
-  io.github.spitmaster.warlock.config.WcyclicBarrierAutoConfiguration,\
   io.github.spitmaster.warlock.config.WrateLimiterAutoConfiguration

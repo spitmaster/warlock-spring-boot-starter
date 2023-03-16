@@ -1,6 +1,5 @@
 package io.github.spitmaster.warlock.aspect.barrier;
 
-import io.github.spitmaster.warlock.core.barrier.Wbarrier;
 import io.github.spitmaster.warlock.core.factory.barrier.WbarrierFactory;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -26,7 +25,7 @@ public class WcyclicBarrierMethodInterceptor implements MethodInterceptor {
     @Nullable
     @Override
     public Object invoke(@Nonnull MethodInvocation methodInvocation) throws Throwable {
-        Wbarrier wbarrier = wbarrierFactory.build(methodInvocation);
-        return wbarrier.doWithBarrier(methodInvocation);
+        return wbarrierFactory.build(methodInvocation)
+                .doAround(methodInvocation);
     }
 }

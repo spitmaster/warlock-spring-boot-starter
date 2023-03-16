@@ -27,7 +27,7 @@ public class DistributedWlimiter implements Wlimiter {
 
 
     @Override
-    public Object doBizWithRateLimiter(ProceedingJoinPoint pjp) throws Throwable {
+    public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
         if (this.getRateLimiter().tryAcquire(this.rateLimiterInfo.getWaitTime().toMillis(), TimeUnit.MILLISECONDS)) {
             //通过限流器, 正常执行业务代码
             return pjp.proceed();

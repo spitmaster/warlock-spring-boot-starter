@@ -16,7 +16,7 @@ import java.util.concurrent.locks.Lock;
 abstract class AbstractStandaloneWlock implements Wlock {
 
     @Override
-    public Object doWithLock(MethodInvocation methodInvocation) throws Throwable {
+    public Object doAround(MethodInvocation methodInvocation) throws Throwable {
         //1. 拿锁
         Lock lock = getLock();
         //是否成功获取到锁

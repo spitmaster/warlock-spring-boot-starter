@@ -17,7 +17,7 @@ public interface Wlimiter {
      * @return 业务代码返回值
      * @throws Throwable 透传异常
      */
-    Object doBizWithRateLimiter(final ProceedingJoinPoint pjp) throws Throwable;
+    Object doAround(final ProceedingJoinPoint pjp) throws Throwable;
 
     /**
      * 获取限流器的信息
