@@ -1,5 +1,6 @@
 package io.github.spitmaster.warlock.core.barrier;
 
+import io.github.spitmaster.warlock.core.Waround;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -14,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author zhouyijin
  */
-public class StandaloneWbarrier implements Wbarrier {
+public class StandaloneWbarrier implements Waround {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneWbarrier.class);
 
@@ -90,8 +91,4 @@ public class StandaloneWbarrier implements Wbarrier {
         });
     }
 
-    @Override
-    public BarrierInfo getBarrierInfo() {
-        return this.barrierInfo;
-    }
 }

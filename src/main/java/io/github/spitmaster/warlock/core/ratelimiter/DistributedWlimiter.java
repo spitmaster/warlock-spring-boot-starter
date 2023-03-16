@@ -1,5 +1,6 @@
 package io.github.spitmaster.warlock.core.ratelimiter;
 
+import io.github.spitmaster.warlock.core.Waround;
 import org.aopalliance.intercept.MethodInvocation;
 import org.redisson.api.RRateLimiter;
 import org.redisson.api.RateIntervalUnit;
@@ -15,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author zhouyijin
  */
-public class DistributedWlimiter implements Wlimiter {
+public class DistributedWlimiter implements Waround {
 
     private final RateLimiterInfo rateLimiterInfo;
     private final RedissonClient redissonClient;
@@ -47,9 +48,4 @@ public class DistributedWlimiter implements Wlimiter {
         return rateLimiter;
     }
 
-
-    @Override
-    public RateLimiterInfo getRateLimiterInfo() {
-        return this.rateLimiterInfo;
-    }
 }

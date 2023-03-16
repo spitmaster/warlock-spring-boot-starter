@@ -1,25 +1,18 @@
 package io.github.spitmaster.warlock.config;
 
-import io.github.spitmaster.warlock.aspect.barrier.WcyclicBarrierAnnotationAdvisor;
-import io.github.spitmaster.warlock.aspect.barrier.WcyclicBarrierMethodInterceptor;
-import io.github.spitmaster.warlock.aspect.ratelimiter.WrateLimiterAnnotationAdvisor;
-import io.github.spitmaster.warlock.aspect.semaphore.WsemaphoreAnnotationAdvisor;
-import io.github.spitmaster.warlock.aspect.warlock.WarlockAnnotationAdvisor;
+import io.github.spitmaster.warlock.aspect.WarlockAnnotationAdvisor;
+import io.github.spitmaster.warlock.aspect.WcyclicBarrierAnnotationAdvisor;
+import io.github.spitmaster.warlock.aspect.WrateLimiterAnnotationAdvisor;
+import io.github.spitmaster.warlock.aspect.WsemaphoreAnnotationAdvisor;
 import io.github.spitmaster.warlock.core.factory.barrier.DefaultWbarrierFactory;
-import io.github.spitmaster.warlock.core.factory.barrier.WbarrierFactory;
 import io.github.spitmaster.warlock.core.factory.lock.DefaultWlockFactory;
 import io.github.spitmaster.warlock.core.factory.lock.DistributedWlockFactory;
 import io.github.spitmaster.warlock.core.factory.lock.StandaloneWlockFactory;
-import io.github.spitmaster.warlock.core.factory.lock.WlockFactory;
 import io.github.spitmaster.warlock.core.factory.ratelimiter.DefaultWlimiterFactory;
-import io.github.spitmaster.warlock.core.factory.ratelimiter.WlimiterFactory;
 import io.github.spitmaster.warlock.core.factory.semaphore.DefaultWmutexFactory;
-import io.github.spitmaster.warlock.core.factory.semaphore.WmutexFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
 /**
  * warlock的默认配置
@@ -32,12 +25,10 @@ import org.springframework.context.annotation.Primary;
 public class WarlockAutoConfiguration {
 
     /**
-     * @Warlock 注解的切面配置
-     *
      * @return 切面
+     * @Warlock 注解的切面配置
      */
     @Bean("warlockAnnotationAdvisor")
-    @ConditionalOnMissingBean
     public WarlockAnnotationAdvisor warlockAnnotationAdvisor() {
         return new WarlockAnnotationAdvisor();
     }
@@ -49,21 +40,17 @@ public class WarlockAutoConfiguration {
      * @return 构造warlock的工厂
      */
     @Bean("warlockFactory")
-    @Primary
-    @ConditionalOnMissingBean
-    public WlockFactory warlockFactory() {
+    public DefaultWlockFactory warlockFactory() {
         return new DefaultWlockFactory();
     }
 
     @Bean("standaloneWlockFactory")
-    @ConditionalOnMissingBean
     public StandaloneWlockFactory standaloneWlockFactory() {
         //专门生成单机锁的工厂
         return new StandaloneWlockFactory();
     }
 
     @Bean("distributedWlockFactory")
-    @ConditionalOnMissingBean
     public DistributedWlockFactory distributedWlockFactory() {
         //专门生成分布式锁的工厂
         return new DistributedWlockFactory();
@@ -76,14 +63,12 @@ public class WarlockAutoConfiguration {
 
 
     @Bean("wcyclicBarrierAnnotationAdvisor")
-    @ConditionalOnMissingBean
-    public WcyclicBarrierAnnotationAdvisor wcyclicBarrierAnnotationAdvisor(){
+    public WcyclicBarrierAnnotationAdvisor wcyclicBarrierAnnotationAdvisor() {
         return new WcyclicBarrierAnnotationAdvisor();
     }
 
     @Bean("wbarrierFactory")
-    @ConditionalOnMissingBean
-    public WbarrierFactory wbarrierFactory(){
+    public DefaultWbarrierFactory wbarrierFactory() {
         return new DefaultWbarrierFactory();
     }
 
@@ -93,14 +78,12 @@ public class WarlockAutoConfiguration {
      */
 
     @Bean("wsemaphoreAnnotationAdvisor")
-    @ConditionalOnMissingBean
-    public WsemaphoreAnnotationAdvisor wsemaphoreAnnotationAdvisor(){
+    public WsemaphoreAnnotationAdvisor wsemaphoreAnnotationAdvisor() {
         return new WsemaphoreAnnotationAdvisor();
     }
 
     @Bean("wmutexFactory")
-    @ConditionalOnMissingBean
-    public WmutexFactory wmutexFactory(){
+    public DefaultWmutexFactory wmutexFactory() {
         return new DefaultWmutexFactory();
     }
 
@@ -109,14 +92,12 @@ public class WarlockAutoConfiguration {
      */
 
     @Bean("wlimiterFactory")
-    @ConditionalOnMissingBean
-    public WlimiterFactory wlimiterFactory(){
+    public DefaultWlimiterFactory wlimiterFactory() {
         return new DefaultWlimiterFactory();
     }
 
     @Bean("wrateLimiterAnnotationAdvisor")
-    @ConditionalOnMissingBean
-    public WrateLimiterAnnotationAdvisor wrateLimiterAnnotationAdvisor(){
+    public WrateLimiterAnnotationAdvisor wrateLimiterAnnotationAdvisor() {
         return new WrateLimiterAnnotationAdvisor();
     }
 

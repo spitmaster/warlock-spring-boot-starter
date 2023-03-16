@@ -1,8 +1,8 @@
 package io.github.spitmaster.warlock.core.semaphore;
 
+import io.github.spitmaster.warlock.core.Waround;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang3.tuple.Pair;
-import org.aspectj.lang.ProceedingJoinPoint;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author zhouyijin
  */
-public class StandaloneWmutex implements Wmutex {
+public class StandaloneWmutex implements Waround {
 
     /**
      * 多个切点可以使用同一个key
@@ -76,9 +76,4 @@ public class StandaloneWmutex implements Wmutex {
         });
     }
 
-
-    @Override
-    public SemaphoreInfo getSemaphoreInfo() {
-        return this.semaphoreInfo;
-    }
 }

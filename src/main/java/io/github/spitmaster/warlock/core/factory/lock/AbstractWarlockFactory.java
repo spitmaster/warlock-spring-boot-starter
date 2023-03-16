@@ -20,7 +20,7 @@ import java.util.Arrays;
  *
  * @author zhouyijin
  */
-abstract class AbstractWarlockFactory extends AbstractFactory{
+abstract class AbstractWarlockFactory extends AbstractFactory {
 
     /**
      * 构建锁的信息
@@ -39,14 +39,7 @@ abstract class AbstractWarlockFactory extends AbstractFactory{
          * construct a lockkey that indicate a unique lock
          * this lock would be used in Warlock.beforeBiz and Warlock.afterBiz and Warlock.except
          */
-        String lockKey = Joiner
-                .on(':')
-                .skipNulls()
-                .join(Arrays.asList(
-                        "warlock",
-                        warlock.name(),
-                        SpelExpressionUtil.parseSpel(method, methodInvocation.getArguments(), warlock.key(), String.class)
-                ));
+        String lockKey = Joiner.on(':').skipNulls().join(Arrays.asList("warlock", warlock.name(), SpelExpressionUtil.parseSpel(method, methodInvocation.getArguments(), warlock.key(), String.class)));
         lockInfo.setLockKey(lockKey);
         //2. 拿到lockType
         lockInfo.setLockType(warlock.lockType());

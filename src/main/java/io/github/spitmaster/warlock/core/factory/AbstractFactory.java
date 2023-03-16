@@ -16,7 +16,7 @@ import org.springframework.beans.factory.ObjectProvider;
  *
  * @author zhouyijin
  */
-public abstract class AbstractFactory implements BeanFactoryAware {
+public abstract class AbstractFactory implements WaroundFactory, BeanFactoryAware {
 
     protected BeanFactory beanFactory;
 

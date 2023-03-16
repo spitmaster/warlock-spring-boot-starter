@@ -1,7 +1,7 @@
 package io.github.spitmaster.warlock.core.semaphore;
 
+import io.github.spitmaster.warlock.core.Waround;
 import org.aopalliance.intercept.MethodInvocation;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.redisson.api.RPermitExpirableSemaphore;
 import org.redisson.api.RedissonClient;
 
@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author zhouyijin
  */
-public class DistributedWmutex implements Wmutex {
+public class DistributedWmutex implements Waround {
 
     private final SemaphoreInfo semaphoreInfo;
     private final RedissonClient redissonClient;
@@ -53,11 +53,6 @@ public class DistributedWmutex implements Wmutex {
             }
         }
         return result;
-    }
-
-    @Override
-    public SemaphoreInfo getSemaphoreInfo() {
-        return this.semaphoreInfo;
     }
 
     private RPermitExpirableSemaphore getSemaphore() {

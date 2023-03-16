@@ -4,11 +4,12 @@ import com.google.common.base.Joiner;
 import io.github.spitmaster.warlock.annotation.Leasing;
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.Wsemaphore;
+import io.github.spitmaster.warlock.core.Waround;
 import io.github.spitmaster.warlock.core.factory.AbstractFactory;
+import io.github.spitmaster.warlock.core.factory.WaroundFactory;
 import io.github.spitmaster.warlock.core.semaphore.DistributedWmutex;
 import io.github.spitmaster.warlock.core.semaphore.SemaphoreInfo;
 import io.github.spitmaster.warlock.core.semaphore.StandaloneWmutex;
-import io.github.spitmaster.warlock.core.semaphore.Wmutex;
 import io.github.spitmaster.warlock.enums.Scope;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
@@ -26,19 +27,17 @@ import java.util.Arrays;
  *
  * @author zhouyijin
  */
-public class DefaultWmutexFactory extends AbstractFactory implements WmutexFactory, InitializingBean {
+public class DefaultWmutexFactory extends AbstractFactory implements WaroundFactory, InitializingBean {
 
     private RedissonClient redissonClient;
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (this.redissonClient == null) {
-            this.redissonClient = beanFactory.getBeanProvider(RedissonClient.class).getIfAvailable();
-        }
+        this.redissonClient = beanFactory.getBeanProvider(RedissonClient.class).getIfAvailable();
     }
 
     @Override
-    public Wmutex build(MethodInvocation methodInvocation) {
+    public Waround build(MethodInvocation methodInvocation) {
         Method method = methodInvocation.getMethod();
         Wsemaphore wsemaphore = AnnotatedElementUtils.findMergedAnnotation(method, Wsemaphore.class);
         if (wsemaphore == null) {

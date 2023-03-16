@@ -1,6 +1,7 @@
 package io.github.spitmaster.warlock.core.lock.standalone;
 
-import io.github.spitmaster.warlock.core.lock.Wlock;
+import io.github.spitmaster.warlock.core.Waround;
+import io.github.spitmaster.warlock.core.lock.AbstractWlock;
 import org.aopalliance.intercept.MethodInvocation;
 
 import java.util.concurrent.TimeUnit;
@@ -13,7 +14,7 @@ import java.util.concurrent.locks.Lock;
  *
  * @author zhouyijin
  */
-abstract class AbstractStandaloneWlock implements Wlock {
+abstract class AbstractStandaloneWlock extends AbstractWlock implements Waround {
 
     @Override
     public Object doAround(MethodInvocation methodInvocation) throws Throwable {

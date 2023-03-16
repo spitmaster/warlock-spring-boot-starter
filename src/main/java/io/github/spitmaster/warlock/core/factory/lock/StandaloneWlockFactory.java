@@ -1,7 +1,8 @@
 package io.github.spitmaster.warlock.core.factory.lock;
 
+import io.github.spitmaster.warlock.core.Waround;
+import io.github.spitmaster.warlock.core.factory.WaroundFactory;
 import io.github.spitmaster.warlock.core.lock.LockInfo;
-import io.github.spitmaster.warlock.core.lock.Wlock;
 import io.github.spitmaster.warlock.core.lock.standalone.ReadWlock;
 import io.github.spitmaster.warlock.core.lock.standalone.ReentrantWlock;
 import io.github.spitmaster.warlock.core.lock.standalone.WriteWlock;
@@ -13,10 +14,10 @@ import org.aopalliance.intercept.MethodInvocation;
  *
  * @author zhouyijin
  */
-public class StandaloneWlockFactory extends AbstractWarlockFactory implements WlockFactory {
+public class StandaloneWlockFactory extends AbstractWarlockFactory implements WaroundFactory {
 
     @Override
-    public Wlock build(MethodInvocation methodInvocation) {
+    public Waround build(MethodInvocation methodInvocation) {
         //1. 构造锁
         LockInfo lockInfo = buildLockInfo(methodInvocation);
 

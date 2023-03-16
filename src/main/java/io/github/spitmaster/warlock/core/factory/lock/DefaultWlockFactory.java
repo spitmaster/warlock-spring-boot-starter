@@ -1,7 +1,8 @@
 package io.github.spitmaster.warlock.core.factory.lock;
 
 import io.github.spitmaster.warlock.annotation.Warlock;
-import io.github.spitmaster.warlock.core.lock.Wlock;
+import io.github.spitmaster.warlock.core.Waround;
+import io.github.spitmaster.warlock.core.factory.WaroundFactory;
 import io.github.spitmaster.warlock.enums.Scope;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import org.aopalliance.intercept.MethodInvocation;
@@ -17,7 +18,7 @@ import java.lang.reflect.Method;
  *
  * @author zhouyijin
  */
-public class DefaultWlockFactory implements WlockFactory, BeanFactoryAware {
+public class DefaultWlockFactory implements WaroundFactory, BeanFactoryAware {
 
     private StandaloneWlockFactory standaloneWlockFactory;
     private DistributedWlockFactory distributedWlockFactory;
@@ -29,7 +30,7 @@ public class DefaultWlockFactory implements WlockFactory, BeanFactoryAware {
     }
 
     @Override
-    public Wlock build(MethodInvocation methodInvocation) {
+    public Waround build(MethodInvocation methodInvocation) {
         //根据锁的范围选择合适的锁factory
         Method method = methodInvocation.getMethod();
         Warlock warlock = AnnotatedElementUtils.findMergedAnnotation(method, Warlock.class);

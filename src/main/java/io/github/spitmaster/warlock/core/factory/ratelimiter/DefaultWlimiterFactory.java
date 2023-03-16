@@ -3,11 +3,12 @@ package io.github.spitmaster.warlock.core.factory.ratelimiter;
 import com.google.common.base.Joiner;
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.WrateLimiter;
+import io.github.spitmaster.warlock.core.Waround;
 import io.github.spitmaster.warlock.core.factory.AbstractFactory;
+import io.github.spitmaster.warlock.core.factory.WaroundFactory;
 import io.github.spitmaster.warlock.core.ratelimiter.DistributedWlimiter;
 import io.github.spitmaster.warlock.core.ratelimiter.RateLimiterInfo;
 import io.github.spitmaster.warlock.core.ratelimiter.StandaloneWlimiter;
-import io.github.spitmaster.warlock.core.ratelimiter.Wlimiter;
 import io.github.spitmaster.warlock.enums.Scope;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
@@ -25,7 +26,7 @@ import java.util.Arrays;
  *
  * @author zhouyijin
  */
-public class DefaultWlimiterFactory extends AbstractFactory implements WlimiterFactory, InitializingBean {
+public class DefaultWlimiterFactory extends AbstractFactory implements WaroundFactory, InitializingBean {
 
     private RedissonClient redissonClient;
 
@@ -35,7 +36,7 @@ public class DefaultWlimiterFactory extends AbstractFactory implements WlimiterF
     }
 
     @Override
-    public Wlimiter build(MethodInvocation methodInvocation) {
+    public Waround build(MethodInvocation methodInvocation) {
         Method method = methodInvocation.getMethod();
         WrateLimiter wrateLimiter = AnnotatedElementUtils.findMergedAnnotation(method, WrateLimiter.class);
         if (wrateLimiter == null) {

@@ -22,7 +22,6 @@ public class SemaphoreInfo {
      *
      * @see io.github.spitmaster.warlock.annotation.Wsemaphore
      * @see io.github.spitmaster.warlock.util.SpelExpressionUtil
-     * @see io.github.spitmaster.warlock.aspect.WsemaphoreAspect
      * @see DefaultWmutexFactory#buildLockInfo()
      */
     private String semaphoreKey;

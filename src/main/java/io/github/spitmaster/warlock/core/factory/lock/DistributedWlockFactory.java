@@ -1,7 +1,8 @@
 package io.github.spitmaster.warlock.core.factory.lock;
 
+import io.github.spitmaster.warlock.core.Waround;
+import io.github.spitmaster.warlock.core.factory.WaroundFactory;
 import io.github.spitmaster.warlock.core.lock.LockInfo;
-import io.github.spitmaster.warlock.core.lock.Wlock;
 import io.github.spitmaster.warlock.core.lock.dist.DistributedReadWlock;
 import io.github.spitmaster.warlock.core.lock.dist.DistributedReentrantWlock;
 import io.github.spitmaster.warlock.core.lock.dist.DistributedWriteWlock;
@@ -18,7 +19,7 @@ import java.lang.reflect.Method;
  *
  * @author zhouyijin
  */
-public class DistributedWlockFactory extends AbstractWarlockFactory implements WlockFactory, InitializingBean {
+public class DistributedWlockFactory extends AbstractWarlockFactory implements WaroundFactory, InitializingBean {
 
     private RedissonClient redissonClient;
 
@@ -28,7 +29,7 @@ public class DistributedWlockFactory extends AbstractWarlockFactory implements W
     }
 
     @Override
-    public Wlock build(MethodInvocation methodInvocation) {
+    public Waround build(MethodInvocation methodInvocation) {
         Method method = methodInvocation.getMethod();
         if (redissonClient == null) {
             //如果项目没有使用Redisson,则不支持使用分布式锁

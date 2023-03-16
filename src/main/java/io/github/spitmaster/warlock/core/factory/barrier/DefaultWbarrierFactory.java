@@ -3,10 +3,11 @@ package io.github.spitmaster.warlock.core.factory.barrier;
 import com.google.common.base.Joiner;
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.WcyclicBarrier;
+import io.github.spitmaster.warlock.core.Waround;
 import io.github.spitmaster.warlock.core.barrier.BarrierInfo;
 import io.github.spitmaster.warlock.core.barrier.StandaloneWbarrier;
-import io.github.spitmaster.warlock.core.barrier.Wbarrier;
 import io.github.spitmaster.warlock.core.factory.AbstractFactory;
+import io.github.spitmaster.warlock.core.factory.WaroundFactory;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
 import org.aopalliance.intercept.MethodInvocation;
@@ -22,10 +23,10 @@ import java.util.Arrays;
  *
  * @author zhouyijin
  */
-public class DefaultWbarrierFactory extends AbstractFactory implements WbarrierFactory {
+public class DefaultWbarrierFactory extends AbstractFactory implements WaroundFactory {
 
     @Override
-    public Wbarrier build(MethodInvocation methodInvocation) {
+    public Waround build(MethodInvocation methodInvocation) {
         return new StandaloneWbarrier(this.buildBarrierInfo(methodInvocation));
     }
 

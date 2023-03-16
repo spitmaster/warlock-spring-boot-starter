@@ -1,9 +1,9 @@
 package io.github.spitmaster.warlock.core.lock.dist;
 
+import io.github.spitmaster.warlock.core.Waround;
+import io.github.spitmaster.warlock.core.lock.AbstractWlock;
 import io.github.spitmaster.warlock.core.lock.LockInfo;
-import io.github.spitmaster.warlock.core.lock.Wlock;
 import org.aopalliance.intercept.MethodInvocation;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.redisson.api.RLock;
 
 import java.time.Duration;
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author zhouyijin
  */
-abstract class AbstractDistributedWlock implements Wlock {
+abstract class AbstractDistributedWlock extends AbstractWlock implements Waround {
 
     @Override
     public Object doAround(MethodInvocation methodInvocation) throws Throwable {

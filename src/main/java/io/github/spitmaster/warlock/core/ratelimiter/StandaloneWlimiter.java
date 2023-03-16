@@ -1,6 +1,7 @@
 package io.github.spitmaster.warlock.core.ratelimiter;
 
 import com.google.common.util.concurrent.RateLimiter;
+import io.github.spitmaster.warlock.core.Waround;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -14,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author zhouyijin
  */
-public class StandaloneWlimiter implements Wlimiter {
+public class StandaloneWlimiter implements Waround {
 
     /**
      * 多个切点可以使用同一个key
@@ -65,9 +66,4 @@ public class StandaloneWlimiter implements Wlimiter {
         });
     }
 
-
-    @Override
-    public RateLimiterInfo getRateLimiterInfo() {
-        return this.rateLimiterInfo;
-    }
 }
