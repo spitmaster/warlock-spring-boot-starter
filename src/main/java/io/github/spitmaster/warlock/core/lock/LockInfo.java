@@ -3,8 +3,8 @@ package io.github.spitmaster.warlock.core.lock;
 import io.github.spitmaster.warlock.annotation.Leasing;
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.Warlock;
-import io.github.spitmaster.warlock.aspect.WarlockAspect;
 import io.github.spitmaster.warlock.enums.LockType;
+import io.github.spitmaster.warlock.enums.Scope;
 import io.github.spitmaster.warlock.handler.LeaseTimeoutHandler;
 import io.github.spitmaster.warlock.handler.WaitTimeoutHandler;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
@@ -24,7 +24,6 @@ public class LockInfo {
      *
      * @see Warlock
      * @see SpelExpressionUtil
-     * @see WarlockAspect
      */
     private String lockKey;
 
@@ -34,6 +33,13 @@ public class LockInfo {
      * @see Warlock
      */
     private LockType lockType;
+
+    /**
+     * 锁的作用域
+     *
+     * @see Scope
+     */
+    private Scope lockScope;
 
     /**
      * 尝试获取锁的时间
@@ -83,6 +89,14 @@ public class LockInfo {
 
     public void setLockType(LockType lockType) {
         this.lockType = lockType;
+    }
+
+    public Scope getLockScope() {
+        return lockScope;
+    }
+
+    public void setLockScope(Scope lockScope) {
+        this.lockScope = lockScope;
     }
 
     public Duration getWaitTime() {

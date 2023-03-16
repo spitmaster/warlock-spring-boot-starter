@@ -1,8 +1,7 @@
 package io.github.spitmaster.warlock.core.factory.lock;
 
-import io.github.spitmaster.warlock.annotation.Warlock;
 import io.github.spitmaster.warlock.core.lock.Wlock;
-import org.aspectj.lang.ProceedingJoinPoint;
+import org.aopalliance.intercept.MethodInvocation;
 
 /**
  * 构造Wlock实例的工厂
@@ -16,10 +15,9 @@ public interface WlockFactory {
     /**
      * 构造一个Warlock对象
      *
-     * @param pjp     切点
-     * @param warlock 锁的元信息
+     * @param methodInvocation 切点
      * @return 构造好的warlock
      */
-    Wlock build(ProceedingJoinPoint pjp, Warlock warlock);
+    Wlock build(MethodInvocation methodInvocation);
 
 }

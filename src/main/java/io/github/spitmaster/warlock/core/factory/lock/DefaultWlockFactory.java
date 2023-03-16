@@ -4,43 +4,51 @@ import io.github.spitmaster.warlock.annotation.Warlock;
 import io.github.spitmaster.warlock.core.lock.Wlock;
 import io.github.spitmaster.warlock.enums.Scope;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
-import io.github.spitmaster.warlock.util.JoinPointUtil;
-import org.aspectj.lang.ProceedingJoinPoint;
+import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.core.annotation.AnnotatedElementUtils;
+
+import java.lang.reflect.Method;
 
 /**
  * WarlockFactory的简易实现
  *
  * @author zhouyijin
  */
-public class DefaultWlockFactory implements WlockFactory {
+public class DefaultWlockFactory implements WlockFactory, BeanFactoryAware {
 
-    private final StandaloneWlockFactory standaloneWlockFactory;
-    private final DistributedWlockFactory distributedWlockFactory;
+    private StandaloneWlockFactory standaloneWlockFactory;
+    private DistributedWlockFactory distributedWlockFactory;
 
-    public DefaultWlockFactory(StandaloneWlockFactory standaloneWlockFactory, DistributedWlockFactory distributedWlockFactory) {
-        this.standaloneWlockFactory = standaloneWlockFactory;
-        this.distributedWlockFactory = distributedWlockFactory;
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        standaloneWlockFactory = beanFactory.getBean(StandaloneWlockFactory.class);
+        distributedWlockFactory = beanFactory.getBean(DistributedWlockFactory.class);
     }
 
     @Override
-    public Wlock build(ProceedingJoinPoint pjp, Warlock warlock) {
+    public Wlock build(MethodInvocation methodInvocation) {
         //根据锁的范围选择合适的锁factory
+        Method method = methodInvocation.getMethod();
+        Warlock warlock = AnnotatedElementUtils.findMergedAnnotation(method, Warlock.class);
+        if (warlock == null) {
+            throw new WarlockException("invoke warlock interceptor on non warlock method, method = " + method.getName());
+        }
         Scope scope = warlock.lockScope();
         switch (scope) {
             case STANDALONE:
                 //单机锁
-                return standaloneWlockFactory.build(pjp, warlock);
+                return standaloneWlockFactory.build(methodInvocation);
             case DISTRIBUTED:
                 //分布式锁
-                if (distributedWlockFactory == null) {
-                    //如果项目没有使用Redisson,则不支持使用分布式锁
-                    throw new WarlockException("Not supported lock scope: DISTRIBUTED ; please use redisson client to active this function; method: " + JoinPointUtil.methodName(pjp));
-                }
-                return distributedWlockFactory.build(pjp, warlock);
+                return distributedWlockFactory.build(methodInvocation);
             default:
                 break;
         }
         //没有选择合适的锁范围, 抛异常,  代码应该跑不到这里
-        throw new WarlockException("There is no suitable Warlock for this method: " + JoinPointUtil.methodName(pjp));
+        throw new WarlockException("There is no suitable Warlock for this method: " + method);
     }
+
 }

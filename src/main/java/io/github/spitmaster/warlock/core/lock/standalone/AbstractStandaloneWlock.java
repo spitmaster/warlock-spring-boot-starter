@@ -1,7 +1,7 @@
 package io.github.spitmaster.warlock.core.lock.standalone;
 
 import io.github.spitmaster.warlock.core.lock.Wlock;
-import org.aspectj.lang.ProceedingJoinPoint;
+import org.aopalliance.intercept.MethodInvocation;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -16,7 +16,7 @@ import java.util.concurrent.locks.Lock;
 abstract class AbstractStandaloneWlock implements Wlock {
 
     @Override
-    public Object doWithLock(ProceedingJoinPoint pjp) throws Throwable {
+    public Object doWithLock(MethodInvocation methodInvocation) throws Throwable {
         //1. 拿锁
         Lock lock = getLock();
         //是否成功获取到锁
@@ -26,9 +26,9 @@ abstract class AbstractStandaloneWlock implements Wlock {
             acquired = lock.tryLock(getLockInfo().getWaitTime().toMillis(), TimeUnit.MILLISECONDS);
             if (acquired) {
                 //3. 执行业务代码
-                return pjp.proceed();
+                return methodInvocation.proceed();
             } else {
-                return getLockInfo().getWaitTimeoutHandler().handleWaitTimeout(pjp);
+                return getLockInfo().getWaitTimeoutHandler().handleWaitTimeout(methodInvocation);
             }
         } finally {
             //4. 解锁

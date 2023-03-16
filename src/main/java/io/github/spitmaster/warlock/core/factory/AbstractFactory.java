@@ -6,7 +6,9 @@ import io.github.spitmaster.warlock.handler.LeaseTimeoutHandler;
 import io.github.spitmaster.warlock.handler.PlainLockLeaseTimeoutHandler;
 import io.github.spitmaster.warlock.handler.PlainLockWaitTimeoutHandler;
 import io.github.spitmaster.warlock.handler.WaitTimeoutHandler;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.ObjectProvider;
 
 /**
@@ -14,16 +16,12 @@ import org.springframework.beans.factory.ObjectProvider;
  *
  * @author zhouyijin
  */
-public abstract class AbstractFactory {
+public abstract class AbstractFactory implements BeanFactoryAware {
 
-    private final BeanFactory beanFactory;
+    protected BeanFactory beanFactory;
 
-    /**
-     * 必须搭配BeanFactory才能使用
-     *
-     * @param beanFactory Spring的Bean工厂对象, 一般来说是applicationContext
-     */
-    public AbstractFactory(BeanFactory beanFactory) {
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
     }
 

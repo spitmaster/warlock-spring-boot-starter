@@ -7,10 +7,11 @@ import io.github.spitmaster.warlock.annotation.Warlock;
 import io.github.spitmaster.warlock.core.factory.AbstractFactory;
 import io.github.spitmaster.warlock.core.lock.LockInfo;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
-import io.github.spitmaster.warlock.util.JoinPointUtil;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.springframework.beans.factory.BeanFactory;
+import io.github.spitmaster.warlock.util.SpelExpressionUtil;
+import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 
+import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.Arrays;
 
@@ -19,20 +20,17 @@ import java.util.Arrays;
  *
  * @author zhouyijin
  */
-abstract class AbstractWarlockFactory extends AbstractFactory {
-
-    public AbstractWarlockFactory(BeanFactory beanFactory) {
-        super(beanFactory);
-    }
+abstract class AbstractWarlockFactory extends AbstractFactory{
 
     /**
      * 构建锁的信息
      *
-     * @param pjp     切点
-     * @param warlock Warlock注解, 元信息
+     * @param methodInvocation 切点
      * @return 通过切点和 注解 综合得到的锁在使用中锁需要的信息
      */
-    protected LockInfo buildLockInfo(ProceedingJoinPoint pjp, Warlock warlock) {
+    protected LockInfo buildLockInfo(MethodInvocation methodInvocation) {
+        Method method = methodInvocation.getMethod();
+        Warlock warlock = AnnotatedElementUtils.findMergedAnnotation(method, Warlock.class);
         LockInfo lockInfo = new LockInfo();
         //1. 构造lockKey
         //收集锁的信息
@@ -47,17 +45,17 @@ abstract class AbstractWarlockFactory extends AbstractFactory {
                 .join(Arrays.asList(
                         "warlock",
                         warlock.name(),
-                        JoinPointUtil.parseSpEL(pjp, warlock.key())
+                        SpelExpressionUtil.parseSpel(method, methodInvocation.getArguments(), warlock.key(), String.class)
                 ));
-
         lockInfo.setLockKey(lockKey);
         //2. 拿到lockType
         lockInfo.setLockType(warlock.lockType());
+        lockInfo.setLockScope(warlock.lockScope());
         //3. 获取等待时间
         Waiting waiting = warlock.waiting();
         Duration waitTime = Duration.of(waiting.waitTime(), waiting.timeUnit().toChronoUnit());
         if (waitTime.isNegative() || waitTime.isZero()) {
-            throw new WarlockException("WaitTime cannot Less than or equal to 0; method = " + JoinPointUtil.methodName(pjp));
+            throw new WarlockException("WaitTime cannot Less than or equal to 0; method = " + method.getName());
         }
         lockInfo.setWaitTime(waitTime);
         lockInfo.setWaitTimeoutHandler(getWaitTimeoutHandler(waiting));
@@ -65,7 +63,7 @@ abstract class AbstractWarlockFactory extends AbstractFactory {
         Leasing leasing = warlock.leasing();
         Duration leaseTime = Duration.of(leasing.leaseTime(), leasing.timeUnit().toChronoUnit());
         if (leaseTime.isNegative() || leaseTime.isZero()) {
-            throw new WarlockException("LeaseTime cannot Less than or equal to 0; method = " + JoinPointUtil.methodName(pjp));
+            throw new WarlockException("LeaseTime cannot Less than or equal to 0; method = " + method.getName());
         }
         lockInfo.setLeaseTime(leaseTime);
         lockInfo.setLockLeaseTimeoutHandler(getLeaseTimeoutHandler(leasing));

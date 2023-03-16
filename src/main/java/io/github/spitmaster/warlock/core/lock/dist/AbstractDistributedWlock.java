@@ -2,6 +2,7 @@ package io.github.spitmaster.warlock.core.lock.dist;
 
 import io.github.spitmaster.warlock.core.lock.LockInfo;
 import io.github.spitmaster.warlock.core.lock.Wlock;
+import org.aopalliance.intercept.MethodInvocation;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.redisson.api.RLock;
 
@@ -16,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 abstract class AbstractDistributedWlock implements Wlock {
 
     @Override
-    public Object doWithLock(ProceedingJoinPoint pjp) throws Throwable {
+    public Object doWithLock(MethodInvocation methodInvocation) throws Throwable {
         //1. 拿锁
         RLock lock = getRLock();
         //是否成功获取到锁
@@ -30,9 +31,9 @@ abstract class AbstractDistributedWlock implements Wlock {
             acquired = lock.tryLock(waitTime.toMillis(), leaseTime.toMillis(), TimeUnit.MILLISECONDS);//NOSONAR
             if (acquired) {
                 //3. 执行业务代码
-                result = pjp.proceed();
+                result = methodInvocation.proceed();
             } else {
-                result = getLockInfo().getWaitTimeoutHandler().handleWaitTimeout(pjp);
+                result = getLockInfo().getWaitTimeoutHandler().handleWaitTimeout(methodInvocation);
             }
         } finally {
             //4. 解锁
@@ -45,7 +46,7 @@ abstract class AbstractDistributedWlock implements Wlock {
                     //此时不需要解锁
                     //但是需要回调超时的handler
                     //handler执行的结果,替换掉原来执行的返回值
-                    result = getLockInfo().getLockLeaseTimeoutHandler().handleLeaseTimeout(pjp, result);
+                    result = getLockInfo().getLockLeaseTimeoutHandler().handleLeaseTimeout(methodInvocation, result);
                 }
             }
         }

@@ -1,14 +1,10 @@
 package io.github.spitmaster.warlock.config;
 
-import io.github.spitmaster.warlock.aspect.WarlockAspect;
+import io.github.spitmaster.warlock.aspect.warlock.WarlockAnnotationAdvisor;
 import io.github.spitmaster.warlock.core.factory.lock.DefaultWlockFactory;
 import io.github.spitmaster.warlock.core.factory.lock.DistributedWlockFactory;
 import io.github.spitmaster.warlock.core.factory.lock.StandaloneWlockFactory;
 import io.github.spitmaster.warlock.core.factory.lock.WlockFactory;
-import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -26,14 +22,14 @@ import org.springframework.context.annotation.Primary;
 public class WarlockAutoConfiguration {
 
     /**
-     * Warlock 注解的切面
+     * @Warlock 注解的切面配置
      *
      * @return 切面
      */
     @Bean
     @ConditionalOnMissingBean
-    public WarlockAspect warlockAspect(WlockFactory wlockFactory) {
-        return new WarlockAspect(wlockFactory);
+    public WarlockAnnotationAdvisor warlockAnnotationAdvisor() {
+        return new WarlockAnnotationAdvisor();
     }
 
     /**
@@ -45,31 +41,21 @@ public class WarlockAutoConfiguration {
     @Bean("warlockFactory")
     @Primary
     @ConditionalOnMissingBean
-    public WlockFactory warlockFactory(
-            @Qualifier("standaloneWlockFactory") @Autowired(required = true) StandaloneWlockFactory standaloneWlockFactory,
-            @Qualifier("distributedWlockFactory") @Autowired(required = false) DistributedWlockFactory distributedWlockFactory
-
-    ) {
-        return new DefaultWlockFactory(standaloneWlockFactory, distributedWlockFactory);
+    public WlockFactory warlockFactory() {
+        return new DefaultWlockFactory();
     }
 
     @Bean("standaloneWlockFactory")
     @ConditionalOnMissingBean
-    public StandaloneWlockFactory standaloneWlockFactory(BeanFactory beanFactory) {
+    public StandaloneWlockFactory standaloneWlockFactory() {
         //专门生成单机锁的工厂
-        return new StandaloneWlockFactory(beanFactory);
+        return new StandaloneWlockFactory();
     }
 
     @Bean("distributedWlockFactory")
     @ConditionalOnMissingBean
-    public DistributedWlockFactory distributedWlockFactory(
-            BeanFactory beanFactory,
-            @Autowired(required = false) RedissonClient redissonClient) {
+    public DistributedWlockFactory distributedWlockFactory() {
         //专门生成分布式锁的工厂
-        if (redissonClient == null) {
-            return null;
-        } else {
-            return new DistributedWlockFactory(beanFactory, redissonClient);
-        }
+        return new DistributedWlockFactory();
     }
 }

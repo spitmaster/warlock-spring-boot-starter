@@ -1,6 +1,6 @@
 package io.github.spitmaster.warlock.core.lock;
 
-import org.aspectj.lang.ProceedingJoinPoint;
+import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.lang.NonNull;
 
 /**
@@ -14,11 +14,11 @@ public interface Wlock {
     /**
      * 在锁的环境下执行业务函数
      *
-     * @param pjp 切点
+     * @param methodInvocation 切点
      * @return 业务函数的返回值
      * @throws Throwable 业务方法可能抛出的异常
      */
-    Object doWithLock(ProceedingJoinPoint pjp) throws Throwable;
+    Object doWithLock(MethodInvocation methodInvocation) throws Throwable;
 
     /**
      * 锁的信息

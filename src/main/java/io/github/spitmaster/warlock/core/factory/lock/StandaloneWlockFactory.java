@@ -1,14 +1,12 @@
 package io.github.spitmaster.warlock.core.factory.lock;
 
-import io.github.spitmaster.warlock.annotation.Warlock;
 import io.github.spitmaster.warlock.core.lock.LockInfo;
 import io.github.spitmaster.warlock.core.lock.Wlock;
 import io.github.spitmaster.warlock.core.lock.standalone.ReadWlock;
 import io.github.spitmaster.warlock.core.lock.standalone.ReentrantWlock;
 import io.github.spitmaster.warlock.core.lock.standalone.WriteWlock;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.springframework.beans.factory.BeanFactory;
+import org.aopalliance.intercept.MethodInvocation;
 
 /**
  * 生产单机使用的Warlock的Factory实现
@@ -17,14 +15,10 @@ import org.springframework.beans.factory.BeanFactory;
  */
 public class StandaloneWlockFactory extends AbstractWarlockFactory implements WlockFactory {
 
-    public StandaloneWlockFactory(BeanFactory beanFactory) {
-        super(beanFactory);
-    }
-
     @Override
-    public Wlock build(ProceedingJoinPoint pjp, Warlock warlock) {
+    public Wlock build(MethodInvocation methodInvocation) {
         //1. 构造锁
-        LockInfo lockInfo = buildLockInfo(pjp, warlock);
+        LockInfo lockInfo = buildLockInfo(methodInvocation);
 
         //2. 根据锁类型选择合适的锁
         //According lock type decide what wlock should be used
