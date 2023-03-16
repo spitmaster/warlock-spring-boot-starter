@@ -20,7 +20,7 @@ public class WcyclicBarrierAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public WcyclicBarrierAspect wsemaphoreAspect(WbarrierFactory wbarrierFactory) {
+    public WcyclicBarrierAspect wcyclicBarrierAspect(WbarrierFactory wbarrierFactory) {
         return new WcyclicBarrierAspect(wbarrierFactory);
     }
 
