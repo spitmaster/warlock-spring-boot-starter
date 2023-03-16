@@ -1,8 +1,7 @@
 package io.github.spitmaster.warlock.core.factory.barrier;
 
-import io.github.spitmaster.warlock.annotation.WcyclicBarrier;
 import io.github.spitmaster.warlock.core.barrier.Wbarrier;
-import org.aspectj.lang.ProceedingJoinPoint;
+import org.aopalliance.intercept.MethodInvocation;
 
 /**
  * 生成 WBarrier 对象
@@ -14,9 +13,8 @@ public interface WbarrierFactory {
     /**
      * 构造一个 WBarrier 对象
      *
-     * @param pjp            切点
-     * @param wcyclicBarrier 注解
+     * @param methodInvocation 切点
      * @return 构造好的 WBarrier
      */
-    Wbarrier build(ProceedingJoinPoint pjp, WcyclicBarrier wcyclicBarrier);
+    Wbarrier build(MethodInvocation methodInvocation);
 }

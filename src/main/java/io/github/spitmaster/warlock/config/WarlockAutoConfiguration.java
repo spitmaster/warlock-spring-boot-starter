@@ -1,6 +1,10 @@
 package io.github.spitmaster.warlock.config;
 
+import io.github.spitmaster.warlock.aspect.barrier.WcyclicBarrierAnnotationAdvisor;
+import io.github.spitmaster.warlock.aspect.barrier.WcyclicBarrierMethodInterceptor;
 import io.github.spitmaster.warlock.aspect.warlock.WarlockAnnotationAdvisor;
+import io.github.spitmaster.warlock.core.factory.barrier.DefaultWbarrierFactory;
+import io.github.spitmaster.warlock.core.factory.barrier.WbarrierFactory;
 import io.github.spitmaster.warlock.core.factory.lock.DefaultWlockFactory;
 import io.github.spitmaster.warlock.core.factory.lock.DistributedWlockFactory;
 import io.github.spitmaster.warlock.core.factory.lock.StandaloneWlockFactory;
@@ -26,7 +30,7 @@ public class WarlockAutoConfiguration {
      *
      * @return 切面
      */
-    @Bean
+    @Bean("warlockAnnotationAdvisor")
     @ConditionalOnMissingBean
     public WarlockAnnotationAdvisor warlockAnnotationAdvisor() {
         return new WarlockAnnotationAdvisor();
@@ -57,5 +61,22 @@ public class WarlockAutoConfiguration {
     public DistributedWlockFactory distributedWlockFactory() {
         //专门生成分布式锁的工厂
         return new DistributedWlockFactory();
+    }
+
+
+    /*
+    -------------------------------------------------------------------------------------
+     */
+
+
+    @Bean
+    @ConditionalOnMissingBean
+    public WcyclicBarrierAnnotationAdvisor wcyclicBarrierAnnotationAdvisor(){
+        return new WcyclicBarrierAnnotationAdvisor();
+    }
+
+    @Bean
+    public WbarrierFactory wbarrierFactory(){
+        return new DefaultWbarrierFactory();
     }
 }

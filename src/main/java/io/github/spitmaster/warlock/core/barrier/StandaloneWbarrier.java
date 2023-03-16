@@ -1,11 +1,11 @@
 package io.github.spitmaster.warlock.core.barrier;
 
-import io.github.spitmaster.warlock.util.JoinPointUtil;
+import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang3.tuple.Pair;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -27,7 +27,7 @@ public class StandaloneWbarrier implements Wbarrier {
     }
 
     @Override
-    public Object doWithBarrier(ProceedingJoinPoint pjp) throws Throwable {
+    public Object doWithBarrier(MethodInvocation methodInvocation) throws Throwable {
         //1. 获取这个key对应的 cyclicBarrier
         CyclicBarrier cyclicBarrier = this.getCyclicBarrier();
         try {
@@ -38,13 +38,14 @@ public class StandaloneWbarrier implements Wbarrier {
             //一旦Broken这个CyclicBarrier就相当于废了, 要立刻恢复,
             // 但是原来的 cyclicBarrier 实际上已经不能继续用了, 因为还有许多其他线程在不停的处理Exception,
             // 那么这时候就需要将Map中的换掉, 重新初始化
-            return processBrokenBarrier(pjp, cyclicBarrier, e);
+            return processBrokenBarrier(methodInvocation, cyclicBarrier, e);
         }
-        return pjp.proceed();
+        return methodInvocation.proceed();
     }
 
-    private Object processBrokenBarrier(ProceedingJoinPoint pjp, CyclicBarrier cyclicBarrier, Exception e) throws Throwable {
-        LOGGER.error("processBrokenBarrier; method={}", JoinPointUtil.methodName(pjp), e);
+    private Object processBrokenBarrier(MethodInvocation methodInvocation, CyclicBarrier cyclicBarrier, Exception e) throws Throwable {
+        Method method = methodInvocation.getMethod();
+        LOGGER.error("processBrokenBarrier; method={}", method, e);
         //使用同一个Barrier的需要一起处理, 不能各处理各的
         synchronized (cyclicBarrier) {
             CyclicBarrier newCyclicBarrier = this.getCyclicBarrier();
@@ -55,7 +56,7 @@ public class StandaloneWbarrier implements Wbarrier {
             }
         }
         //超时处理
-        return this.barrierInfo.getWaitTimeoutHandler().handleWaitTimeout(pjp);
+        return this.barrierInfo.getWaitTimeoutHandler().handleWaitTimeout(methodInvocation);
     }
 
     /**
