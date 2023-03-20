@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class LockAspectTestService implements WaitTimeoutHandler, LeaseTimeoutHandler {
 
-    private int counter = 0;
+    int counter = 0;
 
     @Warlock(name = "test1", key = "#id")
     public void testWarlock(int id) {
@@ -37,26 +37,91 @@ public class LockAspectTestService implements WaitTimeoutHandler, LeaseTimeoutHa
         }
     }
 
-    @Warlock(name = "test1")
-    public void add10() {
+    @Warlock(name = "add100")
+    public void add100() {
         for (int i = 0; i < 100; i++) {
             counter++;
         }
     }
 
-    public int getCounter(){
+    private int counter0 = 0;
+    private int counter1 = 0;
+
+    @Warlock(name = "add100_2", key = "#id")
+    public void add100_2(int id) {
+        for (int i = 0; i < 100; i++) {
+            var counterNum = id % 2;
+            if (counterNum == 0) {
+                counter0++;
+            } else if (counterNum == 1) {
+                counter1++;
+            }
+
+        }
+    }
+
+    @Warlock(name = "add100Distributed", lockScope = Scope.DISTRIBUTED)
+    public void add100Distributed() {
+        for (int i = 0; i < 100; i++) {
+            counter++;
+        }
+    }
+
+    @Warlock(name = "add100Distributed2",
+            key = "#id",
+            lockScope = Scope.DISTRIBUTED)
+    public void add100Distributed2(int id) {
+        for (int i = 0; i < 100; i++) {
+            var counterNum = id % 2;
+            if (counterNum == 0) {
+                counter0++;
+            } else if (counterNum == 1) {
+                counter1++;
+            }
+        }
+    }
+
+    public int getCounter() {
         return counter;
     }
 
+    public void setCounter(int counter) {
+        this.counter = counter;
+    }
 
+    public int getCounter0() {
+        return counter0;
+    }
 
-    @Warlock(name = "test1-dist",
-//            key = "#id",
+    public void setCounter0(int counter0) {
+        this.counter0 = counter0;
+    }
+
+    public int getCounter1() {
+        return counter1;
+    }
+
+    public void setCounter1(int counter1) {
+        this.counter1 = counter1;
+    }
+
+    @Warlock(name = "waitTimeout",
+            lockScope = Scope.DISTRIBUTED,
+            waiting = @Waiting(waitTime = 1, timeUnit = TimeUnit.SECONDS, waitTimeoutHandler = LockAspectTestService.class)
+    )
+    public void waitTimeout(int id) throws InterruptedException {
+        TimeUnit.SECONDS.sleep(1);
+        for (int i = 0; i < id; i++) {
+            counter++;
+        }
+    }
+
+    @Warlock(name = "leaseTimeout",
             lockScope = Scope.DISTRIBUTED,
             waiting = @Waiting(waitTime = 1, timeUnit = TimeUnit.SECONDS, waitTimeoutHandler = LockAspectTestService.class),
             leasing = @Leasing(leaseTime = 1, timeUnit = TimeUnit.SECONDS, leaseTimeoutHandler = LockAspectTestService.class)
     )
-    public void testWarlockDistributed(int id) throws InterruptedException {
+    public void leaseTimeout(int id) throws InterruptedException {
         TimeUnit.SECONDS.sleep(1);
         for (int i = 0; i < id; i++) {
             counter++;
