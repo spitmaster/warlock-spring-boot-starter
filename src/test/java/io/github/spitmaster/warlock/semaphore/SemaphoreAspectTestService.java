@@ -1,46 +1,52 @@
 package io.github.spitmaster.warlock.semaphore;
 
-import io.github.spitmaster.warlock.annotation.Leasing;
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.Wsemaphore;
 import io.github.spitmaster.warlock.enums.Scope;
 import io.github.spitmaster.warlock.handler.LeaseTimeoutHandler;
 import io.github.spitmaster.warlock.handler.WaitTimeoutHandler;
 import org.aopalliance.intercept.MethodInvocation;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class SemaphoreAspectTestService implements WaitTimeoutHandler, LeaseTimeoutHandler {
 
-    private long counter = 0;
+    private AtomicInteger counter = new AtomicInteger();
 
-    @Wsemaphore(name = "mys1", permits = 1, scope = Scope.DISTRIBUTED)
+    @Wsemaphore(name = "mys1",
+            key = "#id",
+            permits = 7,
+            waiting = @Waiting(waitTime = 1, timeUnit = TimeUnit.SECONDS, waitTimeoutHandler = SemaphoreAspectTestService.class),
+            scope = Scope.STANDALONE)
     public void testWsemaphore(int id) {
-        for (int i = 0; i < id * 1000; i++) {
-            counter++;
-        }
-    }
-
-    @Wsemaphore(name = "mys2", permits = 1, scope = Scope.DISTRIBUTED,
-            waiting = @Waiting(waitTime = 10, timeUnit = TimeUnit.MINUTES, waitTimeoutHandler = SemaphoreAspectTestService.class),
-            leasing = @Leasing(leaseTime = 1, timeUnit = TimeUnit.SECONDS, leaseTimeoutHandler = SemaphoreAspectTestService.class)
-    )
-    public void testWsemaphore2(int id) {
         try {
-            TimeUnit.SECONDS.sleep(1);
+            TimeUnit.SECONDS.sleep(5);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        for (int i = 0; i < id * 1000; i++) {
-            counter++;
-        }
+        counter.incrementAndGet();
     }
 
-    public long getCounter() {
-        return counter;
+    @Wsemaphore(name = "testWsemaphore2",
+            key = "#id",
+            permits = 3,
+            scope = Scope.DISTRIBUTED,
+            waiting = @Waiting(waitTime = 1, timeUnit = TimeUnit.SECONDS, waitTimeoutHandler = SemaphoreAspectTestService.class)
+    )
+    public void testWsemaphore2(int id) {
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        counter.incrementAndGet();
+    }
+
+    public int getCounter() {
+        return counter.get();
     }
 
     @Override
@@ -53,5 +59,10 @@ public class SemaphoreAspectTestService implements WaitTimeoutHandler, LeaseTime
     public Object handleWaitTimeout(MethodInvocation pjp) throws Throwable {
         System.out.println("wait timeout");
         return null;
+    }
+
+
+    public void init() {
+        this.counter.set(0);
     }
 }

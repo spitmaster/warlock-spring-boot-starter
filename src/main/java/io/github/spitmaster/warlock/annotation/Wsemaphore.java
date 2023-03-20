@@ -6,6 +6,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 依赖于Spring框架
@@ -43,7 +44,7 @@ public @interface Wsemaphore {
      * @return Scope, 目前支持两种JVM单机 和 基于Redis的分布式锁
      */
     Scope scope() default Scope.STANDALONE;
-    
+
     /**
      * 允许同时并发的线程数量,
      * 不允许小于1

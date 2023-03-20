@@ -1,9 +1,7 @@
 package io.github.spitmaster.warlock.semaphore;
 
 import io.github.spitmaster.warlock.Application;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -17,26 +15,32 @@ class WsemaphoreAspectTest {
     @Autowired
     private SemaphoreAspectTestService semaphoreAspectTestService;
 
-    private ExecutorService executorService;
+    private static ExecutorService executorService;
 
 
-    @BeforeEach
-    void setup() {
-        executorService = Executors.newFixedThreadPool(1000);
+    @BeforeAll
+    static void beforeAll() {
+        executorService = Executors.newFixedThreadPool(100);
     }
 
-    @AfterEach
-    void tearDown() {
+    @AfterAll
+    static void tearDownAll() {
+        executorService.shutdown();
         executorService = null;
     }
 
+    @BeforeEach
+    public void setup() {
+        semaphoreAspectTestService.init();
+    }
+
     @Test
-    void warlockPointcut() throws InterruptedException, ExecutionException {
+    void testWsemaphore1() throws InterruptedException, ExecutionException {
         List<Callable<Integer>> tasks = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 100; i++) {
             int finalI = i;
             tasks.add(() -> {
-                semaphoreAspectTestService.testWsemaphore2(finalI);
+                semaphoreAspectTestService.testWsemaphore(finalI % 4);
                 return 1;
             });
         }
@@ -44,6 +48,27 @@ class WsemaphoreAspectTest {
         for (Future<Integer> future : futures) {
             future.get();
         }
+        var counter = semaphoreAspectTestService.getCounter();
         System.out.println(semaphoreAspectTestService.getCounter());
+        Assertions.assertEquals(4 * 7, counter);
+    }
+
+    @Test
+    void testWsemaphore2() throws InterruptedException, ExecutionException {
+        List<Callable<Integer>> tasks = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            int finalI = i;
+            tasks.add(() -> {
+                semaphoreAspectTestService.testWsemaphore2(finalI % 8);
+                return 1;
+            });
+        }
+        List<Future<Integer>> futures = executorService.invokeAll(tasks);
+        for (Future<Integer> future : futures) {
+            future.get();
+        }
+        var counter = semaphoreAspectTestService.getCounter();
+        System.out.println(semaphoreAspectTestService.getCounter());
+        Assertions.assertEquals(8 * 3, counter);
     }
 }
