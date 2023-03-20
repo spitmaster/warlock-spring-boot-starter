@@ -10,6 +10,9 @@ It is easy to use in Spring application
 
 Just using annotation on your method , the concurrency problem would be solved
 
+> base on Spring AOP
+> 
+> https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#aop-api
 
 # Quick Start
 
