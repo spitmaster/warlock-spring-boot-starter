@@ -13,6 +13,8 @@ import org.springframework.beans.factory.InitializingBean;
 
 /**
  * 专门处理 Wsemaphore 注解的advisor
+ *
+ * @author zhouyijin
  */
 public class WsemaphoreAnnotationAdvisor extends AbstractPointcutAdvisor implements BeanFactoryAware, InitializingBean {
     private BeanFactory beanFactory;
@@ -36,11 +38,12 @@ public class WsemaphoreAnnotationAdvisor extends AbstractPointcutAdvisor impleme
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (this.pointcut == null) {
-            this.pointcut = new AnnotationMatchingPointcut(null, Wsemaphore.class, true);
-        }
-        if (this.advice == null) {
-            this.advice = new WaroundMethodInterceptor(beanFactory.getBean(DefaultWmutexFactory.class));
-        }
+        this.pointcut = new AnnotationMatchingPointcut(null, Wsemaphore.class, true);
+        this.advice = new WaroundMethodInterceptor(beanFactory.getBean(DefaultWmutexFactory.class));
+    }
+
+    @Override
+    public int getOrder() {
+        return 0;
     }
 }

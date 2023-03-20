@@ -13,6 +13,8 @@ import org.springframework.beans.factory.InitializingBean;
 
 /**
  * 专门处理WcyclicBarrier注解的advisor
+ *
+ * @author zhouyijin
  */
 public class WcyclicBarrierAnnotationAdvisor extends AbstractPointcutAdvisor implements BeanFactoryAware, InitializingBean {
     private BeanFactory beanFactory;
@@ -36,11 +38,12 @@ public class WcyclicBarrierAnnotationAdvisor extends AbstractPointcutAdvisor imp
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (this.pointcut == null) {
-            this.pointcut = new AnnotationMatchingPointcut(null, WcyclicBarrier.class, true);
-        }
-        if (this.advice == null) {
-            this.advice = new WaroundMethodInterceptor(beanFactory.getBean(DefaultWbarrierFactory.class));
-        }
+        this.pointcut = new AnnotationMatchingPointcut(null, WcyclicBarrier.class, true);
+        this.advice = new WaroundMethodInterceptor(beanFactory.getBean(DefaultWbarrierFactory.class));
+    }
+
+    @Override
+    public int getOrder() {
+        return 0;
     }
 }

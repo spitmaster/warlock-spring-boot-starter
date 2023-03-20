@@ -13,6 +13,8 @@ import org.springframework.beans.factory.InitializingBean;
 
 /**
  * 专门处理Warlock注解的advisor
+ *
+ * @author zhouyijin
  */
 public class WarlockAnnotationAdvisor extends AbstractPointcutAdvisor implements BeanFactoryAware, InitializingBean {
     private BeanFactory beanFactory;
@@ -36,11 +38,12 @@ public class WarlockAnnotationAdvisor extends AbstractPointcutAdvisor implements
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (this.pointcut == null) {
-            this.pointcut = new AnnotationMatchingPointcut(null, Warlock.class, true);
-        }
-        if (this.advice == null) {
-            this.advice = new WaroundMethodInterceptor(beanFactory.getBean(DefaultWlockFactory.class));
-        }
+        this.pointcut = new AnnotationMatchingPointcut(null, Warlock.class, true);
+        this.advice = new WaroundMethodInterceptor(beanFactory.getBean(DefaultWlockFactory.class));
+    }
+
+    @Override
+    public int getOrder() {
+        return 0;
     }
 }

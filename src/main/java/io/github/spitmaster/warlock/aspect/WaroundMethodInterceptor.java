@@ -20,7 +20,6 @@ public class WaroundMethodInterceptor implements MethodInterceptor {
         this.factory = factory;
     }
 
-
     @Nullable
     @Override
     public Object invoke(@Nonnull MethodInvocation methodInvocation) throws Throwable {

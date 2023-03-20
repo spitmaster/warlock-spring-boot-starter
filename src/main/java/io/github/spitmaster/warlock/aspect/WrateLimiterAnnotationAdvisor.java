@@ -13,6 +13,8 @@ import org.springframework.beans.factory.InitializingBean;
 
 /**
  * 专门处理WrateLimiter注解的advisor
+ *
+ * @author zhouyijin
  */
 public class WrateLimiterAnnotationAdvisor extends AbstractPointcutAdvisor implements BeanFactoryAware, InitializingBean {
     private BeanFactory beanFactory;
@@ -36,11 +38,12 @@ public class WrateLimiterAnnotationAdvisor extends AbstractPointcutAdvisor imple
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (this.pointcut == null) {
-            this.pointcut = new AnnotationMatchingPointcut(null, WrateLimiter.class, true);
-        }
-        if (this.advice == null) {
-            this.advice = new WaroundMethodInterceptor(beanFactory.getBean(DefaultWlimiterFactory.class));
-        }
+        this.pointcut = new AnnotationMatchingPointcut(null, WrateLimiter.class, true);
+        this.advice = new WaroundMethodInterceptor(beanFactory.getBean(DefaultWlimiterFactory.class));
+    }
+
+    @Override
+    public int getOrder() {
+        return 0;
     }
 }
