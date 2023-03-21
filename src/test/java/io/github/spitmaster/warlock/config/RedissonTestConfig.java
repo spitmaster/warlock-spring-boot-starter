@@ -20,8 +20,8 @@ public class RedissonTestConfig {
         //使用json序列化方式
         config.setCodec(new JsonJacksonCodec())
                 .useSingleServer()
-                .setAddress("redis://127.0.0.1:6379")
-                .setPassword("123");
+                .setAddress("redis://" + redisProperties.getHost() + ":" + redisProperties.getPort() + "")
+                .setPassword(redisProperties.getPassword());
         return Redisson.create(config);
     }
 
