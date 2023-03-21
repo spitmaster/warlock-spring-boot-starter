@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.*;
 
 @SpringBootTest(classes = Application.class)
@@ -37,10 +38,12 @@ class WsemaphoreAspectTest {
     @Test
     void testWsemaphore1() throws InterruptedException, ExecutionException {
         List<Callable<Integer>> tasks = new ArrayList<>();
+        var uuid = UUID.randomUUID().toString();
+
         for (int i = 0; i < 100; i++) {
             int finalI = i;
             tasks.add(() -> {
-                semaphoreAspectTestService.testWsemaphore(finalI % 4);
+                semaphoreAspectTestService.testWsemaphore(uuid + String.valueOf(finalI % 4));
                 return 1;
             });
         }
@@ -56,10 +59,12 @@ class WsemaphoreAspectTest {
     @Test
     void testWsemaphore2() throws InterruptedException, ExecutionException {
         List<Callable<Integer>> tasks = new ArrayList<>();
+        var uuid = UUID.randomUUID().toString();
         for (int i = 0; i < 100; i++) {
             int finalI = i;
             tasks.add(() -> {
-                semaphoreAspectTestService.testWsemaphore2(finalI % 8);
+                var id = uuid + String.valueOf(finalI % 8);
+                semaphoreAspectTestService.testWsemaphore2(id);
                 return 1;
             });
         }

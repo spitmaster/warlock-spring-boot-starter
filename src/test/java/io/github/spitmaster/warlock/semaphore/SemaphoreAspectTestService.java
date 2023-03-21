@@ -21,7 +21,7 @@ public class SemaphoreAspectTestService implements WaitTimeoutHandler, LeaseTime
             permits = 7,
             waiting = @Waiting(waitTime = 1, timeUnit = TimeUnit.SECONDS, waitTimeoutHandler = SemaphoreAspectTestService.class),
             scope = Scope.STANDALONE)
-    public void testWsemaphore(int id) {
+    public void testWsemaphore(String id) {
         try {
             TimeUnit.SECONDS.sleep(5);
         } catch (InterruptedException e) {
@@ -36,7 +36,7 @@ public class SemaphoreAspectTestService implements WaitTimeoutHandler, LeaseTime
             scope = Scope.DISTRIBUTED,
             waiting = @Waiting(waitTime = 1, timeUnit = TimeUnit.SECONDS, waitTimeoutHandler = SemaphoreAspectTestService.class)
     )
-    public void testWsemaphore2(int id) {
+    public void testWsemaphore2(String id) {
         try {
             TimeUnit.SECONDS.sleep(5);
         } catch (InterruptedException e) {
