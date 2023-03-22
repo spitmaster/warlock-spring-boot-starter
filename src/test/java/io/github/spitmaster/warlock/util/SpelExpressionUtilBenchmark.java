@@ -36,7 +36,7 @@ public class SpelExpressionUtilBenchmark {
     @Warmup(iterations = 5, time = 5, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 5, time = 5, timeUnit = TimeUnit.SECONDS)
     public String callWithPlainAspect() {
-        return SpelExpressionUtil.parseSpel(method, new Object[]{name, age}, "#name + '-'+ #age", String.class);
+        return SpelExpressionUtil.parseSpel(method, new Object[]{name, age}, "#name + '---' + #age", String.class);
     }
 
     public void method1(String name, Long age) {
