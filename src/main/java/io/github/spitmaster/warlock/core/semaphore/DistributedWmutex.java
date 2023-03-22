@@ -1,10 +1,14 @@
 package io.github.spitmaster.warlock.core.semaphore;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import io.github.spitmaster.warlock.core.Waround;
 import org.aopalliance.intercept.MethodInvocation;
 import org.redisson.api.RPermitExpirableSemaphore;
 import org.redisson.api.RedissonClient;
 
+import java.time.Duration;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -13,6 +17,16 @@ import java.util.concurrent.TimeUnit;
  * @author zhouyijin
  */
 public class DistributedWmutex implements Waround {
+
+    /**
+     * 缓存RPermitExpirableSemaphore对象来防止 RPermitExpirableSemaphore 被频繁的初始化, 浪费资源
+     */
+    private static final Cache<String, RPermitExpirableSemaphore> RSEMAPHORE_CACHE = CacheBuilder.newBuilder()
+            .expireAfterWrite(Duration.ofSeconds(10))
+            .expireAfterAccess(Duration.ofSeconds(10))
+            .weakKeys()
+            .weakValues()
+            .build();
 
     private final SemaphoreInfo semaphoreInfo;
     private final RedissonClient redissonClient;
@@ -25,7 +39,7 @@ public class DistributedWmutex implements Waround {
     @Override
     public Object doAround(MethodInvocation methodInvocation) throws Throwable {
         //1. 获取信号量
-        RPermitExpirableSemaphore semaphore = getSemaphore();
+        RPermitExpirableSemaphore semaphore = this.getSemaphore();
         String permitId = null;
         Object result = null;
         try {
@@ -55,13 +69,15 @@ public class DistributedWmutex implements Waround {
         return result;
     }
 
-    private RPermitExpirableSemaphore getSemaphore() {
-        //1. redisson实现的信号量对象
-        RPermitExpirableSemaphore semaphore = redissonClient.getPermitExpirableSemaphore(semaphoreInfo.getSemaphoreKey());
-        //2. 设置信号量的大小, 重复设置没关系;  也就是说如果已经初始化了, 则不会再次设置(哪怕permit已经是0了也不会重复设置)
-        semaphore.trySetPermits(semaphoreInfo.getPermits());
-        //3. 设置信号量的过期时间, 这个重复设置就会刷新
-        semaphore.expire(semaphoreInfo.getLeaseTime().toMillis(), TimeUnit.MILLISECONDS);
-        return semaphore;
+    private RPermitExpirableSemaphore getSemaphore() throws ExecutionException {
+        return RSEMAPHORE_CACHE.get(semaphoreInfo.getSemaphoreKey(), () -> {
+            //1. redisson实现的信号量对象
+            RPermitExpirableSemaphore semaphore = redissonClient.getPermitExpirableSemaphore(semaphoreInfo.getSemaphoreKey());
+            //2. 设置信号量的大小, 重复设置没关系;  也就是说如果已经初始化了, 则不会再次设置(哪怕permit已经是0了也不会重复设置)
+            semaphore.trySetPermits(semaphoreInfo.getPermits());
+            //3. 设置信号量的过期时间, 这个重复设置就会刷新
+            semaphore.expire(semaphoreInfo.getLeaseTime().toMillis(), TimeUnit.MILLISECONDS);
+            return semaphore;
+        });
     }
 }
