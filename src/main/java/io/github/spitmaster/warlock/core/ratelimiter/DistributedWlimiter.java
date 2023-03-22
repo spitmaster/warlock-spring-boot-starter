@@ -1,5 +1,7 @@
 package io.github.spitmaster.warlock.core.ratelimiter;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import io.github.spitmaster.warlock.core.Waround;
 import org.aopalliance.intercept.MethodInvocation;
 import org.redisson.api.RRateLimiter;
@@ -7,6 +9,8 @@ import org.redisson.api.RateIntervalUnit;
 import org.redisson.api.RateType;
 import org.redisson.api.RedissonClient;
 
+import java.time.Duration;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 
@@ -20,6 +24,15 @@ import java.util.concurrent.TimeUnit;
  */
 public class DistributedWlimiter implements Waround {
 
+    /**
+     * 缓存RRateLimiter对象来防止 RRateLimiter 被频繁的初始化, 浪费资源, 尤其是频繁的setRate
+     */
+    private static final Cache<String, RRateLimiter> RATE_LIMITER_CACHE = CacheBuilder.newBuilder()
+            .expireAfterWrite(Duration.ofSeconds(10))
+            .expireAfterAccess(Duration.ofSeconds(10))
+            .weakKeys()
+            .weakValues()
+            .build();
     private final RateLimiterInfo rateLimiterInfo;
     private final RedissonClient redissonClient;
 
@@ -39,15 +52,17 @@ public class DistributedWlimiter implements Waround {
         }
     }
 
-    protected RRateLimiter getRateLimiter() {
-        RRateLimiter rateLimiter = redissonClient.getRateLimiter(this.rateLimiterInfo.getRateLimiterKey());
-        rateLimiter.trySetRate(
-                RateType.OVERALL, //所有实例共享限流器
-                rateLimiterInfo.getPermitsPerSecond(), //单位时间生成令牌数
-                1, //生成令牌数的间隔
-                RateIntervalUnit.SECONDS //时间单位
-        );
-        return rateLimiter;
+    protected RRateLimiter getRateLimiter() throws ExecutionException {
+        return RATE_LIMITER_CACHE.get(this.rateLimiterInfo.getRateLimiterKey(), () -> {
+            RRateLimiter rateLimiter = redissonClient.getRateLimiter(this.rateLimiterInfo.getRateLimiterKey());
+            rateLimiter.trySetRate(
+                    RateType.OVERALL, //所有实例共享限流器
+                    rateLimiterInfo.getPermitsPerSecond(), //单位时间生成令牌数
+                    1, //生成令牌数的间隔
+                    RateIntervalUnit.SECONDS //时间单位
+            );
+            return rateLimiter;
+        });
     }
 
 }
