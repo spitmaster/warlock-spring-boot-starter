@@ -12,8 +12,8 @@ import org.redisson.api.RedissonClient;
  */
 public class DistributedReadWlock extends AbstractDistributedWlock {
 
-    private RedissonClient redissonClient;
-    private LockInfo lockInfo;
+    private final RedissonClient redissonClient;
+    private final LockInfo lockInfo;
 
     public DistributedReadWlock(RedissonClient redissonClient, LockInfo lockInfo) {
         this.redissonClient = redissonClient;
