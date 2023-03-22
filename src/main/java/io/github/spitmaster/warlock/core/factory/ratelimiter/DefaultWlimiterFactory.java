@@ -51,6 +51,10 @@ public class DefaultWlimiterFactory extends AbstractFactory implements WaroundFa
                     //如果项目没有使用Redisson,则不支持使用分布式限流器
                     throw new WarlockException("Not supported RateLimiter scope: DISTRIBUTED ; please use redisson client to active this function; method: " + method.getName());
                 }
+                /*
+                 * 如果要使用分布式版本的限流器, 强烈建议使用alibaba的sentinel
+                 * 这里暂时只提供一个简陋的分布式限流器实现
+                 */
                 return new DistributedWlimiter(this.buildRateLimiterInfo(methodInvocation, wrateLimiter), redissonClient);
         }
         throw new WarlockException("Wrong rateLimiter scope; scope = " + scope);

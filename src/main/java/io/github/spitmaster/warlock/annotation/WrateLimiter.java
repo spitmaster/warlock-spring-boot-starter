@@ -9,6 +9,8 @@ import java.lang.annotation.Target;
 
 /**
  * 方法级的限流器
+ * 如果要使用分布式版本的限流器, 强烈建议使用alibaba的sentinel
+ * 这里暂时只提供一个简陋的分布式限流器实现
  *
  * @author zhouyijin
  */
@@ -42,6 +44,8 @@ public @interface WrateLimiter {
 
     /**
      * 作用域范围
+     * 如果要使用分布式版本的限流器, 强烈建议使用alibaba的sentinel
+     * 这里暂时只提供一个简陋的分布式限流器实现
      *
      * @return Scope, 目前支持两种JVM单机 和 基于Redis的分布式
      */

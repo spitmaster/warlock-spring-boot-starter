@@ -13,6 +13,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * 分布式的限流器
  * 依赖redisson实现
+ * 如果要使用分布式版本的限流器, 强烈建议使用alibaba的sentinel
+ * 这里暂时只提供一个简陋的分布式限流器实现
  *
  * @author zhouyijin
  */
