@@ -21,7 +21,17 @@ public class StandaloneRateLimiterTestService implements WaitTimeoutHandler {
             scope = Scope.STANDALONE,
             waiting = @Waiting(waitTime = 1, timeUnit = TimeUnit.SECONDS, waitTimeoutHandler = StandaloneRateLimiterTestService.class)
     )
-    public void testRateLimiter(int id) {
+    public void testStandaloneRateLimiter(int id) {
+        counter.incrementAndGet();
+    }
+
+    @WrateLimiter(name = "testRateLimiter",
+            key = "#id",
+            permitsPerSecond = 2, //每秒允许两个请求
+            scope = Scope.DISTRIBUTED,
+            waiting = @Waiting(waitTime = 1, timeUnit = TimeUnit.SECONDS, waitTimeoutHandler = StandaloneRateLimiterTestService.class)
+    )
+    public void testDistributedRateLimiter(int id) {
         counter.incrementAndGet();
     }
 

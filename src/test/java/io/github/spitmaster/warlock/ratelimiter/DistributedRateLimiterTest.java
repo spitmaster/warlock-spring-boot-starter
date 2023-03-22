@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.concurrent.*;
 
 @SpringBootTest(classes = Application.class)
-public class StandaloneRateLimiterTest {
+public class DistributedRateLimiterTest {
 
     @Autowired
     private StandaloneRateLimiterTestService service;
@@ -44,7 +44,7 @@ public class StandaloneRateLimiterTest {
             int finalI = i;
             Future<Integer> future = executorService.submit(() -> {
                 //一共会有两个key
-                service.testStandaloneRateLimiter(finalI % 2);
+                service.testDistributedRateLimiter(finalI % 2);
                 return 1;
             });
             futureList.add(future);
@@ -56,6 +56,5 @@ public class StandaloneRateLimiterTest {
         System.out.println(counter);
         Assertions.assertEquals(44, counter);
     }
-
 
 }
