@@ -1,6 +1,5 @@
 package io.github.spitmaster.warlock.lock;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -20,7 +19,6 @@ import java.lang.annotation.Target;
  */
 @Slf4j
 @Aspect
-@AllArgsConstructor
 @Component
 public class PlainAspect {
 
