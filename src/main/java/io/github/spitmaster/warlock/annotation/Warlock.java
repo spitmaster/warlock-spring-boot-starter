@@ -1,7 +1,7 @@
 package io.github.spitmaster.warlock.annotation;
 
-import io.github.spitmaster.warlock.enums.Scope;
 import io.github.spitmaster.warlock.enums.LockType;
+import io.github.spitmaster.warlock.enums.Scope;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -49,6 +49,7 @@ public @interface Warlock {
      * 完整的key是 name + spel的计算结果
      *
      * @return key
+     * @see org.intellij.lang.annotations.Language @Language("SpEL")
      */
     String key() default "";
 

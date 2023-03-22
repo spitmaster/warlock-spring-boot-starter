@@ -27,8 +27,8 @@ public class WarlockAspectBenchmark {
     }
 
     //JMH的成员变量
-    private LockAspectTestService lockAspectTestService;
-    private Integer param;
+    LockAspectTestService lockAspectTestService;
+    Integer param;
 
     @Setup(Level.Trial)
     public void init1() {
