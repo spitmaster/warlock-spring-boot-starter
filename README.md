@@ -1,10 +1,14 @@
 # warlock-spring-boot-starter
 
-![Warlock](warlock_icon_2.png)
+**Lock for spring!**
 
-Lock for spring!
+![Warlock](Warlock_Crest.webp)
 
-warlock-spring-boot-starter is an annotation-driven concurrency tools library
+> Warlock can absolutely control over the summoned demonic entities
+> 
+> Threads can be seen as demons summoned by programmers
+
+**_warlock-spring-boot-starter_** is an annotation-driven concurrency tools library
 
 It is easy to use in Spring application
 
