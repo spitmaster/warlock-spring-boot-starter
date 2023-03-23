@@ -72,6 +72,7 @@ public class WarlockAspectBenchmark {
     }
 }
 //执行效率确实不高
+
 //JDK11
 //Benchmark                                   Mode  Cnt      Score   Error  Units
 //WarlockAspectBenchmark.callWithPlain        avgt    2   1607.616          ns/op

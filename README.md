@@ -54,7 +54,12 @@ How to use ...
 ```java
 @Component
 public class WarlockSample {
-    @Warlock(name = "uniquename1", key = "#dto.userId")
+    @Warlock(name = "uniquename1", 
+            key = "#dto.userId",
+            lockScope = Scope.DISTRIBUTED,
+            waiting = @Waiting(waitTime = 1, timeUnit = ChronoUnit.SECONDS, waitTimeoutHandler = XXService.class),
+            leasing = @Leasing(leaseTime = 1, timeUnit = ChronoUnit.SECONDS, leaseTimeoutHandler = YYComponent.class)
+    )
     public void doBiz(StudentDto dto) {
         //your business code
     }
@@ -139,3 +144,32 @@ public class WsemaphoreSample {
 
 ---
 
+# Performance
+
+### Aspect performance comparison
+```
+JDK11
+Benchmark                                   Mode  Cnt      Score   Error  Units
+WarlockAspectBenchmark.callWithPlain        avgt    2   1607.616          ns/op
+WarlockAspectBenchmark.callWithPlainAspect  avgt    2   2408.015          ns/op
+WarlockAspectBenchmark.callWithWarlock      avgt    2  65214.504          ns/op
+
+JDK8
+Benchmark                                   Mode  Cnt      Score   Error  Units
+WarlockAspectBenchmark.callWithPlain        avgt    2   3617.015          ns/op
+WarlockAspectBenchmark.callWithPlainAspect  avgt    2   5151.851          ns/op
+WarlockAspectBenchmark.callWithWarlock      avgt    2  99612.050          ns/op
+```
+
+
+### SpEL performance
+
+```
+JDK11
+Benchmark                                         Mode  Cnt   Score   Error   Units
+SpelExpressionUtilBenchmark.callWithPlainAspect  thrpt    5  24.457 ± 1.148  ops/ms
+
+JDK8
+Benchmark                                         Mode  Cnt   Score   Error   Units
+SpelExpressionUtilBenchmark.callWithPlainAspect  thrpt    5  13.654 ± 1.848  ops/ms
+```
