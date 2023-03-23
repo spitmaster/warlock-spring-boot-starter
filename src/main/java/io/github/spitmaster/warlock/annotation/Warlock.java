@@ -49,7 +49,6 @@ public @interface Warlock {
      * 完整的key是 name + spel的计算结果
      *
      * @return key
-     * @see org.intellij.lang.annotations.Language @Language("SpEL")
      */
     String key() default "";
 
