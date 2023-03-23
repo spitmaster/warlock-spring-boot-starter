@@ -24,7 +24,7 @@ Just using annotation on your method , the concurrency problem would be solved
 
 ## Requirements
 
-* JDK11 or higher
+* JDK8 or higher
 * Spring ....
 * Redisson (Optional, if you want to use distributed lock etc.)
 
