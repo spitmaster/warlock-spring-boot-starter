@@ -7,6 +7,7 @@ import io.github.spitmaster.warlock.handler.WaitTimeoutHandler;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.stereotype.Component;
 
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -19,7 +20,7 @@ public class StandaloneRateLimiterTestService implements WaitTimeoutHandler {
             key = "#id",
             permitsPerSecond = 2, //每秒允许两个请求
             scope = Scope.STANDALONE,
-            waiting = @Waiting(waitTime = 1, timeUnit = TimeUnit.SECONDS, waitTimeoutHandler = StandaloneRateLimiterTestService.class)
+            waiting = @Waiting(waitTime = 1, timeUnit = ChronoUnit.SECONDS, waitTimeoutHandler = StandaloneRateLimiterTestService.class)
     )
     public void testStandaloneRateLimiter(int id) {
         counter.incrementAndGet();
@@ -29,7 +30,7 @@ public class StandaloneRateLimiterTestService implements WaitTimeoutHandler {
             key = "#id",
             permitsPerSecond = 2, //每秒允许两个请求
             scope = Scope.DISTRIBUTED,
-            waiting = @Waiting(waitTime = 1, timeUnit = TimeUnit.SECONDS, waitTimeoutHandler = StandaloneRateLimiterTestService.class)
+            waiting = @Waiting(waitTime = 1, timeUnit = ChronoUnit.SECONDS, waitTimeoutHandler = StandaloneRateLimiterTestService.class)
     )
     public void testDistributedRateLimiter(int id) {
         counter.incrementAndGet();

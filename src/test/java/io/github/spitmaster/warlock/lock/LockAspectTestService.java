@@ -10,6 +10,7 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.openjdk.jmh.infra.Blackhole;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -50,7 +51,7 @@ public class LockAspectTestService implements WaitTimeoutHandler, LeaseTimeoutHa
     @Warlock(name = "add100_2", key = "#id")
     public void add100_2(int id) {
         for (int i = 0; i < 100; i++) {
-            var counterNum = id % 2;
+            int counterNum = id % 2;
             if (counterNum == 0) {
                 counter0++;
             } else if (counterNum == 1) {
@@ -72,7 +73,7 @@ public class LockAspectTestService implements WaitTimeoutHandler, LeaseTimeoutHa
             lockScope = Scope.DISTRIBUTED)
     public void add100Distributed2(int id) {
         for (int i = 0; i < 100; i++) {
-            var counterNum = id % 2;
+            int counterNum = id % 2;
             if (counterNum == 0) {
                 counter0++;
             } else if (counterNum == 1) {
@@ -107,7 +108,7 @@ public class LockAspectTestService implements WaitTimeoutHandler, LeaseTimeoutHa
 
     @Warlock(name = "waitTimeout",
             lockScope = Scope.DISTRIBUTED,
-            waiting = @Waiting(waitTime = 1, timeUnit = TimeUnit.SECONDS, waitTimeoutHandler = LockAspectTestService.class)
+            waiting = @Waiting(waitTime = 1, timeUnit = ChronoUnit.SECONDS, waitTimeoutHandler = LockAspectTestService.class)
     )
     public void waitTimeout(int id) throws InterruptedException {
         TimeUnit.SECONDS.sleep(1);
@@ -118,8 +119,8 @@ public class LockAspectTestService implements WaitTimeoutHandler, LeaseTimeoutHa
 
     @Warlock(name = "leaseTimeout",
             lockScope = Scope.DISTRIBUTED,
-            waiting = @Waiting(waitTime = 1, timeUnit = TimeUnit.SECONDS, waitTimeoutHandler = LockAspectTestService.class),
-            leasing = @Leasing(leaseTime = 1, timeUnit = TimeUnit.SECONDS, leaseTimeoutHandler = LockAspectTestService.class)
+            waiting = @Waiting(waitTime = 1, timeUnit = ChronoUnit.SECONDS, waitTimeoutHandler = LockAspectTestService.class),
+            leasing = @Leasing(leaseTime = 1, timeUnit = ChronoUnit.SECONDS, leaseTimeoutHandler = LockAspectTestService.class)
     )
     public void leaseTimeout(int id) throws InterruptedException {
         TimeUnit.SECONDS.sleep(1);

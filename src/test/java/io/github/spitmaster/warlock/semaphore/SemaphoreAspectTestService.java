@@ -8,6 +8,7 @@ import io.github.spitmaster.warlock.handler.WaitTimeoutHandler;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -19,7 +20,7 @@ public class SemaphoreAspectTestService implements WaitTimeoutHandler, LeaseTime
     @Wsemaphore(name = "mys1",
             key = "#id",
             permits = 7,
-            waiting = @Waiting(waitTime = 1, timeUnit = TimeUnit.SECONDS, waitTimeoutHandler = SemaphoreAspectTestService.class),
+            waiting = @Waiting(waitTime = 1, timeUnit = ChronoUnit.SECONDS, waitTimeoutHandler = SemaphoreAspectTestService.class),
             scope = Scope.STANDALONE)
     public void testWsemaphore(String id) {
         try {
@@ -34,7 +35,7 @@ public class SemaphoreAspectTestService implements WaitTimeoutHandler, LeaseTime
             key = "#id",
             permits = 3,
             scope = Scope.DISTRIBUTED,
-            waiting = @Waiting(waitTime = 1, timeUnit = TimeUnit.SECONDS, waitTimeoutHandler = SemaphoreAspectTestService.class)
+            waiting = @Waiting(waitTime = 1, timeUnit = ChronoUnit.SECONDS, waitTimeoutHandler = SemaphoreAspectTestService.class)
     )
     public void testWsemaphore2(String id) {
         try {

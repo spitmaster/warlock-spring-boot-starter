@@ -4,6 +4,7 @@ import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.WcyclicBarrier;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -21,7 +22,7 @@ public class BarrierTestService {
     @WcyclicBarrier(
             parties = 2,
             name = "add1",
-            waiting = @Waiting(waitTime = 1, timeUnit = TimeUnit.SECONDS)
+            waiting = @Waiting(waitTime = 1, timeUnit = ChronoUnit.SECONDS)
     )
     public void add1() {
         counter1.incrementAndGet();

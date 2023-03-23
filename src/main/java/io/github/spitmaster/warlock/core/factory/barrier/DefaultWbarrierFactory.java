@@ -52,7 +52,7 @@ public class DefaultWbarrierFactory extends AbstractFactory implements WaroundFa
         barrierInfo.setParties(parties);
         //3. 等待策略信息
         Waiting waiting = wcyclicBarrier.waiting();
-        Duration waitTime = Duration.of(waiting.waitTime(), waiting.timeUnit().toChronoUnit());
+        Duration waitTime = Duration.of(waiting.waitTime(), waiting.timeUnit());
         if (waitTime.isNegative() || waitTime.isZero()) {
             throw new WarlockException("WaitTime cannot Less than or equal to 0; method = " + method.getName());
         }

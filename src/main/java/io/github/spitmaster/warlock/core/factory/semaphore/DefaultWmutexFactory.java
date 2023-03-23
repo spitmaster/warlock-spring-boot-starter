@@ -81,7 +81,7 @@ public class DefaultWmutexFactory extends AbstractFactory implements WaroundFact
         semaphoreInfo.setScope(wsemaphore.scope());
         //3. 等待策略信息
         Waiting waiting = wsemaphore.waiting();
-        Duration waitTime = Duration.of(waiting.waitTime(), waiting.timeUnit().toChronoUnit());
+        Duration waitTime = Duration.of(waiting.waitTime(), waiting.timeUnit());
         if (waitTime.isNegative() || waitTime.isZero()) {
             throw new WarlockException("WaitTime cannot Less than or equal to 0; method = " + method.getName());
         }
@@ -89,7 +89,7 @@ public class DefaultWmutexFactory extends AbstractFactory implements WaroundFact
         semaphoreInfo.setWaitTimeoutHandler(this.getWaitTimeoutHandler(waiting));
         //4. 租赁策略信息(单机版的不起作用)
         Leasing leasing = wsemaphore.leasing();
-        Duration leaseTime = Duration.of(leasing.leaseTime(), leasing.timeUnit().toChronoUnit());
+        Duration leaseTime = Duration.of(leasing.leaseTime(), leasing.timeUnit());
         if (leaseTime.isNegative() || leaseTime.isZero()) {
             throw new WarlockException("LeaseTime cannot Less than or equal to 0; method = " + method.getName());
         }

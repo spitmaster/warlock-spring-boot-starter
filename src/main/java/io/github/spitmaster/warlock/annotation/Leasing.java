@@ -7,7 +7,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.concurrent.TimeUnit;
+import java.time.temporal.ChronoUnit;
 
 /**
  * 锁的租期 信息
@@ -32,7 +32,7 @@ public @interface Leasing {
      *
      * @return 时间单位
      */
-    TimeUnit timeUnit() default TimeUnit.SECONDS;
+    ChronoUnit timeUnit() default ChronoUnit.SECONDS;
 
     /**
      * 当你的业务代码耗时太长, 以至于最后释放锁的时候, 发现锁已经过期了, 这时候的处理handler

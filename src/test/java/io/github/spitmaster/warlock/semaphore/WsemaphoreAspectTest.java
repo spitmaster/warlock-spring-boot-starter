@@ -38,7 +38,7 @@ class WsemaphoreAspectTest {
     @Test
     void testWsemaphore1() throws InterruptedException, ExecutionException {
         List<Callable<Integer>> tasks = new ArrayList<>();
-        var uuid = UUID.randomUUID().toString();
+        String uuid = UUID.randomUUID().toString();
 
         for (int i = 0; i < 100; i++) {
             int finalI = i;
@@ -51,7 +51,7 @@ class WsemaphoreAspectTest {
         for (Future<Integer> future : futures) {
             future.get();
         }
-        var counter = semaphoreAspectTestService.getCounter();
+        int counter = semaphoreAspectTestService.getCounter();
         System.out.println(semaphoreAspectTestService.getCounter());
         Assertions.assertEquals(4 * 7, counter);
     }
@@ -59,11 +59,11 @@ class WsemaphoreAspectTest {
     @Test
     void testWsemaphore2() throws InterruptedException, ExecutionException {
         List<Callable<Integer>> tasks = new ArrayList<>();
-        var uuid = UUID.randomUUID().toString();
+        String uuid = UUID.randomUUID().toString();
         for (int i = 0; i < 100; i++) {
             int finalI = i;
             tasks.add(() -> {
-                var id = uuid + String.valueOf(finalI % 8);
+                String id = uuid + String.valueOf(finalI % 8);
                 semaphoreAspectTestService.testWsemaphore2(id);
                 return 1;
             });
@@ -72,7 +72,7 @@ class WsemaphoreAspectTest {
         for (Future<Integer> future : futures) {
             future.get();
         }
-        var counter = semaphoreAspectTestService.getCounter();
+        int counter = semaphoreAspectTestService.getCounter();
         System.out.println(semaphoreAspectTestService.getCounter());
         Assertions.assertEquals(8 * 3, counter);
     }

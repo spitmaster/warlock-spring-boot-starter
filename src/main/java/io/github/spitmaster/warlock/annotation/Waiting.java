@@ -7,7 +7,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.concurrent.TimeUnit;
+import java.time.temporal.ChronoUnit;
 
 /**
  * 定义锁等待的规则
@@ -34,7 +34,7 @@ public @interface Waiting {
      *
      * @return 时间单位
      */
-    TimeUnit timeUnit() default TimeUnit.SECONDS;
+    ChronoUnit timeUnit() default ChronoUnit.SECONDS;
 
     /**
      * 当锁等待超时的处理策略

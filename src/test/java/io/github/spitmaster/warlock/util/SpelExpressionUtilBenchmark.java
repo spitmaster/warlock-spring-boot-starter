@@ -52,6 +52,10 @@ public class SpelExpressionUtilBenchmark {
     }
 
 }
-//我的破电脑 执行速度大概如下:
+//我的破电脑JDK11下执行吞吐量大概如下:
 //Benchmark                                         Mode  Cnt   Score   Error   Units
 //SpelExpressionUtilBenchmark.callWithPlainAspect  thrpt    5  24.457 ± 1.148  ops/ms
+
+//JDK8下执行吞吐量
+//Benchmark                                         Mode  Cnt   Score   Error   Units
+//SpelExpressionUtilBenchmark.callWithPlainAspect  thrpt    5  13.654 ± 1.848  ops/ms

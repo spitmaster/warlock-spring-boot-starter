@@ -50,16 +50,16 @@ public class StandaloneWbarrierTest {
                 return 1;
             });
         }
-        var startTime = System.currentTimeMillis();
+        long startTime = System.currentTimeMillis();
         List<Future<Integer>> futures = executorService.invokeAll(tasks);
         for (Future<Integer> future : futures) {
             future.get();
         }
-        var endTime = System.currentTimeMillis();
-        var consumedTime = endTime - startTime;//执行6个任务耗费的时间
+        long endTime = System.currentTimeMillis();
+        long consumedTime = endTime - startTime;//执行6个任务耗费的时间
         System.out.println("consumedTime = " + consumedTime);
-        var counter1 = barrierTestService.getCounter1().get();
-        var counter2 = barrierTestService.getCounter2().get();
+        int counter1 = barrierTestService.getCounter1().get();
+        int counter2 = barrierTestService.getCounter2().get();
         System.out.println("counter1 = " + counter1);
         System.out.println("counter2 = " + counter2);
         Assertions.assertEquals(6, counter1);

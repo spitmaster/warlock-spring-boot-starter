@@ -71,3 +71,15 @@ public class WarlockAspectBenchmark {
 
     }
 }
+//执行效率确实不高
+//JDK11
+//Benchmark                                   Mode  Cnt      Score   Error  Units
+//WarlockAspectBenchmark.callWithPlain        avgt    2   1607.616          ns/op
+//WarlockAspectBenchmark.callWithPlainAspect  avgt    2   2408.015          ns/op
+//WarlockAspectBenchmark.callWithWarlock      avgt    2  65214.504          ns/op
+
+//JDK8
+//Benchmark                                   Mode  Cnt      Score   Error  Units
+//WarlockAspectBenchmark.callWithPlain        avgt    2   3617.015          ns/op
+//WarlockAspectBenchmark.callWithPlainAspect  avgt    2   5151.851          ns/op
+//WarlockAspectBenchmark.callWithWarlock      avgt    2  99612.050          ns/op

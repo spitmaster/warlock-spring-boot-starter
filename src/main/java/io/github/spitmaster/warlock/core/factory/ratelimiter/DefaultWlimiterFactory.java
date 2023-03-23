@@ -77,7 +77,7 @@ public class DefaultWlimiterFactory extends AbstractFactory implements WaroundFa
         rateLimiterInfo.setPermitsPerSecond(wrateLimiter.permitsPerSecond());
         //3. 等待策略信息
         Waiting waiting = wrateLimiter.waiting();
-        Duration waitTime = Duration.of(waiting.waitTime(), waiting.timeUnit().toChronoUnit());
+        Duration waitTime = Duration.of(waiting.waitTime(), waiting.timeUnit());
         if (waitTime.isNegative() || waitTime.isZero()) {
             throw new WarlockException("WaitTime cannot Less than or equal to 0; method = " + method.getName());
         }

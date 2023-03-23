@@ -49,7 +49,7 @@ class WarlockAspectTest {
         for (Future<Integer> future : futures) {
             Blackhole.consumeCPU(future.get().longValue());
         }
-        var counter = lockAspectTestService.getCounter();
+        int counter = lockAspectTestService.getCounter();
         System.out.println(counter);
         Assertions.assertEquals(100000, counter);
     }
@@ -70,7 +70,7 @@ class WarlockAspectTest {
         for (Future<Integer> future : futures) {
             Blackhole.consumeCPU(future.get().longValue());
         }
-        var counter = lockAspectTestService.getCounter();
+        int counter = lockAspectTestService.getCounter();
         System.out.println(counter);
         Assertions.assertEquals(100000, counter);
     }
@@ -89,8 +89,8 @@ class WarlockAspectTest {
         for (Future<Integer> future : futures) {
             Blackhole.consumeCPU(future.get().longValue());
         }
-        var counter0 = lockAspectTestService.getCounter0();
-        var counter1 = lockAspectTestService.getCounter1();
+        int counter0 = lockAspectTestService.getCounter0();
+        int counter1 = lockAspectTestService.getCounter1();
         System.out.println("counter0 = " + counter0);
         System.out.println("counter1 = " + counter1);
         Assertions.assertEquals(50000, counter0);
@@ -114,8 +114,8 @@ class WarlockAspectTest {
         for (Future<Integer> future : futures) {
             Blackhole.consumeCPU(future.get().longValue());
         }
-        var counter0 = lockAspectTestService.getCounter0();
-        var counter1 = lockAspectTestService.getCounter1();
+        int counter0 = lockAspectTestService.getCounter0();
+        int counter1 = lockAspectTestService.getCounter1();
         System.out.println("counter0 = " + counter0);
         System.out.println("counter1 = " + counter1);
         Assertions.assertEquals(50000, counter0);

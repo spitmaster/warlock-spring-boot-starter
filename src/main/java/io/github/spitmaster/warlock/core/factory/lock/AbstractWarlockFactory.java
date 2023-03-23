@@ -46,7 +46,7 @@ abstract class AbstractWarlockFactory extends AbstractFactory {
         lockInfo.setLockScope(warlock.lockScope());
         //3. 获取等待时间
         Waiting waiting = warlock.waiting();
-        Duration waitTime = Duration.of(waiting.waitTime(), waiting.timeUnit().toChronoUnit());
+        Duration waitTime = Duration.of(waiting.waitTime(), waiting.timeUnit());
         if (waitTime.isNegative() || waitTime.isZero()) {
             throw new WarlockException("WaitTime cannot Less than or equal to 0; method = " + method.getName());
         }
@@ -54,7 +54,7 @@ abstract class AbstractWarlockFactory extends AbstractFactory {
         lockInfo.setWaitTimeoutHandler(getWaitTimeoutHandler(waiting));
         //4. 获取等待时间
         Leasing leasing = warlock.leasing();
-        Duration leaseTime = Duration.of(leasing.leaseTime(), leasing.timeUnit().toChronoUnit());
+        Duration leaseTime = Duration.of(leasing.leaseTime(), leasing.timeUnit());
         if (leaseTime.isNegative() || leaseTime.isZero()) {
             throw new WarlockException("LeaseTime cannot Less than or equal to 0; method = " + method.getName());
         }
