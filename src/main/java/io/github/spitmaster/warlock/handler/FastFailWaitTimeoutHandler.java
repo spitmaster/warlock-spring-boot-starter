@@ -9,12 +9,12 @@ import org.aopalliance.intercept.MethodInvocation;
  *
  * @author zhouyijin
  */
-public enum PlainLockWaitTimeoutHandler implements WaitTimeoutHandler {
+public enum FastFailWaitTimeoutHandler implements WaitTimeoutHandler {
     //单例
     INSTANCE;
 
     @Override
     public Object handleWaitTimeout(MethodInvocation methodInvocation) throws Throwable {
-        throw new WarlockException("warlock wait timeout; timeout from " + methodInvocation.getMethod().getName());
+        throw new WarlockException("wait timeout; timeout from " + methodInvocation.getMethod().getName());
     }
 }

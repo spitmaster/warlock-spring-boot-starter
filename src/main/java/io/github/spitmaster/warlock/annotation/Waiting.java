@@ -1,6 +1,6 @@
 package io.github.spitmaster.warlock.annotation;
 
-import io.github.spitmaster.warlock.handler.PlainLockWaitTimeoutHandler;
+import io.github.spitmaster.warlock.handler.FastFailWaitTimeoutHandler;
 import io.github.spitmaster.warlock.handler.WaitTimeoutHandler;
 
 import java.lang.annotation.ElementType;
@@ -42,5 +42,5 @@ public @interface Waiting {
      *
      * @return WaitTimeoutHandler接口的实现类
      */
-    Class<? extends WaitTimeoutHandler> waitTimeoutHandler() default PlainLockWaitTimeoutHandler.class;
+    Class<? extends WaitTimeoutHandler> waitTimeoutHandler() default FastFailWaitTimeoutHandler.class;
 }

@@ -2,10 +2,7 @@ package io.github.spitmaster.warlock.core.factory;
 
 import io.github.spitmaster.warlock.annotation.Leasing;
 import io.github.spitmaster.warlock.annotation.Waiting;
-import io.github.spitmaster.warlock.handler.LeaseTimeoutHandler;
-import io.github.spitmaster.warlock.handler.PlainLockLeaseTimeoutHandler;
-import io.github.spitmaster.warlock.handler.PlainLockWaitTimeoutHandler;
-import io.github.spitmaster.warlock.handler.WaitTimeoutHandler;
+import io.github.spitmaster.warlock.handler.*;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -33,14 +30,14 @@ public abstract class AbstractFactory implements WaroundFactory, BeanFactoryAwar
      */
     protected WaitTimeoutHandler getWaitTimeoutHandler(Waiting waiting) {
         Class<? extends WaitTimeoutHandler> waitTimeoutHandlerClass = waiting.waitTimeoutHandler();
-        if (waitTimeoutHandlerClass != null && waitTimeoutHandlerClass != PlainLockWaitTimeoutHandler.class) {
+        if (waitTimeoutHandlerClass != null && waitTimeoutHandlerClass != FastFailWaitTimeoutHandler.class) {
             ObjectProvider<? extends WaitTimeoutHandler> beanProvider = beanFactory.getBeanProvider(waitTimeoutHandlerClass);
             WaitTimeoutHandler handler = beanProvider.getIfAvailable();
             if (handler != null) {
                 return handler;
             }
         }
-        return PlainLockWaitTimeoutHandler.INSTANCE;
+        return FastFailWaitTimeoutHandler.INSTANCE;
     }
 
     /**
@@ -51,13 +48,13 @@ public abstract class AbstractFactory implements WaroundFactory, BeanFactoryAwar
      */
     protected LeaseTimeoutHandler getLeaseTimeoutHandler(Leasing leasing) {
         Class<? extends LeaseTimeoutHandler> leaseTimeoutHandlerClass = leasing.leaseTimeoutHandler();
-        if (leaseTimeoutHandlerClass != null && leaseTimeoutHandlerClass != PlainLockLeaseTimeoutHandler.class) {
+        if (leaseTimeoutHandlerClass != null && leaseTimeoutHandlerClass != FastFailLeaseTimeoutHandler.class) {
             ObjectProvider<? extends LeaseTimeoutHandler> beanProvider = beanFactory.getBeanProvider(leaseTimeoutHandlerClass);
             LeaseTimeoutHandler handler = beanProvider.getIfAvailable();
             if (handler != null) {
                 return handler;
             }
         }
-        return PlainLockLeaseTimeoutHandler.INSTANCE;
+        return FastFailLeaseTimeoutHandler.INSTANCE;
     }
 }

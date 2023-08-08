@@ -1,20 +1,19 @@
 package io.github.spitmaster.warlock.handler;
 
+import io.github.spitmaster.warlock.exceptions.WarlockException;
 import org.aopalliance.intercept.MethodInvocation;
-import org.aspectj.lang.ProceedingJoinPoint;
 
 /**
- * 默认的空实现, 什么都不处理
+ * 超时抛出异常
  *
  * @author zhouyijin
  */
-public enum PlainLockLeaseTimeoutHandler implements LeaseTimeoutHandler {
+public enum FastFailLeaseTimeoutHandler implements LeaseTimeoutHandler {
     //单例
     INSTANCE;
 
     @Override
     public Object handleLeaseTimeout(MethodInvocation methodInvocation, Object result) throws Throwable {
-        //空实现, 原样返回函数执行结果
-        return result;
+        throw new WarlockException("lease timeout; timeout from " + methodInvocation.getMethod().getName());
     }
 }
