@@ -145,7 +145,7 @@
 
     <profiles>
         <profile>
-            <id>release</id>
+            <id>ossrh</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
