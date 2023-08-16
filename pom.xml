@@ -4,7 +4,7 @@
 
     <groupId>io.github.spitmaster</groupId>
     <artifactId>warlock-spring-boot-starter</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.7-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>warlock-spring-boot-starter</name>
@@ -82,11 +82,6 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>30.1.1-jre</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-            <version>4.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
