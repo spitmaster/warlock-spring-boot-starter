@@ -9,8 +9,6 @@ import io.github.spitmaster.warlock.core.factory.TimeoutHandlerProvider;
 import io.github.spitmaster.warlock.core.factory.WaroundFactory;
 import io.github.spitmaster.warlock.core.factory.barrier.DefaultWbarrierFactory;
 import io.github.spitmaster.warlock.core.factory.lock.DefaultWlockFactory;
-import io.github.spitmaster.warlock.core.factory.lock.DistributedWlockFactory;
-import io.github.spitmaster.warlock.core.factory.lock.StandaloneWlockFactory;
 import io.github.spitmaster.warlock.core.factory.ratelimiter.DefaultWlimiterFactory;
 import io.github.spitmaster.warlock.core.factory.semaphore.DefaultWmutexFactory;
 import io.github.spitmaster.warlock.handler.LeaseTimeoutHandler;
@@ -45,10 +43,7 @@ public class WarlockAutoConfiguration {
             @Autowired(required = false) RedissonClient redissonClient,
             TimeoutHandlerProvider timeoutHandlerProvider) {
         AnnotationMatchingPointcut warlockPointcut = new AnnotationMatchingPointcut(null, Warlock.class, true);
-        WaroundFactory defaultWlockFactory = new DefaultWlockFactory(
-                new StandaloneWlockFactory(timeoutHandlerProvider), //单机锁工厂
-                new DistributedWlockFactory(redissonClient, timeoutHandlerProvider) //分布式锁工厂
-        );
+        WaroundFactory defaultWlockFactory = new DefaultWlockFactory(redissonClient, timeoutHandlerProvider);
         WaroundMethodInterceptor waroundMethodInterceptor = new WaroundMethodInterceptor(defaultWlockFactory);
         return new AbstractPointcutAdvisor() {
             @Override
