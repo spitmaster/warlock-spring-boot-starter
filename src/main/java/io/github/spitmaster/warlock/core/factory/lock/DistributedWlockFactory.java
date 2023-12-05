@@ -9,7 +9,7 @@ import io.github.spitmaster.warlock.core.lock.dist.DistributedWriteWlock;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import org.aopalliance.intercept.MethodInvocation;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.BeanFactory;
 
 import java.lang.reflect.Method;
 
@@ -19,13 +19,13 @@ import java.lang.reflect.Method;
  *
  * @author zhouyijin
  */
-public class DistributedWlockFactory extends AbstractWarlockFactory implements WaroundFactory, InitializingBean {
+public class DistributedWlockFactory extends AbstractWarlockFactory implements WaroundFactory {
 
-    private RedissonClient redissonClient;
+    private final RedissonClient redissonClient;
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        this.redissonClient = beanFactory.getBeanProvider(RedissonClient.class).getIfAvailable();
+    public DistributedWlockFactory(BeanFactory beanFactory, RedissonClient redissonClient) {
+        super(beanFactory);
+        this.redissonClient = redissonClient;
     }
 
     @Override

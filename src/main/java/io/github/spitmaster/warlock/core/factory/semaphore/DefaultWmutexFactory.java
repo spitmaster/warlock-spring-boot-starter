@@ -15,7 +15,7 @@ import io.github.spitmaster.warlock.exceptions.WarlockException;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
 import org.aopalliance.intercept.MethodInvocation;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Method;
@@ -27,13 +27,13 @@ import java.util.Arrays;
  *
  * @author zhouyijin
  */
-public class DefaultWmutexFactory extends AbstractFactory implements WaroundFactory, InitializingBean {
+public class DefaultWmutexFactory extends AbstractFactory implements WaroundFactory {
 
-    private RedissonClient redissonClient;
+    private final RedissonClient redissonClient;
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        this.redissonClient = beanFactory.getBeanProvider(RedissonClient.class).getIfAvailable();
+    public DefaultWmutexFactory(BeanFactory beanFactory, RedissonClient redissonClient) {
+        super(beanFactory);
+        this.redissonClient = redissonClient;
     }
 
     @Override

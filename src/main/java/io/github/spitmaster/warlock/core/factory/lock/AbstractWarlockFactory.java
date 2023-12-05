@@ -9,6 +9,7 @@ import io.github.spitmaster.warlock.core.lock.LockInfo;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Method;
@@ -21,6 +22,10 @@ import java.util.Arrays;
  * @author zhouyijin
  */
 abstract class AbstractWarlockFactory extends AbstractFactory {
+
+    protected AbstractWarlockFactory(BeanFactory beanFactory) {
+        super(beanFactory);
+    }
 
     /**
      * 构建锁的信息

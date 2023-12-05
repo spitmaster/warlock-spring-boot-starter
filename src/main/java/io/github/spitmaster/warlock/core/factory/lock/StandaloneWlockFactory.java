@@ -8,6 +8,7 @@ import io.github.spitmaster.warlock.core.lock.standalone.ReentrantWlock;
 import io.github.spitmaster.warlock.core.lock.standalone.WriteWlock;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.beans.factory.BeanFactory;
 
 /**
  * 生产单机使用的Warlock的Factory实现
@@ -15,6 +16,10 @@ import org.aopalliance.intercept.MethodInvocation;
  * @author zhouyijin
  */
 public class StandaloneWlockFactory extends AbstractWarlockFactory implements WaroundFactory {
+
+    public StandaloneWlockFactory(BeanFactory beanFactory) {
+        super(beanFactory);
+    }
 
     @Override
     public Waround build(MethodInvocation methodInvocation) {

@@ -11,6 +11,7 @@ import io.github.spitmaster.warlock.core.factory.WaroundFactory;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Method;
@@ -24,6 +25,10 @@ import java.util.Arrays;
  * @author zhouyijin
  */
 public class DefaultWbarrierFactory extends AbstractFactory implements WaroundFactory {
+
+    public DefaultWbarrierFactory(BeanFactory beanFactory) {
+        super(beanFactory);
+    }
 
     @Override
     public Waround build(MethodInvocation methodInvocation) {

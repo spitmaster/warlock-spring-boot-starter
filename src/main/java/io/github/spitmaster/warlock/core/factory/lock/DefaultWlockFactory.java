@@ -6,9 +6,6 @@ import io.github.spitmaster.warlock.core.factory.WaroundFactory;
 import io.github.spitmaster.warlock.enums.Scope;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import org.aopalliance.intercept.MethodInvocation;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Method;
@@ -18,15 +15,14 @@ import java.lang.reflect.Method;
  *
  * @author zhouyijin
  */
-public class DefaultWlockFactory implements WaroundFactory, BeanFactoryAware {
+public class DefaultWlockFactory implements WaroundFactory {
 
     private StandaloneWlockFactory standaloneWlockFactory;
     private DistributedWlockFactory distributedWlockFactory;
 
-    @Override
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-        standaloneWlockFactory = beanFactory.getBean(StandaloneWlockFactory.class);
-        distributedWlockFactory = beanFactory.getBean(DistributedWlockFactory.class);
+    public DefaultWlockFactory(StandaloneWlockFactory standaloneWlockFactory, DistributedWlockFactory distributedWlockFactory) {
+        this.standaloneWlockFactory = standaloneWlockFactory;
+        this.distributedWlockFactory = distributedWlockFactory;
     }
 
     @Override
