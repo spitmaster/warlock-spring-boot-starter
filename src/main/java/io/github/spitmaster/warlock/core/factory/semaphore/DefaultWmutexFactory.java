@@ -5,7 +5,7 @@ import io.github.spitmaster.warlock.annotation.Leasing;
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.Wsemaphore;
 import io.github.spitmaster.warlock.core.Waround;
-import io.github.spitmaster.warlock.core.factory.AbstractFactory;
+import io.github.spitmaster.warlock.core.factory.TimeoutHandlerProvider;
 import io.github.spitmaster.warlock.core.factory.WaroundFactory;
 import io.github.spitmaster.warlock.core.semaphore.DistributedWmutex;
 import io.github.spitmaster.warlock.core.semaphore.SemaphoreInfo;
@@ -15,7 +15,6 @@ import io.github.spitmaster.warlock.exceptions.WarlockException;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
 import org.aopalliance.intercept.MethodInvocation;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Method;
@@ -27,13 +26,14 @@ import java.util.Arrays;
  *
  * @author zhouyijin
  */
-public class DefaultWmutexFactory extends AbstractFactory implements WaroundFactory {
+public class DefaultWmutexFactory implements WaroundFactory {
 
     private final RedissonClient redissonClient;
+    private final TimeoutHandlerProvider timeoutHandlerProvider;
 
-    public DefaultWmutexFactory(BeanFactory beanFactory, RedissonClient redissonClient) {
-        super(beanFactory);
+    public DefaultWmutexFactory(RedissonClient redissonClient, TimeoutHandlerProvider timeoutHandlerProvider) {
         this.redissonClient = redissonClient;
+        this.timeoutHandlerProvider = timeoutHandlerProvider;
     }
 
     @Override
@@ -86,7 +86,7 @@ public class DefaultWmutexFactory extends AbstractFactory implements WaroundFact
             throw new WarlockException("WaitTime cannot Less than or equal to 0; method = " + method.getName());
         }
         semaphoreInfo.setWaitTime(waitTime);
-        semaphoreInfo.setWaitTimeoutHandler(this.getWaitTimeoutHandler(waiting));
+        semaphoreInfo.setWaitTimeoutHandler(timeoutHandlerProvider.getWaitTimeoutHandler(waiting));
         //4. 租赁策略信息(单机版的不起作用)
         Leasing leasing = wsemaphore.leasing();
         Duration leaseTime = Duration.of(leasing.leaseTime(), leasing.timeUnit());
@@ -94,7 +94,7 @@ public class DefaultWmutexFactory extends AbstractFactory implements WaroundFact
             throw new WarlockException("LeaseTime cannot Less than or equal to 0; method = " + method.getName());
         }
         semaphoreInfo.setLeaseTime(leaseTime);
-        semaphoreInfo.setLeaseTimeoutHandler(this.getLeaseTimeoutHandler(leasing));
+        semaphoreInfo.setLeaseTimeoutHandler(timeoutHandlerProvider.getLeaseTimeoutHandler(leasing));
         return semaphoreInfo;
     }
 

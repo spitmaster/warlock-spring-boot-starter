@@ -4,7 +4,7 @@ import com.google.common.base.Joiner;
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.WrateLimiter;
 import io.github.spitmaster.warlock.core.Waround;
-import io.github.spitmaster.warlock.core.factory.AbstractFactory;
+import io.github.spitmaster.warlock.core.factory.TimeoutHandlerProvider;
 import io.github.spitmaster.warlock.core.factory.WaroundFactory;
 import io.github.spitmaster.warlock.core.ratelimiter.DistributedWlimiter;
 import io.github.spitmaster.warlock.core.ratelimiter.RateLimiterInfo;
@@ -14,7 +14,6 @@ import io.github.spitmaster.warlock.exceptions.WarlockException;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
 import org.aopalliance.intercept.MethodInvocation;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Method;
@@ -26,13 +25,14 @@ import java.util.Arrays;
  *
  * @author zhouyijin
  */
-public class DefaultWlimiterFactory extends AbstractFactory implements WaroundFactory {
+public class DefaultWlimiterFactory implements WaroundFactory {
 
-    private RedissonClient redissonClient;
+    private final RedissonClient redissonClient;
+    private final TimeoutHandlerProvider timeoutHandlerProvider;
 
-    public DefaultWlimiterFactory(BeanFactory beanFactory, RedissonClient redissonClient) {
-        super(beanFactory);
+    public DefaultWlimiterFactory(RedissonClient redissonClient, TimeoutHandlerProvider timeoutHandlerProvider) {
         this.redissonClient = redissonClient;
+        this.timeoutHandlerProvider = timeoutHandlerProvider;
     }
 
 
@@ -83,7 +83,7 @@ public class DefaultWlimiterFactory extends AbstractFactory implements WaroundFa
             throw new WarlockException("WaitTime cannot Less than or equal to 0; method = " + method.getName());
         }
         rateLimiterInfo.setWaitTime(waitTime);
-        rateLimiterInfo.setWaitTimeoutHandler(this.getWaitTimeoutHandler(waiting));
+        rateLimiterInfo.setWaitTimeoutHandler(timeoutHandlerProvider.getWaitTimeoutHandler(waiting));
         return rateLimiterInfo;
     }
 }

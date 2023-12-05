@@ -1,6 +1,7 @@
 package io.github.spitmaster.warlock.core.factory.lock;
 
 import io.github.spitmaster.warlock.core.Waround;
+import io.github.spitmaster.warlock.core.factory.TimeoutHandlerProvider;
 import io.github.spitmaster.warlock.core.factory.WaroundFactory;
 import io.github.spitmaster.warlock.core.lock.LockInfo;
 import io.github.spitmaster.warlock.core.lock.standalone.ReadWlock;
@@ -8,7 +9,6 @@ import io.github.spitmaster.warlock.core.lock.standalone.ReentrantWlock;
 import io.github.spitmaster.warlock.core.lock.standalone.WriteWlock;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import org.aopalliance.intercept.MethodInvocation;
-import org.springframework.beans.factory.BeanFactory;
 
 /**
  * 生产单机使用的Warlock的Factory实现
@@ -17,8 +17,8 @@ import org.springframework.beans.factory.BeanFactory;
  */
 public class StandaloneWlockFactory extends AbstractWarlockFactory implements WaroundFactory {
 
-    public StandaloneWlockFactory(BeanFactory beanFactory) {
-        super(beanFactory);
+    public StandaloneWlockFactory(TimeoutHandlerProvider timeoutHandlerProvider) {
+        super(timeoutHandlerProvider);
     }
 
     @Override

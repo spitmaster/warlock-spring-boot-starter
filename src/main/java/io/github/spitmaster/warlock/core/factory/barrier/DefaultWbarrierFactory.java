@@ -6,12 +6,11 @@ import io.github.spitmaster.warlock.annotation.WcyclicBarrier;
 import io.github.spitmaster.warlock.core.Waround;
 import io.github.spitmaster.warlock.core.barrier.BarrierInfo;
 import io.github.spitmaster.warlock.core.barrier.StandaloneWbarrier;
-import io.github.spitmaster.warlock.core.factory.AbstractFactory;
+import io.github.spitmaster.warlock.core.factory.TimeoutHandlerProvider;
 import io.github.spitmaster.warlock.core.factory.WaroundFactory;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
 import org.aopalliance.intercept.MethodInvocation;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Method;
@@ -24,10 +23,12 @@ import java.util.Arrays;
  *
  * @author zhouyijin
  */
-public class DefaultWbarrierFactory extends AbstractFactory implements WaroundFactory {
+public class DefaultWbarrierFactory implements WaroundFactory {
 
-    public DefaultWbarrierFactory(BeanFactory beanFactory) {
-        super(beanFactory);
+    private final TimeoutHandlerProvider timeoutHandlerProvider;
+
+    public DefaultWbarrierFactory(TimeoutHandlerProvider timeoutHandlerProvider) {
+        this.timeoutHandlerProvider = timeoutHandlerProvider;
     }
 
     @Override
@@ -62,7 +63,7 @@ public class DefaultWbarrierFactory extends AbstractFactory implements WaroundFa
             throw new WarlockException("WaitTime cannot Less than or equal to 0; method = " + method.getName());
         }
         barrierInfo.setWaitTime(waitTime);
-        barrierInfo.setWaitTimeoutHandler(this.getWaitTimeoutHandler(waiting));
+        barrierInfo.setWaitTimeoutHandler(timeoutHandlerProvider.getWaitTimeoutHandler(waiting));
         return barrierInfo;
     }
 }

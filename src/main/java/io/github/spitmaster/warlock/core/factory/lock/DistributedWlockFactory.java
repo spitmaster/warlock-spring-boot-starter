@@ -1,6 +1,7 @@
 package io.github.spitmaster.warlock.core.factory.lock;
 
 import io.github.spitmaster.warlock.core.Waround;
+import io.github.spitmaster.warlock.core.factory.TimeoutHandlerProvider;
 import io.github.spitmaster.warlock.core.factory.WaroundFactory;
 import io.github.spitmaster.warlock.core.lock.LockInfo;
 import io.github.spitmaster.warlock.core.lock.dist.DistributedReadWlock;
@@ -9,7 +10,6 @@ import io.github.spitmaster.warlock.core.lock.dist.DistributedWriteWlock;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import org.aopalliance.intercept.MethodInvocation;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.BeanFactory;
 
 import java.lang.reflect.Method;
 
@@ -23,8 +23,8 @@ public class DistributedWlockFactory extends AbstractWarlockFactory implements W
 
     private final RedissonClient redissonClient;
 
-    public DistributedWlockFactory(BeanFactory beanFactory, RedissonClient redissonClient) {
-        super(beanFactory);
+    public DistributedWlockFactory(RedissonClient redissonClient, TimeoutHandlerProvider timeoutHandlerProvider) {
+        super(timeoutHandlerProvider);
         this.redissonClient = redissonClient;
     }
 
