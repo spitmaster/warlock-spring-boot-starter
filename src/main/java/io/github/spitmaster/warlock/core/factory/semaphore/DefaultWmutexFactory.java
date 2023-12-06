@@ -47,19 +47,19 @@ public class DefaultWmutexFactory implements WaroundFactory {
         switch (scope) {
             case STANDALONE:
                 //JVM单例使用的信号量
-                return new StandaloneWmutex(this.buildLockInfo(methodInvocation, wsemaphore));
+                return new StandaloneWmutex(this.buildSemaphoreInfo(methodInvocation, wsemaphore));
             case DISTRIBUTED:
                 //分布式信号量
                 if (redissonClient == null) {
                     //如果项目没有使用Redisson,则不支持使用分布式锁
                     throw new WarlockException("Not supported lock scope: DISTRIBUTED ; please use redisson client to active this function; method: " + method.getName());
                 }
-                return new DistributedWmutex(this.buildLockInfo(methodInvocation, wsemaphore), redissonClient);
+                return new DistributedWmutex(this.buildSemaphoreInfo(methodInvocation, wsemaphore), redissonClient);
         }
         throw new WarlockException("Wrong semaphore scope; scope = " + scope);
     }
 
-    private SemaphoreInfo buildLockInfo(MethodInvocation methodInvocation, Wsemaphore wsemaphore) {
+    private SemaphoreInfo buildSemaphoreInfo(MethodInvocation methodInvocation, Wsemaphore wsemaphore) {
         Method method = methodInvocation.getMethod();
         SemaphoreInfo semaphoreInfo = new SemaphoreInfo();
         //1. 信号量的key
