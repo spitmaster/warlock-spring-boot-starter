@@ -1,6 +1,7 @@
 package io.github.spitmaster.warlock.annotation;
 
-import io.github.spitmaster.warlock.handler.FastFailWaitTimeoutHandler;
+import io.github.spitmaster.warlock.handler.FastFailTimeoutHandler;
+import io.github.spitmaster.warlock.handler.IgnoreTimeoutHandler;
 import io.github.spitmaster.warlock.handler.WaitTimeoutHandler;
 
 import java.lang.annotation.ElementType;
@@ -27,7 +28,7 @@ public @interface Waiting {
      *
      * @return waitTime
      */
-    long waitTime() default 1* 365 * 24 * 60 * 60;
+    long waitTime() default 1 * 365 * 24 * 60 * 60;
 
     /**
      * 时间配置相关的单位
@@ -41,6 +42,8 @@ public @interface Waiting {
      * 如果不使用, 则默认抛出异常
      *
      * @return WaitTimeoutHandler接口的实现类
+     * @see FastFailTimeoutHandler 默认的策略, 快速失败, 抛出异常
+     * @see IgnoreTimeoutHandler 框架提供了一个实现, 无视超时
      */
-    Class<? extends WaitTimeoutHandler> waitTimeoutHandler() default FastFailWaitTimeoutHandler.class;
+    Class<? extends WaitTimeoutHandler> waitTimeoutHandler() default FastFailTimeoutHandler.class;
 }

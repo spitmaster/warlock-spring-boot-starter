@@ -1,6 +1,7 @@
 package io.github.spitmaster.warlock.annotation;
 
-import io.github.spitmaster.warlock.handler.FastFailLeaseTimeoutHandler;
+import io.github.spitmaster.warlock.handler.FastFailTimeoutHandler;
+import io.github.spitmaster.warlock.handler.IgnoreTimeoutHandler;
 import io.github.spitmaster.warlock.handler.LeaseTimeoutHandler;
 
 import java.lang.annotation.ElementType;
@@ -39,6 +40,8 @@ public @interface Leasing {
      * 如果不指定, 则不会做任务操作
      *
      * @return LeaseTimeoutHandler接口的实现类
+     * @see FastFailTimeoutHandler 默认的策略, 快速失败, 抛出异常
+     * @see IgnoreTimeoutHandler 框架提供了一个实现, 无视超时
      */
-    Class<? extends LeaseTimeoutHandler> leaseTimeoutHandler() default FastFailLeaseTimeoutHandler.class;
+    Class<? extends LeaseTimeoutHandler> leaseTimeoutHandler() default FastFailTimeoutHandler.class;
 }

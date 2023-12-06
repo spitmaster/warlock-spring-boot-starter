@@ -11,8 +11,6 @@ import io.github.spitmaster.warlock.core.factory.barrier.DefaultWbarrierFactory;
 import io.github.spitmaster.warlock.core.factory.lock.DefaultWlockFactory;
 import io.github.spitmaster.warlock.core.factory.ratelimiter.DefaultWlimiterFactory;
 import io.github.spitmaster.warlock.core.factory.semaphore.DefaultWmutexFactory;
-import io.github.spitmaster.warlock.handler.LeaseTimeoutHandler;
-import io.github.spitmaster.warlock.handler.WaitTimeoutHandler;
 import org.aopalliance.aop.Advice;
 import org.redisson.api.RedissonClient;
 import org.springframework.aop.Pointcut;
@@ -23,8 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.List;
 
 /**
  * warlock的默认配置
