@@ -18,6 +18,8 @@ import org.springframework.aop.support.AbstractPointcutAdvisor;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,9 +38,21 @@ public class WarlockAutoConfiguration {
      * Warlock注解的切面配置
      */
     @Bean("warlockAnnotationAdvisor")
-    public AbstractPointcutAdvisor warlockAnnotationAdvisor(
-            @Autowired(required = false) RedissonClient redissonClient,
+    @ConditionalOnBean(RedissonClient.class)
+    public AbstractPointcutAdvisor warlockAdvisorWithRedisson(
+            RedissonClient redissonClient,
             TimeoutHandlerProvider timeoutHandlerProvider) {
+        return warlockAdvisor(redissonClient, timeoutHandlerProvider);
+    }
+
+    @Bean("warlockAnnotationAdvisor")
+    @ConditionalOnMissingBean(RedissonClient.class)
+    public AbstractPointcutAdvisor warlockAdvisorWithoutRedisson(
+            TimeoutHandlerProvider timeoutHandlerProvider) {
+        return warlockAdvisor(null, timeoutHandlerProvider);
+    }
+
+    private static AbstractPointcutAdvisor warlockAdvisor(RedissonClient redissonClient, TimeoutHandlerProvider timeoutHandlerProvider) {
         AnnotationMatchingPointcut warlockPointcut = new AnnotationMatchingPointcut(null, Warlock.class, true);
         WaroundFactory defaultWlockFactory = new DefaultWlockFactory(redissonClient, timeoutHandlerProvider);
         WaroundMethodInterceptor waroundMethodInterceptor = new WaroundMethodInterceptor(defaultWlockFactory);
@@ -80,10 +94,22 @@ public class WarlockAutoConfiguration {
     /**
      * wsemaphore注解的切面
      */
-    @Bean("wsemaphoreAnnotationAdvisor")
-    public AbstractPointcutAdvisor wsemaphoreAnnotationAdvisor(
+    @Bean("wsemaphoreAdvisor")
+    @ConditionalOnBean(RedissonClient.class)
+    public AbstractPointcutAdvisor wsemaphoreAdvisorWithRedisson(
             @Autowired(required = false) RedissonClient redissonClient,
             TimeoutHandlerProvider timeoutHandlerProvider) {
+        return wsemaphoreAdvisor(redissonClient, timeoutHandlerProvider);
+    }
+
+    @Bean("wsemaphoreAdvisor")
+    @ConditionalOnMissingBean(RedissonClient.class)
+    public AbstractPointcutAdvisor wsemaphoreAdvisorWithoutRedisson(
+            TimeoutHandlerProvider timeoutHandlerProvider) {
+        return wsemaphoreAdvisor(null, timeoutHandlerProvider);
+    }
+
+    private static AbstractPointcutAdvisor wsemaphoreAdvisor(RedissonClient redissonClient, TimeoutHandlerProvider timeoutHandlerProvider) {
         AnnotationMatchingPointcut wsemaphorePointcut = new AnnotationMatchingPointcut(null, Wsemaphore.class, true);
         DefaultWmutexFactory defaultWmutexFactory = new DefaultWmutexFactory(redissonClient, timeoutHandlerProvider);
         WaroundMethodInterceptor wsemaphoreMethodInterceptor = new WaroundMethodInterceptor(defaultWmutexFactory);
@@ -103,10 +129,22 @@ public class WarlockAutoConfiguration {
     /**
      * wrateLimiter注解的切面
      */
-    @Bean("wrateLimiterAnnotationAdvisor")
-    public AbstractPointcutAdvisor wrateLimiterAnnotationAdvisor(
+    @Bean("wrateLimiterAdvisor")
+    @ConditionalOnBean(RedissonClient.class)
+    public AbstractPointcutAdvisor wrateLimiterAdvisorWithRedisson(
             @Autowired(required = false) RedissonClient redissonClient,
             TimeoutHandlerProvider timeoutHandlerProvider) {
+        return wrateLimiterAdvisor(redissonClient, timeoutHandlerProvider);
+    }
+
+    @Bean("wrateLimiterAdvisor")
+    @ConditionalOnMissingBean(RedissonClient.class)
+    public AbstractPointcutAdvisor wrateLimiterAdvisorWithoutRedisson(
+            TimeoutHandlerProvider timeoutHandlerProvider) {
+        return wrateLimiterAdvisor(null, timeoutHandlerProvider);
+    }
+
+    private static AbstractPointcutAdvisor wrateLimiterAdvisor(RedissonClient redissonClient, TimeoutHandlerProvider timeoutHandlerProvider) {
         AnnotationMatchingPointcut wrateLimiterPointcut = new AnnotationMatchingPointcut(null, WrateLimiter.class, true);
         DefaultWlimiterFactory defaultWlimiterFactory = new DefaultWlimiterFactory(redissonClient, timeoutHandlerProvider);
         WaroundMethodInterceptor wrateLimiterMethodInterceptor = new WaroundMethodInterceptor(defaultWlimiterFactory);
