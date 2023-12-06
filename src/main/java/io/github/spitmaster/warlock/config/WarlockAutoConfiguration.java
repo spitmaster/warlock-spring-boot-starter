@@ -18,6 +18,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.AbstractPointcutAdvisor;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -130,9 +131,10 @@ public class WarlockAutoConfiguration {
      * 超时策略的handler
      */
     @Bean
-    public TimeoutHandlerProvider timeoutHandlerProvider(
-            @Autowired(required = false) List<WaitTimeoutHandler> waitTimeoutHandlerList,
-            @Autowired(required = false) List<LeaseTimeoutHandler> leaseTimeoutHandlerList) {
-        return new TimeoutHandlerProvider(waitTimeoutHandlerList, leaseTimeoutHandlerList);
+    public TimeoutHandlerProvider timeoutHandlerProvider(BeanFactory beanFactory) {
+        //这里不能直接将 WaitTimeoutHandler 和 LeaseTimeoutHandler 一把找出来
+        //某些情况下, 会造成循环依赖, 导致切面失效
+        //只能在运行时通过BeanFactory去找
+        return new TimeoutHandlerProvider(beanFactory);
     }
 }

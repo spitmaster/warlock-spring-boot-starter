@@ -6,17 +6,17 @@ import io.github.spitmaster.warlock.handler.FastFailLeaseTimeoutHandler;
 import io.github.spitmaster.warlock.handler.FastFailWaitTimeoutHandler;
 import io.github.spitmaster.warlock.handler.LeaseTimeoutHandler;
 import io.github.spitmaster.warlock.handler.WaitTimeoutHandler;
+import org.springframework.beans.factory.BeanFactory;
 
-import java.util.List;
-
+/**
+ * 在切面等待超时, 或者运行超时的时候, 找到应该对应的handler处理超时逻辑
+ */
 public class TimeoutHandlerProvider {
 
-    private final List<WaitTimeoutHandler> waitTimeoutHandlerList;
-    private final List<LeaseTimeoutHandler> leaseTimeoutHandlerList;
+    private final BeanFactory beanFactory;
 
-    public TimeoutHandlerProvider(List<WaitTimeoutHandler> waitTimeoutHandlerList, List<LeaseTimeoutHandler> leaseTimeoutHandlerList) {
-        this.waitTimeoutHandlerList = waitTimeoutHandlerList;
-        this.leaseTimeoutHandlerList = leaseTimeoutHandlerList;
+    public TimeoutHandlerProvider(BeanFactory beanFactory) {
+        this.beanFactory = beanFactory;
     }
 
     /**
@@ -28,13 +28,7 @@ public class TimeoutHandlerProvider {
     public WaitTimeoutHandler getWaitTimeoutHandler(Waiting waiting) {
         Class<? extends WaitTimeoutHandler> waitTimeoutHandlerClass = waiting.waitTimeoutHandler();
         if (waitTimeoutHandlerClass != null && waitTimeoutHandlerClass != FastFailWaitTimeoutHandler.class) {
-            if (waitTimeoutHandlerList != null) {
-                for (WaitTimeoutHandler waitTimeoutHandler : waitTimeoutHandlerList) {
-                    if (waitTimeoutHandlerClass.isInstance(waitTimeoutHandler)) {
-                        return waitTimeoutHandler;
-                    }
-                }
-            }
+            return beanFactory.getBean(waitTimeoutHandlerClass);
         }
         return FastFailWaitTimeoutHandler.INSTANCE;
     }
@@ -48,13 +42,7 @@ public class TimeoutHandlerProvider {
     public LeaseTimeoutHandler getLeaseTimeoutHandler(Leasing leasing) {
         Class<? extends LeaseTimeoutHandler> leaseTimeoutHandlerClass = leasing.leaseTimeoutHandler();
         if (leaseTimeoutHandlerClass != null && leaseTimeoutHandlerClass != FastFailLeaseTimeoutHandler.class) {
-            if (leaseTimeoutHandlerList != null) {
-                for (LeaseTimeoutHandler leaseTimeoutHandler : leaseTimeoutHandlerList) {
-                    if (leaseTimeoutHandlerClass.isInstance(leaseTimeoutHandler)) {
-                        return leaseTimeoutHandler;
-                    }
-                }
-            }
+            return beanFactory.getBean(leaseTimeoutHandlerClass);
         }
         return FastFailLeaseTimeoutHandler.INSTANCE;
     }
