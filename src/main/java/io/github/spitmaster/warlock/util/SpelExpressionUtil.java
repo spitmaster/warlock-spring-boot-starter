@@ -1,7 +1,5 @@
 package io.github.spitmaster.warlock.util;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
@@ -9,6 +7,7 @@ import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 
 public class SpelExpressionUtil {
@@ -18,7 +17,7 @@ public class SpelExpressionUtil {
         EvaluationContext context = new StandardEvaluationContext();
         LocalVariableTableParameterNameDiscoverer discoverer = new LocalVariableTableParameterNameDiscoverer();
         String[] paramNames = discoverer.getParameterNames(targetMethod);
-        if (ArrayUtils.isEmpty(paramNames)) {
+        if (paramNames == null || Array.getLength(paramNames) == 0) {
             return null;
         }
 
@@ -26,11 +25,25 @@ public class SpelExpressionUtil {
             context.setVariable(paramNames[len], args[len]);
         }
 
-        if (StringUtils.isBlank(spel)) {
+        if (isBlank(spel)) {
             return null;
         } else {
             Expression expression = PARSER.parseExpression(spel);
             return expression.getValue(context, paramType);
         }
+    }
+
+    //copied from org.apache.commons.lang3.StringUtils#isBlank
+    private static boolean isBlank(final CharSequence cs) {
+        final int strLen = cs == null ? 0 : cs.length();
+        if (strLen == 0) {
+            return true;
+        }
+        for (int i = 0; i < strLen; i++) {
+            if (!Character.isWhitespace(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 }
