@@ -50,7 +50,7 @@ public class DefaultWlimiterFactory implements WaroundFactory {
             case DISTRIBUTED:
                 if (redissonClient == null) {
                     //如果项目没有使用Redisson,则不支持使用分布式限流器
-                    throw new WarlockException("Not supported RateLimiter scope: DISTRIBUTED ; please use redisson client to active this function; method: " + method.getName());
+                    throw new WarlockException("Not supported RateLimiter scope: DISTRIBUTED ; please use redisson to active this function; method: " + method.getName());
                 }
                 /*
                  * 如果要使用分布式版本的限流器, 强烈建议使用alibaba的sentinel

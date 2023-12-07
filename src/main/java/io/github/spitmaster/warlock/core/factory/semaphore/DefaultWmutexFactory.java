@@ -52,7 +52,7 @@ public class DefaultWmutexFactory implements WaroundFactory {
                 //分布式信号量
                 if (redissonClient == null) {
                     //如果项目没有使用Redisson,则不支持使用分布式锁
-                    throw new WarlockException("Not supported lock scope: DISTRIBUTED ; please use redisson client to active this function; method: " + method.getName());
+                    throw new WarlockException("Not supported lock scope: DISTRIBUTED ; please use redisson to active this function; method: " + method.getName());
                 }
                 return new DistributedWmutex(this.buildSemaphoreInfo(methodInvocation, wsemaphore), redissonClient);
         }
