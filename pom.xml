@@ -83,13 +83,14 @@
             <artifactId>guava</artifactId>
             <version>30.1.1-jre</version>
         </dependency>
+
+        <!-- 单元测试相关依赖 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.10</version>
+            <scope>test</scope>
         </dependency>
-
-        <!-- 单元测试相关依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

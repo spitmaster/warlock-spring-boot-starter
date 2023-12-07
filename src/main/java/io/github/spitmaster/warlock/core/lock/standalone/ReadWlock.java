@@ -1,7 +1,7 @@
 package io.github.spitmaster.warlock.core.lock.standalone;
 
 import io.github.spitmaster.warlock.core.lock.LockInfo;
-import org.apache.commons.lang3.tuple.Pair;
+import io.github.spitmaster.warlock.util.Pair;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;

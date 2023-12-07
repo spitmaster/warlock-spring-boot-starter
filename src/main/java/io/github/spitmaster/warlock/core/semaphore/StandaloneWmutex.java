@@ -1,8 +1,8 @@
 package io.github.spitmaster.warlock.core.semaphore;
 
 import io.github.spitmaster.warlock.core.Waround;
+import io.github.spitmaster.warlock.util.Pair;
 import org.aopalliance.intercept.MethodInvocation;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
