@@ -33,7 +33,7 @@ Just using annotation on your method , the concurrency problem would be solved
 <dependency>
     <groupId>io.github.spitmaster</groupId>
     <artifactId>warlock-spring-boot-starter</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.7</version>
 </dependency>
 ```
 ---
@@ -87,7 +87,7 @@ WrateLimiter provide 2 scope RateLimiter
 public class WrateLimiterSample {
     @WrateLimiter(name = "testRateLimiter",
             key = "#id",
-            permitsPerSecond = 2, //每秒允许两个请求
+            permitsPerSecond = 2,
             scope = Scope.DISTRIBUTED,
             waiting = @Waiting(waitTime = 1, timeUnit = TimeUnit.SECONDS, waitTimeoutHandler = StandaloneRateLimiterTestService.class) //超时处理策略
     )
