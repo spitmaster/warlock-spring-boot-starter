@@ -2,7 +2,6 @@ package io.github.spitmaster.warlock.config;
 
 import io.github.spitmaster.warlock.core.factory.RedissonProvider;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -22,8 +21,7 @@ public class WarlockWithRedissonAutoConfiguration {
 
     @Bean
     @ConditionalOnBean(RedissonClient.class) //没有使用redisson的情况下不加载
-    @ConditionalOnClass(RedissonClient.class)
-    public RedissonProvider redissonProvider(@Autowired(required = false) RedissonClient redissonClient) {
+    public RedissonProvider redissonProvider(RedissonClient redissonClient) {
         return () -> redissonClient;
     }
 }
