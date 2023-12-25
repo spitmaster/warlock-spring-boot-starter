@@ -4,7 +4,7 @@
 
     <groupId>io.github.spitmaster</groupId>
     <artifactId>warlock-spring-boot-starter</artifactId>
-    <version>0.0.9-SNAPSHOT</version>
+    <version>0.0.9</version>
     <packaging>jar</packaging>
 
     <name>warlock-spring-boot-starter</name>
