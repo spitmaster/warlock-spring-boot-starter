@@ -5,6 +5,7 @@ import io.github.spitmaster.warlock.annotation.Leasing;
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.Warlock;
 import io.github.spitmaster.warlock.core.Waround;
+import io.github.spitmaster.warlock.core.factory.RedissonProvider;
 import io.github.spitmaster.warlock.core.factory.TimeoutHandlerProvider;
 import io.github.spitmaster.warlock.core.factory.WaroundFactory;
 import io.github.spitmaster.warlock.core.lock.LockInfo;
@@ -18,7 +19,6 @@ import io.github.spitmaster.warlock.enums.Scope;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
 import org.aopalliance.intercept.MethodInvocation;
-import org.redisson.api.RedissonClient;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Method;
@@ -32,11 +32,11 @@ import java.util.Arrays;
  */
 public class DefaultWlockFactory implements WaroundFactory {
 
-    private final RedissonClient redissonClient;
+    private final RedissonProvider redissonProvider;
     private final TimeoutHandlerProvider timeoutHandlerProvider;
 
-    public DefaultWlockFactory(RedissonClient redissonClient, TimeoutHandlerProvider timeoutHandlerProvider) {
-        this.redissonClient = redissonClient;
+    public DefaultWlockFactory(RedissonProvider redissonProvider, TimeoutHandlerProvider timeoutHandlerProvider) {
+        this.redissonProvider = redissonProvider;
         this.timeoutHandlerProvider = timeoutHandlerProvider;
     }
 
@@ -54,7 +54,7 @@ public class DefaultWlockFactory implements WaroundFactory {
                 //单机锁
                 return this.buildStandaloneLock(this.buildLockInfo(methodInvocation));
             case DISTRIBUTED:
-                if (redissonClient == null) {
+                if (redissonProvider.getRedisson() == null) {
                     //如果项目没有使用Redisson,则不支持使用分布式锁
                     throw new WarlockException("Not supported lock scope: DISTRIBUTED ; please use redisson to active this function; method: " + method.getName());
                 }
@@ -87,11 +87,11 @@ public class DefaultWlockFactory implements WaroundFactory {
         //According lock type decide what wlock should be used
         switch (lockInfo.getLockType()) {
             case REENTRANT:
-                return new DistributedReentrantWlock(redissonClient, lockInfo);
+                return new DistributedReentrantWlock(redissonProvider.getRedisson(), lockInfo);
             case READ:
-                return new DistributedReadWlock(redissonClient, lockInfo);
+                return new DistributedReadWlock(redissonProvider.getRedisson(), lockInfo);
             case WRITE:
-                return new DistributedWriteWlock(redissonClient, lockInfo);
+                return new DistributedWriteWlock(redissonProvider.getRedisson(), lockInfo);
             default:
                 throw new WarlockException("Unsupported lock type; type = " + lockInfo.getLockType());
         }

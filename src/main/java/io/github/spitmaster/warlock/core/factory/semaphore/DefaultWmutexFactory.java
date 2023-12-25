@@ -5,6 +5,7 @@ import io.github.spitmaster.warlock.annotation.Leasing;
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.Wsemaphore;
 import io.github.spitmaster.warlock.core.Waround;
+import io.github.spitmaster.warlock.core.factory.RedissonProvider;
 import io.github.spitmaster.warlock.core.factory.TimeoutHandlerProvider;
 import io.github.spitmaster.warlock.core.factory.WaroundFactory;
 import io.github.spitmaster.warlock.core.semaphore.DistributedWmutex;
@@ -14,7 +15,6 @@ import io.github.spitmaster.warlock.enums.Scope;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
 import org.aopalliance.intercept.MethodInvocation;
-import org.redisson.api.RedissonClient;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Method;
@@ -28,11 +28,11 @@ import java.util.Arrays;
  */
 public class DefaultWmutexFactory implements WaroundFactory {
 
-    private final RedissonClient redissonClient;
+    private final RedissonProvider redissonProvider;
     private final TimeoutHandlerProvider timeoutHandlerProvider;
 
-    public DefaultWmutexFactory(RedissonClient redissonClient, TimeoutHandlerProvider timeoutHandlerProvider) {
-        this.redissonClient = redissonClient;
+    public DefaultWmutexFactory(RedissonProvider redissonProvider, TimeoutHandlerProvider timeoutHandlerProvider) {
+        this.redissonProvider = redissonProvider;
         this.timeoutHandlerProvider = timeoutHandlerProvider;
     }
 
@@ -50,11 +50,11 @@ public class DefaultWmutexFactory implements WaroundFactory {
                 return new StandaloneWmutex(this.buildSemaphoreInfo(methodInvocation, wsemaphore));
             case DISTRIBUTED:
                 //分布式信号量
-                if (redissonClient == null) {
+                if (redissonProvider.getRedisson() == null) {
                     //如果项目没有使用Redisson,则不支持使用分布式锁
                     throw new WarlockException("Not supported lock scope: DISTRIBUTED ; please use redisson to active this function; method: " + method.getName());
                 }
-                return new DistributedWmutex(this.buildSemaphoreInfo(methodInvocation, wsemaphore), redissonClient);
+                return new DistributedWmutex(this.buildSemaphoreInfo(methodInvocation, wsemaphore), redissonProvider.getRedisson());
         }
         throw new WarlockException("Wrong semaphore scope; scope = " + scope);
     }
