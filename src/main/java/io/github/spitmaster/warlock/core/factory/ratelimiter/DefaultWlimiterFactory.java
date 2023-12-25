@@ -48,7 +48,7 @@ public class DefaultWlimiterFactory implements WaroundFactory {
             case STANDALONE:
                 return new StandaloneWlimiter(this.buildRateLimiterInfo(methodInvocation, wrateLimiter));
             case DISTRIBUTED:
-                if (redissonProvider.getRedisson() == null) {
+                if (redissonProvider == null || redissonProvider.getRedisson() == null) {
                     //如果项目没有使用Redisson,则不支持使用分布式限流器
                     throw new WarlockException("Not supported RateLimiter scope: DISTRIBUTED ; please use redisson to active this function; method: " + method.getName());
                 }

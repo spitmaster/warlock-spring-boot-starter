@@ -54,7 +54,7 @@ public class DefaultWlockFactory implements WaroundFactory {
                 //单机锁
                 return this.buildStandaloneLock(this.buildLockInfo(methodInvocation));
             case DISTRIBUTED:
-                if (redissonProvider.getRedisson() == null) {
+                if (redissonProvider == null || redissonProvider.getRedisson() == null) {
                     //如果项目没有使用Redisson,则不支持使用分布式锁
                     throw new WarlockException("Not supported lock scope: DISTRIBUTED ; please use redisson to active this function; method: " + method.getName());
                 }
