@@ -1,5 +1,6 @@
 package io.github.spitmaster.warlock.handler;
 
+import io.github.spitmaster.warlock.util.MethodNameUtil;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 
@@ -19,13 +20,15 @@ public enum IgnoreTimeoutHandler implements WaitTimeoutHandler, LeaseTimeoutHand
 
     @Override
     public Object handleWaitTimeout(MethodInvocation methodInvocation) throws Throwable {
-        LOGGER.warn("IgnoreTimeoutHandler wait timeout; timeout from {}", methodInvocation.getMethod().getName());
+        String methodReference = MethodNameUtil.methodName(methodInvocation.getMethod());
+        LOGGER.warn("IgnoreTimeoutHandler wait timeout; timeout from {}", methodReference);
         return methodInvocation.proceed();
     }
 
     @Override
     public Object handleLeaseTimeout(MethodInvocation methodInvocation, Object result) throws Throwable {
-        LOGGER.warn("IgnoreTimeoutHandler lease timeout; timeout from {}", methodInvocation.getMethod().getName());
+        String methodReference = MethodNameUtil.methodName(methodInvocation.getMethod());
+        LOGGER.warn("IgnoreTimeoutHandler lease timeout; timeout from {}", methodReference);
         return result;
     }
 
