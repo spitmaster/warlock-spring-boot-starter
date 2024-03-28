@@ -13,6 +13,7 @@ import io.github.spitmaster.warlock.core.semaphore.SemaphoreInfo;
 import io.github.spitmaster.warlock.core.semaphore.StandaloneWmutex;
 import io.github.spitmaster.warlock.enums.Scope;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
+import io.github.spitmaster.warlock.util.MethodNameUtil;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -41,7 +42,7 @@ public class DefaultWmutexFactory implements WaroundFactory {
         Method method = methodInvocation.getMethod();
         Wsemaphore wsemaphore = AnnotatedElementUtils.findMergedAnnotation(method, Wsemaphore.class);
         if (wsemaphore == null) {
-            throw new WarlockException("invoke wsemaphore interceptor on non warlock method, method = " + method.getName());
+            throw new WarlockException("invoke wsemaphore interceptor on non warlock method, method = " + MethodNameUtil.methodName(method));
         }
         Scope scope = wsemaphore.scope();
         switch (scope) {
@@ -52,11 +53,12 @@ public class DefaultWmutexFactory implements WaroundFactory {
                 //分布式信号量
                 if (redissonProvider == null || redissonProvider.getRedisson() == null) {
                     //如果项目没有使用Redisson,则不支持使用分布式锁
-                    throw new WarlockException("Not supported lock scope: DISTRIBUTED ; please use redisson to active this function; method: " + method.getName());
+                    throw new WarlockException("Not supported lock scope: DISTRIBUTED ; please use redisson to active this function; method: " + MethodNameUtil.methodName(method));
                 }
                 return new DistributedWmutex(this.buildSemaphoreInfo(methodInvocation, wsemaphore), redissonProvider.getRedisson());
         }
-        throw new WarlockException("Wrong semaphore scope; scope = " + scope);
+        String errorMsg = String.format("Wrong semaphore scope; scope = %s; method = %s", scope, MethodNameUtil.methodName(method));
+        throw new WarlockException(errorMsg);
     }
 
     private SemaphoreInfo buildSemaphoreInfo(MethodInvocation methodInvocation, Wsemaphore wsemaphore) {
@@ -75,7 +77,7 @@ public class DefaultWmutexFactory implements WaroundFactory {
         //2. 信号量的permits
         int permits = wsemaphore.permits();
         if (permits < 1) {
-            throw new WarlockException("Wsemaphore permits cannot below than 1; method =" + method.getName());
+            throw new WarlockException("Wsemaphore permits cannot below than 1; method =" + MethodNameUtil.methodName(method));
         }
         semaphoreInfo.setPermits(permits);
         semaphoreInfo.setScope(wsemaphore.scope());
@@ -83,7 +85,7 @@ public class DefaultWmutexFactory implements WaroundFactory {
         Waiting waiting = wsemaphore.waiting();
         Duration waitTime = Duration.of(waiting.waitTime(), waiting.timeUnit());
         if (waitTime.isNegative() || waitTime.isZero()) {
-            throw new WarlockException("WaitTime cannot Less than or equal to 0; method = " + method.getName());
+            throw new WarlockException("WaitTime cannot Less than or equal to 0; method = " + MethodNameUtil.methodName(method));
         }
         semaphoreInfo.setWaitTime(waitTime);
         semaphoreInfo.setWaitTimeoutHandler(timeoutHandlerProvider.getWaitTimeoutHandler(waiting));
@@ -91,7 +93,7 @@ public class DefaultWmutexFactory implements WaroundFactory {
         Leasing leasing = wsemaphore.leasing();
         Duration leaseTime = Duration.of(leasing.leaseTime(), leasing.timeUnit());
         if (leaseTime.isNegative() || leaseTime.isZero()) {
-            throw new WarlockException("LeaseTime cannot Less than or equal to 0; method = " + method.getName());
+            throw new WarlockException("LeaseTime cannot Less than or equal to 0; method = " + MethodNameUtil.methodName(method));
         }
         semaphoreInfo.setLeaseTime(leaseTime);
         semaphoreInfo.setLeaseTimeoutHandler(timeoutHandlerProvider.getLeaseTimeoutHandler(leasing));
