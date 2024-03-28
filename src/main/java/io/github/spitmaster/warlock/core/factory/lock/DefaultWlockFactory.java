@@ -17,6 +17,7 @@ import io.github.spitmaster.warlock.core.lock.standalone.ReentrantWlock;
 import io.github.spitmaster.warlock.core.lock.standalone.WriteWlock;
 import io.github.spitmaster.warlock.enums.Scope;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
+import io.github.spitmaster.warlock.util.MethodNameUtil;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -46,28 +47,28 @@ public class DefaultWlockFactory implements WaroundFactory {
         Method method = methodInvocation.getMethod();
         Warlock warlock = AnnotatedElementUtils.findMergedAnnotation(method, Warlock.class);
         if (warlock == null) {
-            throw new WarlockException("invoke warlock interceptor on non warlock method, method = " + method.getName());
+            throw new WarlockException("invoke warlock interceptor on non warlock method, method = " + MethodNameUtil.methodName(method));
         }
         Scope scope = warlock.lockScope();
         switch (scope) {
             case STANDALONE:
                 //单机锁
-                return this.buildStandaloneLock(this.buildLockInfo(methodInvocation));
+                return this.buildStandaloneLock(this.buildLockInfo(methodInvocation), method);
             case DISTRIBUTED:
                 if (redissonProvider == null || redissonProvider.getRedisson() == null) {
                     //如果项目没有使用Redisson,则不支持使用分布式锁
-                    throw new WarlockException("Not supported lock scope: DISTRIBUTED ; please use redisson to active this function; method: " + method.getName());
+                    throw new WarlockException("Not supported lock scope: DISTRIBUTED ; please use redisson to active this function; method: " + MethodNameUtil.methodName(method));
                 }
                 //分布式锁
-                return this.buildDistributedLock(this.buildLockInfo(methodInvocation));
+                return this.buildDistributedLock(this.buildLockInfo(methodInvocation), method);
             default:
                 break;
         }
         //没有选择合适的锁范围, 抛异常,  代码应该跑不到这里
-        throw new WarlockException("There is no suitable Warlock for this method: " + method);
+        throw new WarlockException("There is no suitable Warlock for this method: " + MethodNameUtil.methodName(method));
     }
 
-    private Waround buildStandaloneLock(LockInfo lockInfo) {
+    private Waround buildStandaloneLock(LockInfo lockInfo, Method method) {
         //2. 根据锁类型选择合适的锁
         //According lock type decide what wlock should be used
         switch (lockInfo.getLockType()) {
@@ -79,10 +80,11 @@ public class DefaultWlockFactory implements WaroundFactory {
                 return new WriteWlock(lockInfo);
             default:
         }
-        throw new WarlockException("Unsupported lock type; type = " + lockInfo.getLockType());
+        String errorMsg = String.format("Unsupported lock type; type = %s; method = %s", lockInfo.getLockType(), MethodNameUtil.methodName(method));
+        throw new WarlockException(errorMsg);
     }
 
-    private Waround buildDistributedLock(LockInfo lockInfo) {
+    private Waround buildDistributedLock(LockInfo lockInfo, Method method) {
         //2. 根据锁类型选择合适的锁
         //According lock type decide what wlock should be used
         switch (lockInfo.getLockType()) {
@@ -93,7 +95,8 @@ public class DefaultWlockFactory implements WaroundFactory {
             case WRITE:
                 return new DistributedWriteWlock(redissonProvider.getRedisson(), lockInfo);
             default:
-                throw new WarlockException("Unsupported lock type; type = " + lockInfo.getLockType());
+                String errorMsg = String.format("Unsupported lock type; type = %s; method = %s", lockInfo.getLockType(), MethodNameUtil.methodName(method));
+                throw new WarlockException(errorMsg);
         }
     }
 
@@ -123,7 +126,7 @@ public class DefaultWlockFactory implements WaroundFactory {
         Waiting waiting = warlock.waiting();
         Duration waitTime = Duration.of(waiting.waitTime(), waiting.timeUnit());
         if (waitTime.isNegative() || waitTime.isZero()) {
-            throw new WarlockException("WaitTime cannot Less than or equal to 0; method = " + method.getName());
+            throw new WarlockException("WaitTime cannot Less than or equal to 0; method = " + MethodNameUtil.methodName(method));
         }
         lockInfo.setWaitTime(waitTime);
         lockInfo.setWaitTimeoutHandler(timeoutHandlerProvider.getWaitTimeoutHandler(waiting));
@@ -131,7 +134,7 @@ public class DefaultWlockFactory implements WaroundFactory {
         Leasing leasing = warlock.leasing();
         Duration leaseTime = Duration.of(leasing.leaseTime(), leasing.timeUnit());
         if (leaseTime.isNegative() || leaseTime.isZero()) {
-            throw new WarlockException("LeaseTime cannot Less than or equal to 0; method = " + method.getName());
+            throw new WarlockException("LeaseTime cannot Less than or equal to 0; method = " + MethodNameUtil.methodName(method));
         }
         lockInfo.setLeaseTime(leaseTime);
         lockInfo.setLockLeaseTimeoutHandler(timeoutHandlerProvider.getLeaseTimeoutHandler(leasing));
