@@ -9,6 +9,7 @@ import io.github.spitmaster.warlock.core.barrier.StandaloneWbarrier;
 import io.github.spitmaster.warlock.core.factory.TimeoutHandlerProvider;
 import io.github.spitmaster.warlock.core.factory.WaroundFactory;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
+import io.github.spitmaster.warlock.util.MethodNameUtil;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -53,14 +54,14 @@ public class DefaultWbarrierFactory implements WaroundFactory {
         //2. barrier的parties
         int parties = wcyclicBarrier.parties();
         if (parties < 1) {
-            throw new WarlockException("WcyclicBarrier parties cannot below than 1; method =" + method.getName());
+            throw new WarlockException("WcyclicBarrier parties cannot below than 1; method =" + MethodNameUtil.methodName(method));
         }
         barrierInfo.setParties(parties);
         //3. 等待策略信息
         Waiting waiting = wcyclicBarrier.waiting();
         Duration waitTime = Duration.of(waiting.waitTime(), waiting.timeUnit());
         if (waitTime.isNegative() || waitTime.isZero()) {
-            throw new WarlockException("WaitTime cannot Less than or equal to 0; method = " + method.getName());
+            throw new WarlockException("WaitTime cannot Less than or equal to 0; method = " + MethodNameUtil.methodName(method));
         }
         barrierInfo.setWaitTime(waitTime);
         barrierInfo.setWaitTimeoutHandler(timeoutHandlerProvider.getWaitTimeoutHandler(waiting));
