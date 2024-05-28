@@ -13,6 +13,8 @@ import io.github.spitmaster.warlock.core.factory.lock.DefaultWlockFactory;
 import io.github.spitmaster.warlock.core.factory.ratelimiter.DefaultWlimiterFactory;
 import io.github.spitmaster.warlock.core.factory.semaphore.DefaultWmutexFactory;
 import org.aopalliance.aop.Advice;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.AbstractPointcutAdvisor;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
  * 在没有Redisson的情况下的配置
@@ -30,7 +33,14 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "warlock.enabled", matchIfMissing = true)
+@Import(WarlockWithRedissonConfiguration.class)
 public class WarlockAutoConfiguration {
+
+    private static final Logger WARLOCK_CONFIGURATION_LOGGER = LoggerFactory.getLogger(WarlockAutoConfiguration.class);
+
+    {
+        WARLOCK_CONFIGURATION_LOGGER.info("WarlockAutoConfiguration starting ...");
+    }
 
     /**
      * Warlock注解的切面配置
@@ -39,6 +49,7 @@ public class WarlockAutoConfiguration {
     public AbstractPointcutAdvisor warlockAdvisorWithoutRedisson(
             @Autowired(required = false) RedissonProvider redissonProvider,
             TimeoutHandlerProvider timeoutHandlerProvider) {
+        WARLOCK_CONFIGURATION_LOGGER.info("WarlockAutoConfiguration init warlockAnnotationAdvisor");
         AnnotationMatchingPointcut warlockPointcut = new AnnotationMatchingPointcut(null, Warlock.class, true);
         WaroundFactory defaultWlockFactory = new DefaultWlockFactory(redissonProvider, timeoutHandlerProvider);
         WaroundMethodInterceptor waroundMethodInterceptor = new WaroundMethodInterceptor(defaultWlockFactory);
@@ -61,6 +72,7 @@ public class WarlockAutoConfiguration {
     @Bean("wcyclicBarrierAnnotationAdvisor")
     public AbstractPointcutAdvisor wcyclicBarrierAnnotationAdvisor(
             TimeoutHandlerProvider timeoutHandlerProvider) {
+        WARLOCK_CONFIGURATION_LOGGER.info("WarlockAutoConfiguration init wcyclicBarrierAnnotationAdvisor");
         AnnotationMatchingPointcut wcyclicBarrierPointcut = new AnnotationMatchingPointcut(null, WcyclicBarrier.class, true);
         DefaultWbarrierFactory defaultWbarrierFactory = new DefaultWbarrierFactory(timeoutHandlerProvider);
         WaroundMethodInterceptor waroundMethodInterceptor = new WaroundMethodInterceptor(defaultWbarrierFactory);
@@ -84,6 +96,7 @@ public class WarlockAutoConfiguration {
     public AbstractPointcutAdvisor wsemaphoreAdvisorWithoutRedisson(
             @Autowired(required = false) RedissonProvider redissonProvider,
             TimeoutHandlerProvider timeoutHandlerProvider) {
+        WARLOCK_CONFIGURATION_LOGGER.info("WarlockAutoConfiguration init wsemaphoreAdvisorWithoutRedisson");
         AnnotationMatchingPointcut wsemaphorePointcut = new AnnotationMatchingPointcut(null, Wsemaphore.class, true);
         DefaultWmutexFactory defaultWmutexFactory = new DefaultWmutexFactory(redissonProvider, timeoutHandlerProvider);
         WaroundMethodInterceptor wsemaphoreMethodInterceptor = new WaroundMethodInterceptor(defaultWmutexFactory);
@@ -107,6 +120,7 @@ public class WarlockAutoConfiguration {
     public AbstractPointcutAdvisor wrateLimiterAdvisorWithoutRedisson(
             @Autowired(required = false) RedissonProvider redissonProvider,
             TimeoutHandlerProvider timeoutHandlerProvider) {
+        WARLOCK_CONFIGURATION_LOGGER.info("WarlockAutoConfiguration init wrateLimiterAdvisorWithoutRedisson");
         AnnotationMatchingPointcut wrateLimiterPointcut = new AnnotationMatchingPointcut(null, WrateLimiter.class, true);
         DefaultWlimiterFactory defaultWlimiterFactory = new DefaultWlimiterFactory(redissonProvider, timeoutHandlerProvider);
         WaroundMethodInterceptor wrateLimiterMethodInterceptor = new WaroundMethodInterceptor(defaultWlimiterFactory);
@@ -128,6 +142,7 @@ public class WarlockAutoConfiguration {
      */
     @Bean
     public TimeoutHandlerProvider timeoutHandlerProvider(BeanFactory beanFactory) {
+        WARLOCK_CONFIGURATION_LOGGER.info("WarlockAutoConfiguration init timeoutHandlerProvider");
         //这里不能直接将 WaitTimeoutHandler 和 LeaseTimeoutHandler 一把找出来
         //某些情况下, 会造成循环依赖, 导致切面失效
         //只能在运行时通过BeanFactory去找
