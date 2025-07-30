@@ -4,7 +4,7 @@
 
     <groupId>io.github.spitmaster</groupId>
     <artifactId>warlock-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>warlock-spring-boot-starter</name>
@@ -58,6 +58,12 @@
             <artifactId>redisson</artifactId>
             <version>3.11.6</version>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.github.kstyrc</groupId>
+            <artifactId>embedded-redis</artifactId>
+            <version>0.6</version>
+            <scope>test</scope>
         </dependency>
         <!-- Spring相关依赖 -->
         <dependency>

@@ -12,6 +12,7 @@ import io.github.spitmaster.warlock.core.ratelimiter.RateLimiterInfo;
 import io.github.spitmaster.warlock.core.ratelimiter.StandaloneWlimiter;
 import io.github.spitmaster.warlock.enums.Scope;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
+import io.github.spitmaster.warlock.util.MethodNameUtil;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -35,13 +36,12 @@ public class DefaultWlimiterFactory implements WaroundFactory {
         this.timeoutHandlerProvider = timeoutHandlerProvider;
     }
 
-
     @Override
     public Waround build(MethodInvocation methodInvocation) {
         Method method = methodInvocation.getMethod();
         WrateLimiter wrateLimiter = AnnotatedElementUtils.findMergedAnnotation(method, WrateLimiter.class);
         if (wrateLimiter == null) {
-            throw new WarlockException("invoke WrateLimiter interceptor on non warlock method, method = " + method.getName());
+            throw new WarlockException("invoke WrateLimiter interceptor on non warlock method, method = " + MethodNameUtil.methodName(method));
         }
         Scope scope = wrateLimiter.scope();
         switch (scope) {
@@ -50,7 +50,7 @@ public class DefaultWlimiterFactory implements WaroundFactory {
             case DISTRIBUTED:
                 if (redissonProvider == null || redissonProvider.getRedisson() == null) {
                     //如果项目没有使用Redisson,则不支持使用分布式限流器
-                    throw new WarlockException("Not supported RateLimiter scope: DISTRIBUTED ; please use redisson to active this function; method: " + method.getName());
+                    throw new WarlockException("Not supported RateLimiter scope: DISTRIBUTED ; please use redisson to active this function; method: " + MethodNameUtil.methodName(method));
                 }
                 /*
                  * 如果要使用分布式版本的限流器, 强烈建议使用alibaba的sentinel
@@ -58,7 +58,8 @@ public class DefaultWlimiterFactory implements WaroundFactory {
                  */
                 return new DistributedWlimiter(this.buildRateLimiterInfo(methodInvocation, wrateLimiter), redissonProvider.getRedisson());
         }
-        throw new WarlockException("Wrong rateLimiter scope; scope = " + scope);
+        String errorMsg = String.format("Wrong rateLimiter scope; scope = %s; method = %s", scope, MethodNameUtil.methodName(method));
+        throw new WarlockException(errorMsg);
     }
 
     private RateLimiterInfo buildRateLimiterInfo(MethodInvocation methodInvocation, WrateLimiter wrateLimiter) {
@@ -80,7 +81,7 @@ public class DefaultWlimiterFactory implements WaroundFactory {
         Waiting waiting = wrateLimiter.waiting();
         Duration waitTime = Duration.of(waiting.waitTime(), waiting.timeUnit());
         if (waitTime.isNegative() || waitTime.isZero()) {
-            throw new WarlockException("WaitTime cannot Less than or equal to 0; method = " + method.getName());
+            throw new WarlockException("WaitTime cannot Less than or equal to 0; method = " + MethodNameUtil.methodName(method));
         }
         rateLimiterInfo.setWaitTime(waitTime);
         rateLimiterInfo.setWaitTimeoutHandler(timeoutHandlerProvider.getWaitTimeoutHandler(waiting));

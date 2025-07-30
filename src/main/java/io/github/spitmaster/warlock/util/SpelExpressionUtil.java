@@ -11,6 +11,9 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 
 public class SpelExpressionUtil {
+
+    private SpelExpressionUtil(){}
+
     private static final ExpressionParser PARSER = new SpelExpressionParser();
 
     public static <T> T parseSpel(Method targetMethod, Object[] args, String spel, Class<T> paramType) {
