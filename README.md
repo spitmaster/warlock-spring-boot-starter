@@ -33,7 +33,7 @@ Just using annotation on your method , the concurrency problem would be solved
 <dependency>
     <groupId>io.github.spitmaster</groupId>
     <artifactId>warlock-spring-boot-starter</artifactId>
-    <version>0.0.8</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 ---
