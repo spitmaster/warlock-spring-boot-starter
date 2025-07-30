@@ -4,7 +4,8 @@ import com.google.common.base.Joiner;
 import io.github.spitmaster.warlock.annotation.Waiting;
 import io.github.spitmaster.warlock.annotation.WrateLimiter;
 import io.github.spitmaster.warlock.core.Waround;
-import io.github.spitmaster.warlock.core.factory.AbstractFactory;
+import io.github.spitmaster.warlock.core.factory.RedissonProvider;
+import io.github.spitmaster.warlock.core.factory.TimeoutHandlerProvider;
 import io.github.spitmaster.warlock.core.factory.WaroundFactory;
 import io.github.spitmaster.warlock.core.ratelimiter.DistributedWlimiter;
 import io.github.spitmaster.warlock.core.ratelimiter.RateLimiterInfo;
@@ -13,8 +14,6 @@ import io.github.spitmaster.warlock.enums.Scope;
 import io.github.spitmaster.warlock.exceptions.WarlockException;
 import io.github.spitmaster.warlock.util.SpelExpressionUtil;
 import org.aopalliance.intercept.MethodInvocation;
-import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Method;
@@ -26,14 +25,16 @@ import java.util.Arrays;
  *
  * @author zhouyijin
  */
-public class DefaultWlimiterFactory extends AbstractFactory implements WaroundFactory, InitializingBean {
+public class DefaultWlimiterFactory implements WaroundFactory {
 
-    private RedissonClient redissonClient;
+    private final RedissonProvider redissonProvider;
+    private final TimeoutHandlerProvider timeoutHandlerProvider;
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        this.redissonClient = beanFactory.getBeanProvider(RedissonClient.class).getIfAvailable();
+    public DefaultWlimiterFactory(RedissonProvider redissonProvider, TimeoutHandlerProvider timeoutHandlerProvider) {
+        this.redissonProvider = redissonProvider;
+        this.timeoutHandlerProvider = timeoutHandlerProvider;
     }
+
 
     @Override
     public Waround build(MethodInvocation methodInvocation) {
@@ -47,15 +48,15 @@ public class DefaultWlimiterFactory extends AbstractFactory implements WaroundFa
             case STANDALONE:
                 return new StandaloneWlimiter(this.buildRateLimiterInfo(methodInvocation, wrateLimiter));
             case DISTRIBUTED:
-                if (redissonClient == null) {
+                if (redissonProvider == null || redissonProvider.getRedisson() == null) {
                     //如果项目没有使用Redisson,则不支持使用分布式限流器
-                    throw new WarlockException("Not supported RateLimiter scope: DISTRIBUTED ; please use redisson client to active this function; method: " + method.getName());
+                    throw new WarlockException("Not supported RateLimiter scope: DISTRIBUTED ; please use redisson to active this function; method: " + method.getName());
                 }
                 /*
                  * 如果要使用分布式版本的限流器, 强烈建议使用alibaba的sentinel
                  * 这里暂时只提供一个简陋的分布式限流器实现
                  */
-                return new DistributedWlimiter(this.buildRateLimiterInfo(methodInvocation, wrateLimiter), redissonClient);
+                return new DistributedWlimiter(this.buildRateLimiterInfo(methodInvocation, wrateLimiter), redissonProvider.getRedisson());
         }
         throw new WarlockException("Wrong rateLimiter scope; scope = " + scope);
     }
@@ -82,7 +83,7 @@ public class DefaultWlimiterFactory extends AbstractFactory implements WaroundFa
             throw new WarlockException("WaitTime cannot Less than or equal to 0; method = " + method.getName());
         }
         rateLimiterInfo.setWaitTime(waitTime);
-        rateLimiterInfo.setWaitTimeoutHandler(this.getWaitTimeoutHandler(waiting));
+        rateLimiterInfo.setWaitTimeoutHandler(timeoutHandlerProvider.getWaitTimeoutHandler(waiting));
         return rateLimiterInfo;
     }
 }

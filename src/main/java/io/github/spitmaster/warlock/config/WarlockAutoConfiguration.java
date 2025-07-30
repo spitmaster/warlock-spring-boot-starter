@@ -1,22 +1,30 @@
 package io.github.spitmaster.warlock.config;
 
-import io.github.spitmaster.warlock.aspect.WarlockAnnotationAdvisor;
-import io.github.spitmaster.warlock.aspect.WcyclicBarrierAnnotationAdvisor;
-import io.github.spitmaster.warlock.aspect.WrateLimiterAnnotationAdvisor;
-import io.github.spitmaster.warlock.aspect.WsemaphoreAnnotationAdvisor;
+import io.github.spitmaster.warlock.annotation.Warlock;
+import io.github.spitmaster.warlock.annotation.WcyclicBarrier;
+import io.github.spitmaster.warlock.annotation.WrateLimiter;
+import io.github.spitmaster.warlock.annotation.Wsemaphore;
+import io.github.spitmaster.warlock.aspect.WaroundMethodInterceptor;
+import io.github.spitmaster.warlock.core.factory.RedissonProvider;
+import io.github.spitmaster.warlock.core.factory.TimeoutHandlerProvider;
+import io.github.spitmaster.warlock.core.factory.WaroundFactory;
 import io.github.spitmaster.warlock.core.factory.barrier.DefaultWbarrierFactory;
 import io.github.spitmaster.warlock.core.factory.lock.DefaultWlockFactory;
-import io.github.spitmaster.warlock.core.factory.lock.DistributedWlockFactory;
-import io.github.spitmaster.warlock.core.factory.lock.StandaloneWlockFactory;
 import io.github.spitmaster.warlock.core.factory.ratelimiter.DefaultWlimiterFactory;
 import io.github.spitmaster.warlock.core.factory.semaphore.DefaultWmutexFactory;
+import org.aopalliance.aop.Advice;
+import org.springframework.aop.Pointcut;
+import org.springframework.aop.support.AbstractPointcutAdvisor;
+import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * 在没有Redisson的情况下的配置
  * warlock的默认配置
- * 觉得不满足你的要求, 可以换成你自己实现的Bean
  *
  * @author zhouyijin
  */
@@ -25,80 +33,104 @@ import org.springframework.context.annotation.Configuration;
 public class WarlockAutoConfiguration {
 
     /**
-     * @return 切面
-     * @Warlock 注解的切面配置
+     * Warlock注解的切面配置
      */
     @Bean("warlockAnnotationAdvisor")
-    public WarlockAnnotationAdvisor warlockAnnotationAdvisor() {
-        return new WarlockAnnotationAdvisor();
+    public AbstractPointcutAdvisor warlockAdvisorWithoutRedisson(
+            @Autowired(required = false) RedissonProvider redissonProvider,
+            TimeoutHandlerProvider timeoutHandlerProvider) {
+        AnnotationMatchingPointcut warlockPointcut = new AnnotationMatchingPointcut(null, Warlock.class, true);
+        WaroundFactory defaultWlockFactory = new DefaultWlockFactory(redissonProvider, timeoutHandlerProvider);
+        WaroundMethodInterceptor waroundMethodInterceptor = new WaroundMethodInterceptor(defaultWlockFactory);
+        return new AbstractPointcutAdvisor() {
+            @Override
+            public Pointcut getPointcut() {
+                return warlockPointcut;
+            }
+
+            @Override
+            public Advice getAdvice() {
+                return waroundMethodInterceptor;
+            }
+        };
     }
 
     /**
-     * 构造Warlock的工厂对象
-     * 如果默认的Warlock工厂不能满足你的要求, 你可以自己重新实现
-     *
-     * @return 构造warlock的工厂
+     * WcyclicBarrier注解的切面
      */
-    @Bean("warlockFactory")
-    public DefaultWlockFactory warlockFactory() {
-        return new DefaultWlockFactory();
-    }
-
-    @Bean("standaloneWlockFactory")
-    public StandaloneWlockFactory standaloneWlockFactory() {
-        //专门生成单机锁的工厂
-        return new StandaloneWlockFactory();
-    }
-
-    @Bean("distributedWlockFactory")
-    public DistributedWlockFactory distributedWlockFactory() {
-        //专门生成分布式锁的工厂
-        return new DistributedWlockFactory();
-    }
-
-
-    /*
-    -------------------------------------------------------------------------------------
-     */
-
-
     @Bean("wcyclicBarrierAnnotationAdvisor")
-    public WcyclicBarrierAnnotationAdvisor wcyclicBarrierAnnotationAdvisor() {
-        return new WcyclicBarrierAnnotationAdvisor();
+    public AbstractPointcutAdvisor wcyclicBarrierAnnotationAdvisor(
+            TimeoutHandlerProvider timeoutHandlerProvider) {
+        AnnotationMatchingPointcut wcyclicBarrierPointcut = new AnnotationMatchingPointcut(null, WcyclicBarrier.class, true);
+        DefaultWbarrierFactory defaultWbarrierFactory = new DefaultWbarrierFactory(timeoutHandlerProvider);
+        WaroundMethodInterceptor waroundMethodInterceptor = new WaroundMethodInterceptor(defaultWbarrierFactory);
+        return new AbstractPointcutAdvisor() {
+            @Override
+            public Pointcut getPointcut() {
+                return wcyclicBarrierPointcut;
+            }
+
+            @Override
+            public Advice getAdvice() {
+                return waroundMethodInterceptor;
+            }
+        };
     }
 
-    @Bean("wbarrierFactory")
-    public DefaultWbarrierFactory wbarrierFactory() {
-        return new DefaultWbarrierFactory();
-    }
-
-
-    /*
-    -------------------------------------------------------------------------------------
+    /**
+     * wsemaphore注解的切面
      */
+    @Bean("wsemaphoreAdvisor")
+    public AbstractPointcutAdvisor wsemaphoreAdvisorWithoutRedisson(
+            @Autowired(required = false) RedissonProvider redissonProvider,
+            TimeoutHandlerProvider timeoutHandlerProvider) {
+        AnnotationMatchingPointcut wsemaphorePointcut = new AnnotationMatchingPointcut(null, Wsemaphore.class, true);
+        DefaultWmutexFactory defaultWmutexFactory = new DefaultWmutexFactory(redissonProvider, timeoutHandlerProvider);
+        WaroundMethodInterceptor wsemaphoreMethodInterceptor = new WaroundMethodInterceptor(defaultWmutexFactory);
+        return new AbstractPointcutAdvisor() {
+            @Override
+            public Pointcut getPointcut() {
+                return wsemaphorePointcut;
+            }
 
-    @Bean("wsemaphoreAnnotationAdvisor")
-    public WsemaphoreAnnotationAdvisor wsemaphoreAnnotationAdvisor() {
-        return new WsemaphoreAnnotationAdvisor();
+            @Override
+            public Advice getAdvice() {
+                return wsemaphoreMethodInterceptor;
+            }
+        };
     }
 
-    @Bean("wmutexFactory")
-    public DefaultWmutexFactory wmutexFactory() {
-        return new DefaultWmutexFactory();
-    }
-
-    /*
-    -------------------------------------------------------------------------------------
+    /**
+     * wrateLimiter注解的切面
      */
+    @Bean("wrateLimiterAdvisor")
+    public AbstractPointcutAdvisor wrateLimiterAdvisorWithoutRedisson(
+            @Autowired(required = false) RedissonProvider redissonProvider,
+            TimeoutHandlerProvider timeoutHandlerProvider) {
+        AnnotationMatchingPointcut wrateLimiterPointcut = new AnnotationMatchingPointcut(null, WrateLimiter.class, true);
+        DefaultWlimiterFactory defaultWlimiterFactory = new DefaultWlimiterFactory(redissonProvider, timeoutHandlerProvider);
+        WaroundMethodInterceptor wrateLimiterMethodInterceptor = new WaroundMethodInterceptor(defaultWlimiterFactory);
+        return new AbstractPointcutAdvisor() {
+            @Override
+            public Pointcut getPointcut() {
+                return wrateLimiterPointcut;
+            }
 
-    @Bean("wlimiterFactory")
-    public DefaultWlimiterFactory wlimiterFactory() {
-        return new DefaultWlimiterFactory();
+            @Override
+            public Advice getAdvice() {
+                return wrateLimiterMethodInterceptor;
+            }
+        };
     }
 
-    @Bean("wrateLimiterAnnotationAdvisor")
-    public WrateLimiterAnnotationAdvisor wrateLimiterAnnotationAdvisor() {
-        return new WrateLimiterAnnotationAdvisor();
+    /**
+     * 超时策略的handler
+     */
+    @Bean
+    public TimeoutHandlerProvider timeoutHandlerProvider(BeanFactory beanFactory) {
+        //这里不能直接将 WaitTimeoutHandler 和 LeaseTimeoutHandler 一把找出来
+        //某些情况下, 会造成循环依赖, 导致切面失效
+        //只能在运行时通过BeanFactory去找
+        return new TimeoutHandlerProvider(beanFactory);
     }
-
 }

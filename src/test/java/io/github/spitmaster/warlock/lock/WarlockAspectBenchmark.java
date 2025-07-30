@@ -3,6 +3,7 @@ package io.github.spitmaster.warlock.lock;
 import io.github.spitmaster.warlock.Application;
 import io.github.spitmaster.warlock.util.BeanHolder;
 import org.apache.commons.lang3.RandomUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
@@ -68,7 +69,7 @@ public class WarlockAspectBenchmark {
                 .forks(0)//要使用JMH必须与Spring环境再一个JVM中
                 .build();
         new Runner(jmhRunnerOptions).run();
-
+        Assertions.assertTrue(true);
     }
 }
 //执行效率确实不高
