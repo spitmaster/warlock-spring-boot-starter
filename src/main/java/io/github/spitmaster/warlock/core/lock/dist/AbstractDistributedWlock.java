@@ -22,6 +22,8 @@ abstract class AbstractDistributedWlock extends AbstractWlock implements Waround
         RLock lock = getRLock();
         //是否成功获取到锁
         boolean acquired = false;
+        //业务是否正常返回 (未抛异常)
+        boolean bizCompletedNormally = false;
         Object result = null;
         try {
             LockInfo lockInfo = getLockInfo();
@@ -32,8 +34,10 @@ abstract class AbstractDistributedWlock extends AbstractWlock implements Waround
             if (acquired) {
                 //3. 执行业务代码
                 result = methodInvocation.proceed();
+                bizCompletedNormally = true;
             } else {
                 result = getLockInfo().getWaitTimeoutHandler().handleWaitTimeout(methodInvocation);
+                bizCompletedNormally = true;
             }
         } finally {
             //4. 解锁
@@ -41,11 +45,11 @@ abstract class AbstractDistributedWlock extends AbstractWlock implements Waround
                 if (lock.isHeldByCurrentThread()) {
                     //获取锁成功, 并且自己还持有锁, 则需要释放锁
                     lock.unlock();
-                } else {
+                } else if (bizCompletedNormally) {
                     //获取锁成功, 但是现在已经不持有锁了, 说明锁超时了, 或者超时之后被其他线程获取到
                     //此时不需要解锁
-                    //但是需要回调超时的handler
-                    //handler执行的结果,替换掉原来执行的返回值
+                    //但是需要回调超时的handler, handler执行的结果替换掉原来执行的返回值
+                    //若业务已抛异常则不调用handler, 避免 finally 覆盖原异常
                     result = getLockInfo().getLockLeaseTimeoutHandler().handleLeaseTimeout(methodInvocation, result);
                 }
             }
