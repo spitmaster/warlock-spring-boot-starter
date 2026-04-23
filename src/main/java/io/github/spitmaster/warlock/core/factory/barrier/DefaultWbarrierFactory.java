@@ -40,6 +40,9 @@ public class DefaultWbarrierFactory implements WaroundFactory {
     private BarrierInfo buildBarrierInfo(MethodInvocation methodInvocation) {
         Method method = methodInvocation.getMethod();
         WcyclicBarrier wcyclicBarrier = AnnotatedElementUtils.findMergedAnnotation(method, WcyclicBarrier.class);
+        if (wcyclicBarrier == null) {
+            throw new WarlockException("invoke WcyclicBarrier interceptor on non WcyclicBarrier method, method = " + MethodNameUtil.methodName(method));
+        }
         BarrierInfo barrierInfo = new BarrierInfo();
         //1. 组装唯一key
         String barrierKey = Joiner
