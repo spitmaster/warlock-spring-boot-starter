@@ -6,7 +6,6 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Method;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -32,32 +31,21 @@ public class StandaloneWbarrier implements Waround {
         //1. 获取这个key对应的 cyclicBarrier
         CyclicBarrier cyclicBarrier = this.getCyclicBarrier();
         try {
-            //2. 等待超时, 或者其他同时在等的线程超时, 那么这个 cyclicBarrier 就会 Broken
-            cyclicBarrier.await(barrierInfo.getWaitTime().toMillis(), TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | BrokenBarrierException | TimeoutException e) {
-            //3. 修复 cyclicBarrier, 并进行超时处理
-            //一旦Broken这个CyclicBarrier就相当于废了, 要立刻恢复,
-            // 但是原来的 cyclicBarrier 实际上已经不能继续用了, 因为还有许多其他线程在不停的处理Exception,
-            // 那么这时候就需要将Map中的换掉, 重新初始化
-            return processBrokenBarrier(methodInvocation, cyclicBarrier, e);
-        }
-        return methodInvocation.proceed();
-    }
-
-    private Object processBrokenBarrier(MethodInvocation methodInvocation, CyclicBarrier cyclicBarrier, Exception e) throws Throwable {
-        Method method = methodInvocation.getMethod();
-        LOGGER.error("processBrokenBarrier; method={}", method, e);
-        //使用同一个Barrier的需要一起处理, 不能各处理各的
-        synchronized (cyclicBarrier) {
-            CyclicBarrier newCyclicBarrier = this.getCyclicBarrier();
-            if (cyclicBarrier == newCyclicBarrier) {
-                //说明本线程是第一个进入 synchronized 代码块的线程
-                //需要将已有的 barrier废弃掉, 其他线程再进来, 他们会自己初始化
-                this.returnCyclicBarrier();
+            try {
+                //2. 等待超时, 或者其他同时在等的线程超时, 那么这个 cyclicBarrier 就会 Broken
+                cyclicBarrier.await(barrierInfo.getWaitTime().toMillis(), TimeUnit.MILLISECONDS);
+            } catch (InterruptedException | BrokenBarrierException | TimeoutException e) {
+                //一旦Broken, 所有持有此barrier的线程都会走到这里并走 waitTimeoutHandler
+                //各线程各自在 finally 中 returnCyclicBarrier, 当引用计数归零时从Map中移除
+                //下一个进入的线程自然会初始化一个全新的barrier
+                LOGGER.error("barrier broken; method={}", methodInvocation.getMethod(), e);
+                return this.barrierInfo.getWaitTimeoutHandler().handleWaitTimeout(methodInvocation);
             }
+            return methodInvocation.proceed();
+        } finally {
+            //3. 归还barrier引用, 引用计数归零则移除Map条目
+            returnCyclicBarrier();
         }
-        //超时处理
-        return this.barrierInfo.getWaitTimeoutHandler().handleWaitTimeout(methodInvocation);
     }
 
     /**
