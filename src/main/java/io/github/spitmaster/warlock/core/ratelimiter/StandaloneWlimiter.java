@@ -1,12 +1,14 @@
 package io.github.spitmaster.warlock.core.ratelimiter;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.util.concurrent.RateLimiter;
 import io.github.spitmaster.warlock.core.Waround;
-import io.github.spitmaster.warlock.util.Pair;
+import io.github.spitmaster.warlock.exceptions.WarlockException;
 import org.aopalliance.intercept.MethodInvocation;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.time.Duration;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -20,9 +22,16 @@ public class StandaloneWlimiter implements Waround {
     /**
      * 多个切点可以使用同一个key
      * 如果使用同一个key, 那么它们使用的就是同一个限流器
-     * 在使用信号量的时候会被添加到这个MAP中, 全局使用同一个MAP
+     * --
+     * 不使用引用计数 + ConcurrentHashMap 的方案 : RateLimiter 是有状态的令牌桶,
+     * 如果串行调用都移除再重建, 会丢失令牌桶状态, 使限流完全失效.
+     * 改用 Guava Cache + maximumSize + 长 TTL : 跨调用保留 RateLimiter 状态,
+     * 只有长时间空闲或超出容量才被淘汰(10分钟空闲已足够令牌桶自然恢复满载, 丢弃无害).
      */
-    private static final ConcurrentHashMap<String, Pair<RateLimiter, AtomicInteger>> RATE_LIMITER_MAP = new ConcurrentHashMap<>();
+    private static final Cache<String, RateLimiter> RATE_LIMITER_CACHE = CacheBuilder.newBuilder()
+            .expireAfterAccess(Duration.ofMinutes(10))
+            .maximumSize(4096)
+            .build();
 
     private final RateLimiterInfo rateLimiterInfo;
 
@@ -43,27 +52,14 @@ public class StandaloneWlimiter implements Waround {
     }
 
     protected RateLimiter getRateLimiter() {
-        Pair<RateLimiter, AtomicInteger> lockPair = RATE_LIMITER_MAP.compute(rateLimiterInfo.getRateLimiterKey(), (s, pair) -> {
-            if (pair == null) {
-                //没有就初始化
-                RateLimiter rateLimiter = RateLimiter.create(rateLimiterInfo.getPermitsPerSecond());
-                pair = Pair.of(rateLimiter, new AtomicInteger(0));
-            }
-            pair.getRight().incrementAndGet();
-            return pair;
-        });
-        return lockPair.getLeft();
-    }
-
-    protected void returnRateLimiter() {
-        RATE_LIMITER_MAP.computeIfPresent(rateLimiterInfo.getRateLimiterKey(), (s, pair) -> {
-            int holdCount = pair.getRight().decrementAndGet();
-            if (holdCount <= 0) {
-                //返回null,相当于把这个信号量删除了
-                return null;
-            }
-            return pair;
-        });
+        try {
+            return RATE_LIMITER_CACHE.get(
+                    rateLimiterInfo.getRateLimiterKey(),
+                    () -> RateLimiter.create(rateLimiterInfo.getPermitsPerSecond())
+            );
+        } catch (ExecutionException e) {
+            throw new WarlockException("failed to create RateLimiter", e);
+        }
     }
 
 }
