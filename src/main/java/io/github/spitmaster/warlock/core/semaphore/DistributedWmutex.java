@@ -20,12 +20,14 @@ public class DistributedWmutex implements Waround {
 
     /**
      * 缓存RPermitExpirableSemaphore对象来防止 RPermitExpirableSemaphore 被频繁的初始化, 浪费资源
+     * --
+     * 不使用 weakKeys/weakValues: String key 没有强引用会被立刻回收, 导致缓存几乎必然 miss,
+     * 改用 maximumSize 限制条目数, 配合 TTL 做双重兜底.
      */
     private static final Cache<String, RPermitExpirableSemaphore> RSEMAPHORE_CACHE = CacheBuilder.newBuilder()
             .expireAfterWrite(Duration.ofSeconds(10))
             .expireAfterAccess(Duration.ofSeconds(10))
-            .weakKeys()
-            .weakValues()
+            .maximumSize(1024)
             .build();
 
     private final SemaphoreInfo semaphoreInfo;
