@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(*)",
+      "Bash(git checkout *)",
+      "Bash(mvn -q compile -DskipTests)"
+    ]
+  }
+}
